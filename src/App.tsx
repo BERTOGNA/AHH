@@ -39,7 +39,7 @@ export function App() {
       {route.name === 'ficha' && <CharacterSheet id={route.id} />}
       {route.name === 'semana' && <Week />}
       {route.name === 'bau' && <Chest />}
-      {route.name === 'mural' && <Mural />}
+      {route.name === 'mural' && <Mural chronicle={route.chronicle} />}
       {route.name === 'pais' && <Parents tab={route.tab} />}
       <Nav />
       {pinRequest && <PinPad />}

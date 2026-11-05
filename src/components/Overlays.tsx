@@ -3,6 +3,7 @@ import { useFamily, useSession } from '../state'
 import { Sparks } from './Sparks'
 import { Avatar } from './Avatar'
 import { GoldStar } from './Seal'
+import { MissionScene } from './MissionScene'
 import { speak } from '../lib/speech'
 import { play } from '../lib/sound'
 
@@ -49,6 +50,12 @@ export function CelebrationOverlay() {
       className="night-sky on-night fixed inset-0 z-[70] flex flex-col items-center justify-center gap-6 p-6 text-center"
       onClick={() => celebrate(null)}
     >
+      {celebration.scene ? (
+        <div className="animate-rise relative w-full max-w-xl overflow-hidden rounded-[28px] shadow-[0_30px_80px_rgba(0,0,0,0.5)] ring-2 ring-gold-light/40">
+          <MissionScene missionId={celebration.scene.missionId} stage={celebration.scene.stage as 0} night className="block aspect-[16/9] w-full" />
+          <Sparks count={16} color="#F1D58A" />
+        </div>
+      ) : (
       <div className="relative grid place-items-center">
         <span className="absolute h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(241,213,138,0.35),transparent_65%)]" aria-hidden="true" />
         {hero ? <Avatar member={hero} size={168} glow /> : celebration.emoji === '⭐' ? <span className="animate-pop"><GoldStar size={150} /></span> : <span className="animate-pop text-[120px] leading-none">{celebration.emoji}</span>}
@@ -59,6 +66,8 @@ export function CelebrationOverlay() {
         )}
         <Sparks count={16} color="#F1D58A" />
       </div>
+      )}
+      {celebration.scene && <p className="eyebrow -mb-3">Missão da família</p>}
       <h2 className="insignia animate-rise bg-gradient-to-b from-[#FFF1C4] to-gold bg-clip-text text-[34px] leading-tight text-transparent sm:text-5xl">{celebration.title}</h2>
       {celebration.text && <p className="story animate-rise max-w-md text-xl text-moon">{celebration.text}</p>}
       <button autoFocus className="btn btn-primary mt-2 h-16 min-w-52 text-xl" onClick={() => celebrate(null)}>

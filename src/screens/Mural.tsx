@@ -11,14 +11,16 @@ import { Screen, Section, Empty } from '../components/Screen'
 import { Avatar } from '../components/Avatar'
 import { Progress } from '../components/Progress'
 import { MissionScene } from '../components/MissionScene'
+import { Chronicle } from '../components/Chronicle'
 import { Icon } from '../components/Icon'
 import { ThanksModal } from '../components/ThanksModal'
 import { className, heroStyle } from '../components/hero'
 
-export function Mural() {
+export function Mural({ chronicle }: { chronicle?: boolean }) {
   const f = useFamily()
   const me = useCurrent()
   const [offset, setOffset] = useState(0)
+  const [showChronicle, setShowChronicle] = useState(Boolean(chronicle))
   const [thanks, setThanks] = useState<{ to: string; about: string; completionId?: string } | null>(null)
   const anchor = addDays(today(), -7 * offset)
   const dates = weekDates(anchor)
@@ -36,8 +38,11 @@ export function Mural() {
       subtitle={`${offset === 0 ? 'Esta semana' : offset === 1 ? 'Semana passada' : 'Semana'} · ${formatDayMonth(dates[0])} a ${formatDayMonth(dates[6])}`}
       actions={
         <div className="flex gap-1">
-          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Semana anterior" onClick={() => setOffset((o) => o + 1)}>‹</button>
-          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Semana seguinte" disabled={offset === 0} style={{ opacity: offset === 0 ? 0.4 : 1 }} onClick={() => setOffset((o) => Math.max(0, o - 1))}>›</button>
+          <button className="btn btn-secondary h-12 px-4" onClick={() => setShowChronicle(true)}>
+            <Icon name="book" size={18} /> <span className="hidden sm:inline">Ver a </span>Crônica
+          </button>
+          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Semana anterior" onClick={() => setOffset((o) => o + 1)}><Icon name="chevron-left" size={22} /></button>
+          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Semana seguinte" disabled={offset === 0} style={{ opacity: offset === 0 ? 0.4 : 1 }} onClick={() => setOffset((o) => Math.max(0, o - 1))}><Icon name="chevron-right" size={22} /></button>
         </div>
       }
     >
@@ -107,8 +112,19 @@ export function Mural() {
 
       <KingdomMap />
 
+      {showChronicle && (
+        <Chronicle
+          date={anchor}
+          onClose={() => {
+            setShowChronicle(false)
+            if (chronicle) history.replaceState(null, '', '#/mural')
+          }}
+          onThank={me ? () => { setShowChronicle(false); setThanks({ to: f.members.find((m) => m.id !== me.id)!.id, about: 'pela semana' }) } : undefined}
+        />
+      )}
+
       {thanks && me && (
-        <ThanksModal from={me} to={thanks.to} completionId={thanks.completionId} about={`por ${thanks.about}`} onClose={() => setThanks(null)} />
+        <ThanksModal from={me} to={thanks.to} completionId={thanks.completionId} about={thanks.about.startsWith("pela") ? thanks.about : `por ${thanks.about}`} onClose={() => setThanks(null)} />
       )}
     </Screen>
   )

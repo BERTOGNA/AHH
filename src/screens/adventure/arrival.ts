@@ -7,6 +7,7 @@ import { xpOf } from '../../domain/economy'
 import { achievementById } from '../../data/achievements'
 import { markUnlocksSeen } from '../../db/actions'
 import { parentsLabel, capitalize } from '../../components/hero'
+import { takeMissionCelebration } from '../missionCelebration'
 
 const read = (k: string) => {
   try {
@@ -51,6 +52,8 @@ export function useArrival(me: Member): boolean {
       const a = achievementById(u.achievementId)
       if (a) q.push({ emoji: a.emoji, title: `Conquista: ${a.name}`, text: a.hint, speak: kid ? `Conquista nova: ${a.name}!` : undefined })
     }
+    const ms = takeMissionCelebration(f, me.id, kid)
+    if (ms) q.unshift(ms)
     queue.current = q
     write(`reino:visto:${me.id}`, String(Date.now()))
     write(`reino:nivel:${me.id}`, String(level))

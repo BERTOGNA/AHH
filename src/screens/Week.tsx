@@ -1,4 +1,5 @@
 // Semana do Reino: a rotina de todos numa visão única, para ver onde os horários se cruzam.
+import { Icon } from '../components/Icon'
 import { useState } from 'react'
 import type { RoutineBlock, RoutineKind, Task, Weekday } from '../db/types'
 import { useCurrent, useFamily, useSession } from '../state'
@@ -61,9 +62,9 @@ export function Week() {
       subtitle={`${formatDayMonth(dates[0])} a ${formatDayMonth(dates[6])}`}
       actions={
         <div className="flex gap-1">
-          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Semana anterior" onClick={() => shiftWeek(-1)}>‹</button>
+          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Semana anterior" onClick={() => shiftWeek(-1)}><Icon name="chevron-left" size={22} /></button>
           <button className="btn btn-ghost h-12 px-3" onClick={() => shiftWeek(0)}>Hoje</button>
-          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Próxima semana" onClick={() => shiftWeek(1)}>›</button>
+          <button className="btn btn-ghost h-12 w-12 p-0" aria-label="Próxima semana" onClick={() => shiftWeek(1)}><Icon name="chevron-right" size={22} /></button>
         </div>
       }
     >

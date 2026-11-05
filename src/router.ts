@@ -7,7 +7,7 @@ export type Route =
   | { name: 'ficha'; id: string }
   | { name: 'semana' }
   | { name: 'bau' }
-  | { name: 'mural' }
+  | { name: 'mural'; chronicle?: boolean }
   | { name: 'pais'; tab?: string }
   | { name: 'bem-vindo' }
 
@@ -16,9 +16,10 @@ export function parse(hash: string): Route {
   switch (a) {
     case 'semana':
     case 'bau':
-    case 'mural':
     case 'bem-vindo':
       return { name: a }
+    case 'mural':
+      return { name: 'mural', chronicle: b === 'cronica' }
     case 'pais':
       return { name: 'pais', tab: b }
     case 'heroi':

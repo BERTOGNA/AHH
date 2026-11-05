@@ -1,5 +1,5 @@
 // Salão do Reino: "este é o nosso reino e cada um tem seu papel".
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useFamily, useParentGate, useSession } from '../state'
 import type { Member } from '../db/types'
 import { go } from '../router'
@@ -15,6 +15,7 @@ import { weekXp } from '../domain/economy'
 import { missionById, stageOf } from '../data/missions'
 import { formatLong, formatTime, isoWeekday, minutes, nowMinutes, today, weekKey } from '../lib/date'
 import { play } from '../lib/sound'
+import { takeMissionCelebration } from './missionCelebration'
 
 export function Kingdom() {
   const f = useFamily()
@@ -35,6 +36,14 @@ export function Kingdom() {
     setCurrent(m.id)
     go(`/heroi/${m.id}`)
   }
+
+  const { celebrate, celebration } = useSession()
+  // A família reunida no Salão também vê quando a missão avança.
+  useEffect(() => {
+    if (celebration) return
+    const c = takeMissionCelebration(f, 'salao')
+    if (c) celebrate(c)
+  }, [f.events.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const upcoming = useUpcoming(day, now)
   const lastThanks = [...f.thanks].sort((a, b) => b.createdAt - a.createdAt).slice(0, 3)
@@ -143,7 +152,7 @@ export function Kingdom() {
             <h2 id="gratidao" className="title-display flex flex-1 items-center gap-2 text-xl text-gold-light">
               <Icon name="heart" size={20} /> Gratidão no reino
             </h2>
-            <button className="btn btn-ghost h-12 min-h-12 px-4 text-sm" onClick={() => go('/mural')}>
+            <button className="btn btn-ghost h-12 min-h-12 px-4 text-sm" onClick={() => go(isoWeekday(day) === 7 ? '/mural/cronica' : '/mural')}>
               {isoWeekday(day) === 7 ? 'Crônica da Semana' : 'Ver o Mural'} <Icon name="chevron-right" size={16} />
             </button>
           </div>

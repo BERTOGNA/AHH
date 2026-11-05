@@ -87,6 +87,8 @@ export interface Celebration {
   text?: string
   speak?: string
   heroId?: string
+  /** Cena da missão (celebração de estágio coletivo). */
+  scene?: { missionId: string; stage: number }
 }
 
 interface Session {
