@@ -9,6 +9,7 @@ import { addDays, formatDayMonth, formatTime, hhmm, isoWeekday, minutes, nowMinu
 import { heroColor } from './hero'
 import { buzz } from '../lib/haptics'
 import { Icon } from './Icon'
+import { Avatar } from './Avatar'
 
 export interface WeekGridProps {
   members: Member[]
@@ -24,6 +25,9 @@ export interface WeekGridProps {
   onMove?: (item: { task?: Task; routine?: RoutineBlock }, fromDate: string, toDate: string, startMin: number) => void
   /** Celular: dia mostrado (controlado pelo pai). */
   day?: string
+  /** Tablet: mostrar só este dia em largura total (blocos grandes, com nomes). */
+  focusDay?: string
+  onDayTap?: (date: string) => void
 }
 
 const FROM = 6 * 60
@@ -79,8 +83,8 @@ interface Drag {
 
 export function WeekGrid(p: WeekGridProps) {
   const wide = useWide()
-  const days = p.day && !wide ? [p.day] : weekDates(p.date)
-  const pxh = wide ? 48 : 64
+  const days = p.focusDay && wide ? [p.focusDay] : p.day && !wide ? [p.day] : weekDates(p.date)
+  const pxh = wide && !p.focusDay ? 48 : 72
   const lanes = p.members
   const [drag, setDrag] = useState<Drag | null>(null)
   const pressTimer = useRef<number | null>(null)
@@ -153,7 +157,7 @@ export function WeekGrid(p: WeekGridProps) {
 
   const laneWidth = 100 / Math.max(1, lanes.length)
   const laneIndex = new Map(lanes.map((m, i) => [m.id, i]))
-  const showText = !wide || lanes.length === 1
+  const showText = !wide || lanes.length === 1 || Boolean(p.focusDay)
 
   return (
     <div
@@ -190,11 +194,30 @@ export function WeekGrid(p: WeekGridProps) {
               <div key={d} className={`min-w-0 flex-1 border-l border-line ${isToday ? 'bg-[#fffdf5]' : ''}`} style={{ minWidth: wide ? 120 : undefined }}>
                 {/* cabeçalho do dia + "dia todo" */}
                 <div className="sticky top-0 z-10 h-[76px] border-b border-line bg-surface px-1 pt-1">
-                  <div className={`text-center text-sm font-bold ${isToday ? 'text-gold-deep' : ''}`}>
-                    {WEEKDAY_SHORT[isoWeekday(d)]} <span className="font-normal text-muted">{formatDayMonth(d)}</span>
-                    {isToday && <span className="sr-only"> (hoje)</span>}
-                  </div>
-                  <div className="mt-1 flex h-[44px] flex-wrap content-start gap-0.5 overflow-hidden" aria-label="Tarefas sem horário">
+                  {wide && p.onDayTap && !p.focusDay ? (
+                    <button
+                      className={`block w-full rounded-lg text-center text-sm font-bold hover:bg-wait ${isToday ? 'text-gold-deep' : ''}`}
+                      onClick={() => p.onDayTap!(d)}
+                      aria-label={`Ver ${WEEKDAY_SHORT[isoWeekday(d)]} ${formatDayMonth(d)} em detalhe`}
+                    >
+                      {WEEKDAY_SHORT[isoWeekday(d)]} <span className="font-normal text-muted">{formatDayMonth(d)}</span>
+                    </button>
+                  ) : (
+                    <div className={`text-center text-sm font-bold ${isToday ? 'text-gold-deep' : ''}`}>
+                      {WEEKDAY_SHORT[isoWeekday(d)]} <span className="font-normal text-muted">{formatDayMonth(d)}</span>
+                      {isToday && <span className="sr-only"> (hoje)</span>}
+                    </div>
+                  )}
+                  {p.focusDay && (
+                    <div className="mt-1 flex" aria-hidden="true">
+                      {lanes.map((m) => (
+                        <span key={m.id} className="flex min-w-0 flex-1 items-center justify-center gap-1.5 text-sm font-semibold">
+                          <Avatar member={m} size={26} /> <span className="truncate">{m.name}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className={`mt-1 ${p.focusDay ? "hidden" : "flex"} h-[44px] flex-wrap content-start gap-0.5 overflow-hidden`} aria-label="Tarefas sem horário">
                     {untimed.map((o) => (
                       <button
                         key={o.task.id + o.slot}
@@ -268,7 +291,7 @@ export function WeekGrid(p: WeekGridProps) {
                     const dragging = drag?.item.task?.id === o.task.id && drag.fromDate === d
                     const top = dragging ? yOf(drag.min) : yOf(Math.max(FROM, start))
                     // Tarefas longas (ex.: expedição de trabalho) não cobrem o bloco de rotina: no máximo 1h de altura.
-                    const h = Math.max(showText ? 30 : 26, (Math.min(o.task.duration, 60, TO - start) / 60) * pxh - 2)
+                    const h = Math.max(p.focusDay ? 46 : showText ? 30 : 26, (Math.min(o.task.duration, 60, TO - start) / 60) * pxh - 2)
                     const st = o.completion?.status
                     const owner = lanes[lane]
                     return (

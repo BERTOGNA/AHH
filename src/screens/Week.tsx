@@ -26,6 +26,7 @@ export function Week() {
   const [day, setDay] = useState(today())
   const [hidden, setHidden] = useState<string[]>([])
   const [view, setView] = useState<'grade' | 'lista'>('grade')
+  const [focus, setFocus] = useState<string | null>(null)
   const [taskDetail, setTaskDetail] = useState<{ task: Task; date: string } | null>(null)
   const [editTask, setEditTask] = useState<{ task?: Task } | null>(null)
   const [routine, setRoutine] = useState<RoutineBlock | 'new' | null>(null)
@@ -41,6 +42,7 @@ export function Week() {
     const a = n === 0 ? weekStart(today()) : addDays(weekStart(anchor), 7 * n)
     setAnchor(a)
     setDay(n === 0 ? today() : addDays(a, isoWeekday(day) - 1))
+    if (focus) setFocus(n === 0 ? today() : addDays(a, isoWeekday(focus) - 1))
   }
 
   /** Tarefas perguntam o alcance (só nesta semana / todas); rotinas mudam sempre para todas as semanas. */
@@ -115,6 +117,20 @@ export function Week() {
         </div>
       )}
 
+      {wide && focus && (
+        <div className="mb-3 flex items-center gap-3">
+          <button className="btn btn-secondary h-12" onClick={() => setFocus(null)}>
+            <Icon name="grid" size={18} /> Ver a semana
+          </button>
+          <span className="flex gap-1" role="group" aria-label="Outro dia">
+            {dates.map((d) => (
+              <button key={d} className="chip min-w-14 justify-center" aria-pressed={d === focus} onClick={() => setFocus(d)}>
+                {WEEKDAY_SHORT[isoWeekday(d)]}
+              </button>
+            ))}
+          </span>
+        </div>
+      )}
       {!wide && view === 'lista' ? (
         <DayList date={day} memberIds={lanes.map((m) => m.id)} onTask={(t) => setTaskDetail({ task: t, date: day })} />
       ) : (
@@ -125,6 +141,8 @@ export function Week() {
           completions={f.completions}
           date={anchor}
           day={day}
+          focusDay={focus ?? undefined}
+          onDayTap={(d) => setFocus(d)}
           editable={Boolean(adultId || teenId)}
           canEdit={canEdit}
           onMove={move}
@@ -136,7 +154,7 @@ export function Week() {
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <LaneLegend members={lanes} />
         {(adultId || teenId) && (
-          <p className="text-sm text-muted">Dica: segure uma tarefa e arraste para mudar dia ou horário — ou toque nela para editar.</p>
+          <p className="text-sm text-muted">Dica: toque no nome de um dia para vê-lo em detalhe; segure e arraste uma tarefa para mudar dia ou horário.</p>
         )}
       </div>
 
