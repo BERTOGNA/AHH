@@ -154,5 +154,6 @@ export interface Settings {
   nextMissionIndex: number
   lastBackupAt?: number
   stepsBackfilled?: boolean
+  tourDone?: boolean
   createdAt?: number
 }
