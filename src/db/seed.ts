@@ -2,7 +2,7 @@
 import { uid } from '../lib/uid'
 import { db, DEFAULT_SETTINGS } from './db'
 import type { Completion, Member, Settings, Task } from './types'
-import { defaultChores, defaultMember, generateWeek, type WizardAnswers } from '../domain/week'
+import { defaultChores, defaultMember, generateWeek, type WizardAnswers, type WizardMember } from '../domain/week'
 import { completionId, occurrencesFor } from '../domain/schedule'
 import { DEFAULT_REWARDS } from '../data/templates'
 import { MISSIONS } from '../data/missions'
@@ -34,11 +34,15 @@ export const DEMO_PIN = '1234'
 
 /** Família de exemplo com histórico relativo a hoje (para o Mural, níveis e a fila de validação terem conteúdo). */
 export async function seedDemo() {
-  const members = [
-    { ...defaultMember('ana', 0, 'Ana', 38, 'a'), classId: 'tesoureiro', base: '🧙‍♀️' },
-    { ...defaultMember('bruno', 1, 'Bruno', 40, 'o'), classId: 'alquimista', base: '🧔' },
-    { ...defaultMember('leo', 2, 'Léo', 12, 'o'), classId: 'mago', base: '🧝‍♂️' },
-    { ...defaultMember('bia', 3, 'Bia', 6, 'a'), classId: 'escudeiro', base: '🦄' },
+  const members: WizardMember[] = [
+    { ...defaultMember('ana', 0, 'Ana', 38, 'a'), classId: 'tesoureiro', base: '🧙‍♀️',
+      look: { skin: 'mel', hair: 'coque', hairColor: 'escuro', eyes: 'amendoados', mouth: 'sorriso', extras: ['oculos'] } },
+    { ...defaultMember('bruno', 1, 'Bruno', 40, 'o'), classId: 'alquimista', base: '🧔',
+      look: { skin: 'canela', hair: 'curto', hairColor: 'preto', eyes: 'felizes', mouth: 'risada', extras: ['barba'] } },
+    { ...defaultMember('leo', 2, 'Léo', 12, 'o'), classId: 'mago', base: '🧝‍♂️',
+      look: { skin: 'mel', hair: 'cacheado', hairColor: 'castanho', eyes: 'redondos', mouth: 'sorriso', extras: ['orelhas-elficas'] } },
+    { ...defaultMember('bia', 3, 'Bia', 6, 'a'), classId: 'escudeiro', base: '🦄',
+      look: { skin: 'mel', hair: 'trancas', hairColor: 'ruivo', eyes: 'redondos', mouth: 'risada', extras: ['sardas'] } },
   ]
   members[1].occStart = '08:00'
   members[1].occEnd = '17:00'

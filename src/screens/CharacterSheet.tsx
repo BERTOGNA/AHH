@@ -7,10 +7,10 @@ import { coinBalance, coinsEarned, RULES, xpOf } from '../domain/economy'
 import { statsOf } from '../domain/achievements'
 import { ACHIEVEMENTS } from '../data/achievements'
 import { ITEMS, SLOT_NAMES, unlockedItems } from '../data/items'
-import { AVATAR_BASES } from '../data/classes'
 import { updateMember } from '../db/actions'
 import { Screen, Section } from '../components/Screen'
 import { Avatar } from '../components/Avatar'
+import { LookEditor } from '../components/LookEditor'
 import { Icon } from '../components/Icon'
 import { CoinIcon, Flame, GoldStar } from '../components/Seal'
 import { heroStyle } from '../components/hero'
@@ -177,23 +177,9 @@ export function CharacterSheet({ id }: { id: string }) {
 
 function Customize({ m, onClose }: { m: Member; onClose: () => void }) {
   return (
-    <Modal title="Personalizar herói" onClose={onClose}>
-      <div className="mb-4 flex justify-center"><Avatar member={m} size={120} /></div>
-      <p className="mb-2 font-semibold">Rosto do herói</p>
-      <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
-        {AVATAR_BASES.map((b) => (
-          <button
-            key={b}
-            aria-pressed={m.avatar.base === b}
-            aria-label={`Rosto ${b}`}
-            className={`grid h-16 place-items-center rounded-2xl border-2 text-4xl ${m.avatar.base === b ? 'border-gold bg-wait' : 'border-line bg-white'}`}
-            onClick={() => updateMember(m.id, { avatar: { ...m.avatar, base: b } })}
-          >
-            {b}
-          </button>
-        ))}
-      </div>
-      <p className="mt-3 text-sm text-muted">Os itens são equipados na ficha, tocando neles.</p>
+    <Modal title="Personalizar herói" onClose={onClose} wide>
+      <LookEditor member={m} onChange={(look) => updateMember(m.id, { avatar: { ...m.avatar, look } })} />
+      <p className="mt-4 text-center text-sm text-muted">Os itens conquistados são equipados na ficha, tocando neles.</p>
     </Modal>
   )
 }

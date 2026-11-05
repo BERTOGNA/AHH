@@ -3,6 +3,9 @@ import { useFamily, useSession } from '../state'
 import { go } from '../router'
 import { createFamily, seedDemo } from '../db/seed'
 import { requestPersistence } from '../lib/persist'
+import { MissionScene } from '../components/MissionScene'
+import { Avatar } from '../components/Avatar'
+import type { Member } from '../db/types'
 import { importBackup, parseBackup, summarize } from '../db/backup'
 import { defaultChores } from '../domain/week'
 import { clearDraft, initialDraft, loadDraft, saveDraft, signature, toAnswers, type Draft } from './onboarding/draft'
@@ -19,6 +22,19 @@ const STEPS = [
   { title: 'PIN dos pais', hint: 'Para validar tarefas e mudar configurações.' },
   { title: 'Esta é a semana do reino', hint: 'Confiram e comecem a aventura.' },
 ]
+
+/** Heróis de exemplo da abertura (só ilustração). */
+const WELCOME_HEROES: Member[] = (
+  [
+    ['a', 'adult', 'a', 'tesoureiro', { skin: 'mel', hair: 'coque', hairColor: 'escuro', eyes: 'amendoados', mouth: 'sorriso', extras: ['oculos'] }],
+    ['b', 'adult', 'o', 'alquimista', { skin: 'canela', hair: 'curto', hairColor: 'preto', eyes: 'felizes', mouth: 'risada', extras: ['barba'] }],
+    ['c', 'teen', 'o', 'mago', { skin: 'pessego', hair: 'cacheado', hairColor: 'castanho', eyes: 'redondos', mouth: 'sorriso', extras: ['orelhas-elficas'] }],
+    ['d', 'child', 'a', 'escudeiro', { skin: 'cacau', hair: 'crespo', hairColor: 'preto', eyes: 'redondos', mouth: 'risada', extras: [] }],
+  ] as const
+).map(([id, role, treatment, classId, look], i) => ({
+  id, name: '', role, age: 0, treatment, classId, kingdomRole: '', slot: i as Member['slot'],
+  avatar: { base: '', look: { ...look, extras: [...look.extras] }, equipped: {} }, speech: false, order: i, createdAt: 0,
+}))
 
 export function Welcome() {
   const { settings } = useFamily()
@@ -110,11 +126,18 @@ export function Welcome() {
 
   if (!started || !draft) {
     return (
-      <main className="night-sky flex min-h-dvh flex-col items-center justify-center gap-6 px-6 py-10 text-center text-bg">
-        <img src="./icon.svg" alt="" width={140} height={140} className="rounded-[32px] shadow-2xl" />
-        <div>
-          <h1 className="title-display text-4xl font-bold text-gold-bright sm:text-5xl">Reino da Família</h1>
-          <p className="story mt-3 max-w-md text-xl">A casa funciona porque cada um faz a sua parte.</p>
+      <main className="night-sky on-night flex min-h-dvh flex-col items-center justify-center gap-6 px-6 py-10 text-center">
+        <div className="relative w-full max-w-xl">
+          <div className="overflow-hidden rounded-[28px] shadow-[0_30px_80px_rgba(0,0,0,0.45)] ring-1 ring-gold-light/25">
+            <MissionScene missionId="farol" stage={4} night className="block aspect-[16/9] w-full" />
+          </div>
+          <div className="absolute inset-x-0 -bottom-9 flex justify-center gap-2 sm:gap-4" aria-hidden="true">
+            {WELCOME_HEROES.map((h) => <Avatar key={h.id} member={h} size={76} />)}
+          </div>
+        </div>
+        <div className="mt-8">
+          <h1 className="insignia bg-gradient-to-b from-[#FFF1C4] via-gold-light to-gold bg-clip-text text-[40px] leading-tight text-transparent sm:text-6xl">Reino da Família</h1>
+          <p className="story mt-3 max-w-md text-xl text-moon">A casa funciona porque cada um faz a sua parte.</p>
         </div>
         <p className="max-w-md text-[#e8dcc0]">
           Uma agenda da semana que também é uma aventura: pais e filhos são heróis do mesmo reino, e todo esforço aparece.

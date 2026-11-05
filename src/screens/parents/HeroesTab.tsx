@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { Modal } from '../../components/Modal'
+import { LookEditor } from '../../components/LookEditor'
 import type { Member, Treatment } from '../../db/types'
 import { useFamily, useSession } from '../../state'
 import { updateMember } from '../../db/actions'
 import { Avatar } from '../../components/Avatar'
-import { AVATAR_BASES, CLASSES, classById } from '../../data/classes'
+import { CLASSES, classById } from '../../data/classes'
 
 /** Editar nome, tratamento, classe, papel no reino, avatar e voz de cada herói. */
 export function HeroesTab() {
@@ -40,19 +42,9 @@ function HeroCard({ member }: { member: Member }) {
         </div>
       </div>
       {pickBase && (
-        <div className="mb-4 grid grid-cols-8 gap-1 rounded-2xl border border-line bg-white p-2" role="group" aria-label="Avatar">
-          {AVATAR_BASES.map((b) => (
-            <button
-              key={b}
-              aria-pressed={member.avatar.base === b}
-              aria-label={b}
-              className={`h-12 rounded-xl text-3xl ${member.avatar.base === b ? 'bg-wait ring-2 ring-gold' : ''}`}
-              onClick={() => save({ avatar: { ...member.avatar, base: b } })}
-            >
-              {b}
-            </button>
-          ))}
-        </div>
+        <Modal title={`Visual de ${member.name}`} onClose={() => setPickBase(false)} wide>
+          <LookEditor member={member} onChange={(look) => save({ avatar: { ...member.avatar, look } })} />
+        </Modal>
       )}
 
       <div className="flex flex-col gap-3">

@@ -4,6 +4,7 @@ import type { HHMM, Member, Reward, Role, RoutineBlock, Task, Treatment, Weekday
 import { TEMPLATES, WORK_TASK } from '../data/templates'
 import { classById } from '../data/classes'
 import { hhmm, minutes } from '../lib/date'
+import { defaultLook, type HeroLook } from '../components/portrait/look'
 
 export interface WizardMember {
   key: string // id provisório (vira o id do membro)
@@ -13,6 +14,7 @@ export interface WizardMember {
   treatment: Treatment
   classId: string
   base: string
+  look: HeroLook
   wake: HHMM
   sleep: HHMM
   weekendWake: HHMM
@@ -48,6 +50,7 @@ export function defaultMember(key: string, i: number, name: string, age: number,
     key, name, age, role, treatment,
     classId: role === 'child' ? 'escudeiro' : role === 'teen' ? 'mago' : i === 0 ? 'tesoureiro' : 'alquimista',
     base: role === 'child' ? '🦄' : role === 'teen' ? '🧝‍♂️' : treatment === 'a' ? '🧙‍♀️' : '🧙‍♂️',
+    look: defaultLook(role, treatment, i),
     wake: role === 'child' ? '07:00' : role === 'teen' ? '06:45' : '06:30',
     sleep: role === 'child' ? '20:30' : role === 'teen' ? '22:00' : '23:00',
     weekendWake: role === 'adult' ? '08:00' : '08:30',
@@ -80,7 +83,7 @@ export function generateWeek(a: WizardAnswers, now = Date.now()) {
   const members: Member[] = a.members.map((m, i) => ({
     id: m.key, name: m.name.trim() || `Herói ${i + 1}`, role: m.role, age: m.age, treatment: m.treatment,
     classId: m.classId, kingdomRole: classById(m.classId).role, slot: (i % 4) as Member['slot'],
-    avatar: { base: m.base, equipped: { chapeu: 'gorro_aprendiz', capa: 'capa_viagem' } },
+    avatar: { base: m.base, look: m.look ?? defaultLook(m.role, m.treatment, i), equipped: { chapeu: 'gorro_aprendiz', capa: 'capa_viagem' } },
     speech: m.role === 'child', order: i, createdAt: now,
   }))
 

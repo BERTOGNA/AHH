@@ -1,4 +1,5 @@
 // Rascunho do assistente: estado único, salvo em localStorage a cada passo (o PIN nunca é salvo).
+import { defaultLook } from '../../components/portrait/look'
 import type { Member, Weekday } from '../../db/types'
 import { defaultChores, defaultMember, roleForAge, type WizardAnswers, type WizardChore, type WizardMember } from '../../domain/week'
 import { DEFAULT_REWARDS } from '../../data/templates'
@@ -92,7 +93,7 @@ export function previewMember(m: WizardMember, i: number): Member {
   return {
     id: m.key, name: displayName(m, i), role: m.role, age: m.age, treatment: m.treatment, classId: m.classId,
     kingdomRole: '', slot: (i % 4) as Member['slot'],
-    avatar: { base: m.base, equipped: { chapeu: 'gorro_aprendiz', capa: 'capa_viagem' } },
+    avatar: { base: m.base, look: m.look ?? defaultLook(m.role, m.treatment, i), equipped: { chapeu: 'gorro_aprendiz', capa: 'capa_viagem' } },
     speech: false, order: i, createdAt: 0,
   }
 }

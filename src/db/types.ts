@@ -7,6 +7,8 @@ export type HHMM = string
 export type WeekKey = string
 export type Treatment = 'o' | 'a'
 
+import type { HeroLook } from '../components/portrait/look'
+
 export type ItemSlot = 'chapeu' | 'ferramenta' | 'companheiro' | 'capa'
 
 export interface Member {
@@ -18,7 +20,8 @@ export interface Member {
   classId: string
   kingdomRole: string // papel no reino, texto livre ("Guardiã do Tesouro")
   slot: 0 | 1 | 2 | 3 // define a cor do herói
-  avatar: { base: string; equipped: Partial<Record<ItemSlot, string>> }
+  /** `look` = herói ilustrado em SVG. `base` (emoji) fica só por compatibilidade com backups antigos. */
+  avatar: { base: string; look?: HeroLook; equipped: Partial<Record<ItemSlot, string>> }
   speech: boolean // leitura em voz alta
   order: number
   createdAt: number

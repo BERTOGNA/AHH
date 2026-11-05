@@ -2,7 +2,8 @@ import { useState } from 'react'
 import type { Weekday } from '../../db/types'
 import type { WizardChore, WizardMember } from '../../domain/week'
 import { Avatar } from '../../components/Avatar'
-import { AVATAR_BASES, CLASSES } from '../../data/classes'
+import { CLASSES } from '../../data/classes'
+import { LookEditor } from '../../components/LookEditor'
 import { TEMPLATES } from '../../data/templates'
 import { MISSIONS } from '../../data/missions'
 import { CATEGORIES } from '../../data/categories'
@@ -94,25 +95,11 @@ export function StepHeroes({ d, set }: StepProps) {
       </div>
       <Card className="card-gilded">
         <div className="flex flex-col items-center gap-2 pb-2">
-          <Avatar member={previewMember(m, sel)} size={120} />
           <p className="title-display text-xl font-bold">{displayName(m, sel)}</p>
           <p className="text-muted">{CLASSES.find((c) => c.id === m.classId)?.name[m.treatment]}</p>
         </div>
-        <p className="mb-2 font-semibold" id="bases-label">Rosto do herói</p>
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-8" role="radiogroup" aria-labelledby="bases-label">
-          {AVATAR_BASES.map((b) => (
-            <button
-              key={b}
-              role="radio"
-              aria-checked={m.base === b}
-              aria-label={`Rosto ${b}`}
-              onClick={() => set((x) => updateMember(x, m.key, { base: b }))}
-              className={`grid h-16 place-items-center rounded-2xl border-2 text-4xl ${m.base === b ? 'border-gold bg-wait' : 'border-line bg-white'}`}
-            >
-              {b}
-            </button>
-          ))}
-        </div>
+        <p className="mb-2 text-center font-semibold">Como é este herói?</p>
+        <LookEditor member={previewMember(m, sel)} onChange={(look) => set((x) => updateMember(x, m.key, { look }))} />
         <p className="mb-2 mt-5 font-semibold" id="classes-label">Classe (o papel no reino)</p>
         <div className="flex flex-col gap-2" role="radiogroup" aria-labelledby="classes-label">
           {classes.map((c) => (
