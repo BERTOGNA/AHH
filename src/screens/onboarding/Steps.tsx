@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { MissionScene } from '../../components/MissionScene'
 import { ClassIcon } from '../../components/RoutineIcon'
 import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Weekday } from '../../db/types'
@@ -412,10 +413,12 @@ export function StepChest({ d, set }: StepProps) {
               onClick={() => set((x) => ({ ...x, missionId: m.id }))}
               className={`flex min-h-20 items-center gap-3 rounded-2xl border-2 p-3 text-left ${d.missionId === m.id ? 'border-gold bg-wait' : 'border-line bg-white'}`}
             >
-              <span className="text-4xl" aria-hidden="true">{m.emoji}</span>
+              <span className="w-28 shrink-0 overflow-hidden rounded-xl ring-1 ring-line" aria-hidden="true">
+                <MissionScene missionId={m.id} stage={4} className="block aspect-[16/10] w-full" />
+              </span>
               <span>
                 <span className="block font-bold">{m.name}</span>
-                <span className="block text-sm text-muted">🎉 {m.reward}</span>
+                <span className="block text-sm text-muted">Recompensa: {m.reward}</span>
               </span>
             </button>
           ))}

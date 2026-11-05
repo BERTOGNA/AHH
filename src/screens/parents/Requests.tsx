@@ -1,4 +1,5 @@
 import { useFamily, useSession } from '../../state'
+import { MissionScene } from '../../components/MissionScene'
 import { TaskArt } from '../../components/taskart/TaskArt'
 import { decideRedemption, updateMission } from '../../db/actions'
 import { Avatar } from '../../components/Avatar'
@@ -25,7 +26,9 @@ export function Requests() {
       {missionDone && mission && (
         <Section title="Tesouro da Família">
           <div className="card-gilded flex flex-wrap items-center gap-4 p-4">
-            <span className="text-5xl" aria-hidden="true">{missionById(mission.templateId).emoji}</span>
+            <span className="w-28 shrink-0 overflow-hidden rounded-xl ring-1 ring-line" aria-hidden="true">
+              <MissionScene missionId={missionById(mission.templateId).id} stage={4} className="block aspect-[16/10] w-full" />
+            </span>
             <div className="min-w-0 flex-1">
               <p className="font-semibold">Missão cumprida: {missionById(mission.templateId).name}</p>
               <p className="text-muted">Recompensa coletiva: {mission.reward}</p>
