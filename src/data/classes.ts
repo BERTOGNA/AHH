@@ -22,7 +22,6 @@ export const CLASSES: HeroClass[] = [
 
 export const classById = (id: string) => CLASSES.find((c) => c.id === id) ?? CLASSES[0]
 
-export const AVATAR_BASES = ['🧙‍♀️', '🧙‍♂️', '🧝‍♀️', '🧝‍♂️', '🦸‍♀️', '🦸‍♂️', '🧚', '🤴', '👸', '🦊', '🦁', '🐻', '🐼', '🦄', '🐸', '🐲']
 
 /** Joias dos heróis por slot (texto branco sobre a joia ≥ 5,2:1; joia sobre o marfim ≥ 4,6:1). */
 export const HERO_COLORS = [

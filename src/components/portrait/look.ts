@@ -76,7 +76,6 @@ export interface HeroLook {
 
 /** Faixa etária do desenho (proporções): criança tem cabeça maior e traços mais redondos. */
 export type PortraitAge = 'child' | 'teen' | 'adult'
-export const ageOf = (role: Role): PortraitAge => role
 
 /** Visual padrão, estável por slot (para membros antigos e para o assistente). */
 export function defaultLook(role: Role, treatment: Treatment, slot: number): HeroLook {
