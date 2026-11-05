@@ -54,6 +54,7 @@ export interface Task {
   title: string
   emoji: string
   speak?: string // como falar para quem não lê
+  steps?: string[] // "Como fazer?": passo a passo curto
   category: Category
   kind: TaskKind
   assigneeIds: string[] // individual: 1; shared: 2; household: [] (qualquer um)

@@ -260,11 +260,12 @@ function Today({ me }: { me: Member }) {
 
 function TaskRow({ o, me, onCheck }: { o: Occurrence; me: Member; onCheck?: () => void }) {
   const f = useFamily()
+  const [how, setHow] = useState(false)
   const c = o.completion
   const partners = o.forIds.filter((id) => id !== me.id).map((id) => f.byId.get(id)?.name).filter(Boolean)
   const helper = c?.helperId ? f.byId.get(c.helperId) : undefined
   return (
-    <li className="flex min-h-16 items-center gap-3 px-3 py-2">
+    <li className="flex min-h-16 flex-wrap items-center gap-3 px-3 py-2">
       {c ? (
         <span className="grid h-12 w-12 shrink-0 place-items-center" aria-hidden="true">
           {c.status === 'validated' ? <GoldStar size={44} glow={false} /> : <WaxSeal size={42} />}
@@ -294,6 +295,16 @@ function TaskRow({ o, me, onCheck }: { o: Occurrence; me: Member; onCheck?: () =
           Desfazer
         </button>
       )}
+      {o.task.steps?.length ? (
+        <button className="btn btn-ghost h-12 min-h-12 w-12 shrink-0 p-0" onClick={() => setHow((v) => !v)} aria-expanded={how} aria-label={`Como fazer: ${o.task.title}`}>
+          <Icon name="list" size={18} />
+        </button>
+      ) : null}
+      {how && o.task.steps?.length ? (
+        <ol className="basis-full list-decimal space-y-0.5 pb-1 pl-[7.25rem] text-sm text-muted">
+          {o.task.steps.map((x) => <li key={x}>{x}</li>)}
+        </ol>
+      ) : null}
     </li>
   )
 }

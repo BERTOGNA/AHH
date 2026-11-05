@@ -197,6 +197,15 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
       >
         <Icon name="speaker" size={34} strokeWidth={2} />
       </button>
+      {o.task.steps?.length ? (
+        <button
+          className="absolute left-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-gold-deep shadow-[var(--shadow-e1)] ring-1 ring-line"
+          onClick={() => speak(`Como fazer: ${o.task.steps!.map((x, i) => `${i + 1}. ${x}.`).join(' ')}`, true)}
+          aria-label={`Como fazer: ${o.task.title}`}
+        >
+          <Icon name="list" size={34} strokeWidth={2} />
+        </button>
+      ) : null}
 
       <div className="relative mt-2 flex min-h-[112px] items-center justify-center">
         {phase === 'askHelp' ? (

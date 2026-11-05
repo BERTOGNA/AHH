@@ -27,6 +27,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
   const [title, setTitle] = useState(task?.title ?? '')
   const [emoji, setEmoji] = useState(task?.emoji ?? '⭐')
   const [speakText, setSpeak] = useState(task?.speak ?? '')
+  const [steps, setSteps] = useState((task?.steps ?? []).join('\n'))
   const [category, setCategory] = useState<Category>(task?.category ?? 'lar')
   const [kind, setKind] = useState<TaskKind>(task?.kind ?? 'individual')
   const [assignees, setAssignees] = useState<string[]>(task?.assigneeIds ?? (presetAssignee ? [presetAssignee] : teenId ? [teenId] : []))
@@ -57,6 +58,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
     if (!valid) return
     await saveTask({
       ...task, title: title.trim(), emoji, speak: speakText.trim() || undefined, category, kind,
+      steps: teenMode && task ? task.steps : steps.split('\n').map((x) => x.trim()).filter(Boolean).slice(0, 6),
       assigneeIds: kind === 'household' ? [] : assignees, weekdays: [...days].sort(), time: hasTime ? time : undefined,
       duration, xp: teenMode && !task ? 10 : xp, proposedBy: task ? task.proposedBy : teenMode ? teenId : undefined,
     })
@@ -97,6 +99,10 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
             <label>
               <span className="mb-1 block text-sm font-semibold">Como falar (lido em voz alta para quem ainda não lê)</span>
               <input className="field" value={speakText} maxLength={80} onChange={(e) => setSpeak(e.target.value)} placeholder="Ex.: Hora de regar as plantinhas!" />
+            </label>
+            <label>
+              <span className="mb-1 block text-sm font-semibold">Como fazer? (um passo por linha, curto)</span>
+              <textarea className="field min-h-24 py-2" rows={3} maxLength={300} value={steps} onChange={(e) => setSteps(e.target.value)} placeholder={'Ex.:\nEstique o lençol\nArrume o travesseiro'} />
             </label>
             <fieldset>
               <legend className="mb-1 text-sm font-semibold">Tipo</legend>
