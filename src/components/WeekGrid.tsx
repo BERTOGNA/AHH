@@ -4,7 +4,7 @@ import { TaskArt } from './taskart/TaskArt'
 // Tablet/desktop: 7 colunas (rolagem horizontal se faltar espaço). Celular: um dia por vez.
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from 'react'
 import type { Completion, Member, RoutineBlock, Task } from '../db/types'
-import { occurrencesFor, ROUTINE_INFO, togetherRanges, type Occurrence } from '../domain/schedule'
+import { occurrencesFor, ROUTINE_INFO, routineOn, togetherRanges, type Occurrence } from '../domain/schedule'
 import { addDays, formatDayMonth, formatTime, hhmm, isoWeekday, minutes, nowMinutes, today, weekDates, WEEKDAY_SHORT } from '../lib/date'
 import { heroColor } from './hero'
 import { buzz } from '../lib/haptics'
@@ -53,17 +53,15 @@ interface Segment {
 
 /** Pedaços de rotina visíveis num dia (o sono cruza a meia-noite e aparece de manhã e à noite). */
 function segmentsFor(date: string, routines: RoutineBlock[]): Segment[] {
-  const wd = isoWeekday(date)
-  const prev = isoWeekday(addDays(date, -1))
   const out: Segment[] = []
   for (const r of routines) {
     const s = minutes(r.start)
     const e = minutes(r.end)
     if (e > s) {
-      if (r.weekdays.includes(wd)) out.push({ routine: r, start: s, end: e })
+      if (routineOn(r, date)) out.push({ routine: r, start: s, end: e })
     } else {
-      if (r.weekdays.includes(wd)) out.push({ routine: r, start: s, end: 1440 })
-      if (r.weekdays.includes(prev)) out.push({ routine: r, start: 0, end: e })
+      if (routineOn(r, date)) out.push({ routine: r, start: s, end: 1440 })
+      if (routineOn(r, addDays(date, -1))) out.push({ routine: r, start: 0, end: e })
     }
   }
   return out

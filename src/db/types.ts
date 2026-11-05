@@ -34,6 +34,8 @@ export interface RoutineBlock {
   kind: RoutineKind
   label?: string
   weekdays: Weekday[]
+  /** Compromisso pontual: vale só nesta data (os dias da semana são ignorados). */
+  date?: ISODate
   start: HHMM
   end: HHMM // end <= start = cruza a meia-noite (sono)
 }

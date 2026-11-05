@@ -67,17 +67,19 @@ export function plannedWeekXp(tasks: Task[]): number {
 
 // ---------- Rotina ----------
 
+/** O bloco vale nesta data? Compromisso pontual (`date`) ou recorrente pelos dias da semana. */
+export const routineOn = (r: RoutineBlock, date: ISODate) => (r.date ? r.date === date : r.weekdays.includes(isoWeekday(date)))
+
 /** O bloco de rotina ativo de um membro num momento (sono cruza a meia-noite). */
 export function routineAt(memberId: string, date: ISODate, minute: number, routines: RoutineBlock[]): RoutineBlock | undefined {
-  const wd = isoWeekday(date)
-  const yesterday = isoWeekday(addDays(date, -1))
+  const yesterday = addDays(date, -1)
   const mine = routines.filter((r) => r.memberId === memberId)
   // Blocos mais específicos (curtos) ganham dos longos.
   const hits = mine.filter((r) => {
     const s = minutes(r.start)
     const e = minutes(r.end)
-    if (e > s) return r.weekdays.includes(wd) && minute >= s && minute < e
-    return (r.weekdays.includes(wd) && minute >= s) || (r.weekdays.includes(yesterday) && minute < e)
+    if (e > s) return routineOn(r, date) && minute >= s && minute < e
+    return (routineOn(r, date) && minute >= s) || (routineOn(r, yesterday) && minute < e)
   })
   return hits.sort((a, b) => span(a) - span(b))[0]
 }

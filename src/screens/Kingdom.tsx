@@ -12,7 +12,7 @@ import { WaxSeal } from '../components/Seal'
 import { MissionScene } from '../components/MissionScene'
 import { capitalize, className, heroStyle } from '../components/hero'
 import { useWide } from '../components/WeekGrid'
-import { occurrencesFor, routineAt, statusAt } from '../domain/schedule'
+import { occurrencesFor, routineAt, routineOn, statusAt } from '../domain/schedule'
 import { weekXp } from '../domain/economy'
 import { missionById, stageOf } from '../data/missions'
 import { formatLong, formatTime, isoWeekday, minutes, nowMinutes, today, weekKey } from '../lib/date'
@@ -199,9 +199,8 @@ function useUpcoming(day: string, now: number) {
       if (m && !it.who.includes(m)) it.who.push(m)
       items.set(key, it)
     }
-    const wd = isoWeekday(day)
     for (const r of f.routines) {
-      if (!r.weekdays.includes(wd) || r.kind === 'sleep' || r.kind === 'wake') continue
+      if (!routineOn(r, day) || r.kind === 'sleep' || r.kind === 'wake') continue
       const s = minutes(r.start)
       const m = f.byId.get(r.memberId)
       const label = r.label ?? (r.kind === 'school' ? 'Escola' : r.kind === 'work' ? 'Trabalho' : r.kind === 'meal' ? 'Refeição' : 'Compromisso')

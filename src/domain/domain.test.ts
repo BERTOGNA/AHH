@@ -216,3 +216,11 @@ describe('prontos para o próximo passo', () => {
     expect(growthIdeas([bia], [cama], many.slice(0, 5), '2026-11-05')).toHaveLength(0)
   })
 })
+
+describe('compromisso pontual', () => {
+  it('vale só na data marcada', () => {
+    const r = [{ id: 'med', memberId: 'bia', kind: 'other' as const, label: 'Dentista', weekdays: [4] as 4[], date: '2026-11-05', start: '15:00', end: '16:00' }]
+    expect(routineAt('bia', '2026-11-05', 15 * 60 + 30, r)?.label).toBe('Dentista')
+    expect(routineAt('bia', '2026-11-12', 15 * 60 + 30, r)).toBeUndefined() // quinta seguinte: não
+  })
+})

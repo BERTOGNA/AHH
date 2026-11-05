@@ -12,7 +12,7 @@ import { TaskEditor } from '../components/TaskEditor'
 import { Avatar } from '../components/Avatar'
 import { heroColor } from '../components/hero'
 import { clearException, deleteRoutine, saveRoutine, saveTask, setException } from '../db/actions'
-import { occurrencesFor, ROUTINE_INFO } from '../domain/schedule'
+import { occurrencesFor, ROUTINE_INFO, routineOn } from '../domain/schedule'
 import {
   addDays, formatDayMonth, formatTime, hhmm, isoWeekday, minutes, today, weekDates, weekStart, WEEKDAYS, WEEKDAY_LONG, WEEKDAY_SHORT,
 } from '../lib/date'
@@ -29,7 +29,7 @@ export function Week() {
   const [focus, setFocus] = useState<string | null>(null)
   const [taskDetail, setTaskDetail] = useState<{ task: Task; date: string } | null>(null)
   const [editTask, setEditTask] = useState<{ task?: Task } | null>(null)
-  const [routine, setRoutine] = useState<RoutineBlock | 'new' | null>(null)
+  const [routine, setRoutine] = useState<RoutineBlock | 'new' | 'compromisso' | null>(null)
   const [pendingMove, setPendingMove] = useState<{ task: Task; from: string; to: string; startMin: number | null } | null>(null)
 
   const lanes = f.members.filter((m) => !hidden.includes(m.id))
@@ -57,7 +57,7 @@ export function Week() {
     if (item.routine && startMin !== null) {
       const r = item.routine
       const delta = startMin - minutes(r.start)
-      await saveRoutine({ ...r, weekdays: swapDay(r.weekdays), start: hhmm(minutes(r.start) + delta), end: hhmm(minutes(r.end) + delta) })
+      await saveRoutine({ ...r, ...(r.date ? { date: to, weekdays: [toWd] } : { weekdays: swapDay(r.weekdays) }), start: hhmm(minutes(r.start) + delta), end: hhmm(minutes(r.end) + delta) })
       toast(`Rotina ajustada: ${formatTime(hhmm(startMin))} (todas as semanas)`)
     }
   }
@@ -90,6 +90,7 @@ export function Week() {
           <span className="ml-auto flex gap-2">
             <button className="btn btn-primary h-12 min-h-12" onClick={() => setEditTask({})}><Icon name="plus" size={18} strokeWidth={2.25} /> Tarefa</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}><Icon name="plus" size={18} strokeWidth={2.25} /> Rotina</button>
+            <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('compromisso')}><Icon name="calendar" size={18} /> Compromisso</button>
           </span>
         )}
       </div>
@@ -187,7 +188,14 @@ export function Week() {
       {editTask && (
         <TaskEditor task={editTask.task} teenId={adultId ? undefined : teenId} presetAssignee={teenId} onClose={() => setEditTask(null)} />
       )}
-      {routine && <RoutineEditor routine={routine === 'new' ? undefined : routine} readOnly={!adultId} onClose={() => setRoutine(null)} />}
+      {routine && (
+        <RoutineEditor
+          routine={routine === 'new' || routine === 'compromisso' ? undefined : routine}
+          oneOff={routine === 'compromisso' ? (wide ? anchor : day) : undefined}
+          readOnly={!adultId}
+          onClose={() => setRoutine(null)}
+        />
+      )}
     </Screen>
   )
 }
@@ -322,11 +330,12 @@ function MoveScope({ move, onClose, onDone }: {
 
 const KINDS: RoutineKind[] = ['wake', 'school', 'work', 'meal', 'free', 'other', 'sleep']
 
-function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock; readOnly: boolean; onClose: () => void }) {
+function RoutineEditor({ routine, readOnly, onClose, oneOff }: { routine?: RoutineBlock; readOnly: boolean; onClose: () => void; oneOff?: string }) {
   const f = useFamily()
   const { toast } = useSession()
   const [memberId, setMember] = useState(routine?.memberId ?? f.members[0]?.id)
-  const [kind, setKind] = useState<RoutineKind>(routine?.kind ?? 'free')
+  const [kind, setKind] = useState<RoutineKind>(routine?.kind ?? (oneOff ? 'other' : 'free'))
+  const [date, setDate] = useState<string | undefined>(routine?.date ?? oneOff)
   const [label, setLabel] = useState(routine?.label ?? '')
   const [days, setDays] = useState<Weekday[]>(routine?.weekdays ?? [1, 2, 3, 4, 5])
   const [start, setStart] = useState(routine?.start ?? '14:00')
@@ -339,12 +348,12 @@ function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock;
         <p className="text-lg">
           <span aria-hidden="true" className="inline-block align-middle"><RoutineIcon kind={routine.kind} size={22} /></span> <b>{who?.name}</b> · {formatTime(routine.start)} às {formatTime(routine.end)}
         </p>
-        <p className="text-muted">{routine.weekdays.map((d) => WEEKDAY_SHORT[d]).join(', ')}</p>
+        <p className="text-muted">{routine.date ? `Só em ${formatDayMonth(routine.date)}` : routine.weekdays.map((d) => WEEKDAY_SHORT[d]).join(', ')}</p>
       </Modal>
     )
   }
   return (
-    <Modal title={routine ? 'Editar rotina' : 'Nova rotina'} onClose={onClose}>
+    <Modal title={routine ? (routine.date ? 'Editar compromisso' : 'Editar rotina') : oneOff ? 'Novo compromisso' : 'Nova rotina'} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <fieldset>
           <legend className="mb-1 text-sm font-semibold">De quem</legend>
@@ -371,8 +380,13 @@ function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock;
           <input className="field" value={label} maxLength={30} onChange={(e) => setLabel(e.target.value)} placeholder={`Ex.: ${kind === 'other' ? 'Natação' : ROUTINE_INFO[kind].label}`} />
         </label>
         <fieldset>
-          <legend className="mb-1 text-sm font-semibold">Dias</legend>
-          <div className="flex flex-wrap gap-2">
+          <legend className="mb-1 text-sm font-semibold">Quando</legend>
+          <div className="mb-2 flex flex-wrap gap-2">
+            <button className="chip" aria-pressed={!date} onClick={() => setDate(undefined)}>Toda semana</button>
+            <button className="chip" aria-pressed={Boolean(date)} onClick={() => setDate(date ?? today())}>Só em uma data</button>
+            {date && <input type="date" className="field w-44" value={date} onChange={(e) => e.target.value && setDate(e.target.value)} aria-label="Data do compromisso" />}
+          </div>
+          <div className={`flex flex-wrap gap-2 ${date ? 'hidden' : ''}`}>
             {WEEKDAYS.map((d) => (
               <button key={d} className="chip min-w-14 justify-center" aria-pressed={days.includes(d)} onClick={() => setDays((x) => (x.includes(d) ? x.filter((y) => y !== d) : [...x, d]))}>
                 {WEEKDAY_SHORT[d]}
@@ -388,9 +402,9 @@ function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock;
         <div className="flex gap-3">
           <button
             className="btn btn-primary flex-1"
-            disabled={!days.length || !memberId}
+            disabled={(!date && !days.length) || !memberId}
             onClick={async () => {
-              await saveRoutine({ ...routine, memberId, kind, label: label.trim() || undefined, weekdays: [...days].sort(), start, end })
+              await saveRoutine({ ...routine, memberId, kind, label: label.trim() || undefined, weekdays: date ? [isoWeekday(date)] : [...days].sort(), date, start, end })
               toast('Rotina salva.')
               onClose()
             }}
@@ -411,7 +425,6 @@ function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock;
 /** Lista do dia agrupada por pessoa (celular). */
 function DayList({ date, memberIds, onTask }: { date: string; memberIds: string[]; onTask: (t: Task) => void }) {
   const f = useFamily()
-  const wd = isoWeekday(date)
   const occ = occurrencesFor(date, f.tasks, f.completions)
   return (
     <div className="flex flex-col gap-3">
@@ -419,7 +432,7 @@ function DayList({ date, memberIds, onTask }: { date: string; memberIds: string[
         const m = f.byId.get(id)!
         const items = [
           ...f.routines
-            .filter((r) => r.memberId === id && r.weekdays.includes(wd) && r.kind !== 'sleep')
+            .filter((r) => r.memberId === id && routineOn(r, date) && r.kind !== 'sleep')
             .map((r) => ({ key: r.id, time: r.start, emoji: '', kind: r.kind, title: `${r.label || ROUTINE_INFO[r.kind].label} até ${formatTime(r.end)}`, task: undefined as Task | undefined })),
           ...occ
             .filter((o) => o.forIds.includes(id))
