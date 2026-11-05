@@ -139,6 +139,7 @@ button:disabled { cursor: default; }
     transition: transform 120ms ease, background-color 120ms ease;
   }
   .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.45; transform: none; }
   .btn-gold { background: var(--color-gold); color: #fff; box-shadow: 0 2px 0 #5e3e00; }
   .btn-gold:hover { background: #7a5000; }
   .btn-ghost { background: transparent; color: var(--color-ink); border: 2px solid var(--color-line); }

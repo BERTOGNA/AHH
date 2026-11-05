@@ -1,4 +1,5 @@
 // Cria a família a partir do assistente, ou a família de exemplo para conhecer o app.
+import { uid } from '../lib/uid'
 import { db, DEFAULT_SETTINGS } from './db'
 import type { Completion, Member, Settings, Task } from './types'
 import { defaultChores, defaultMember, generateWeek, type WizardAnswers } from '../domain/week'
@@ -77,15 +78,15 @@ export async function seedDemo() {
   await db.completions.bulkPut(completions)
 
   await db.thanks.bulkAdd([
-    { id: crypto.randomUUID(), fromId: 'bia', toId: 'bruno', emoji: '🍲', message: 'A comida estava uma delícia!', date: addDays(day, -1), createdAt: now - 86400000, seen: true },
-    { id: crypto.randomUUID(), fromId: 'ana', toId: 'leo', emoji: '🤝', message: 'Obrigada por ajudar a Bia com a leitura!', date: addDays(day, -1), createdAt: now - 80000000, seen: false },
-    { id: crypto.randomUUID(), fromId: 'leo', toId: 'ana', emoji: '💼', message: 'Obrigado por trabalhar pela família!', date: day, createdAt: now - 3600000, seen: false },
+    { id: uid(), fromId: 'bia', toId: 'bruno', emoji: '🍲', message: 'A comida estava uma delícia!', date: addDays(day, -1), createdAt: now - 86400000, seen: true },
+    { id: uid(), fromId: 'ana', toId: 'leo', emoji: '🤝', message: 'Obrigada por ajudar a Bia com a leitura!', date: addDays(day, -1), createdAt: now - 80000000, seen: false },
+    { id: uid(), fromId: 'leo', toId: 'ana', emoji: '💼', message: 'Obrigado por trabalhar pela família!', date: day, createdAt: now - 3600000, seen: false },
   ])
   const rewards = await db.rewards.toArray()
   const cheap = rewards.sort((a, b) => a.cost - b.cost)[0]
   if (cheap) {
     await db.redemptions.add({
-      id: crypto.randomUUID(), rewardId: cheap.id, memberId: 'leo', title: cheap.title, emoji: cheap.emoji, cost: cheap.cost,
+      id: uid(), rewardId: cheap.id, memberId: 'leo', title: cheap.title, emoji: cheap.emoji, cost: cheap.cost,
       status: 'requested', requestedAt: now,
     })
   }

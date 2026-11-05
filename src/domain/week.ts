@@ -1,4 +1,5 @@
 // Gera a primeira versão da semana a partir das respostas do assistente. Função pura.
+import { uid } from '../lib/uid'
 import type { HHMM, Member, Reward, Role, RoutineBlock, Task, Treatment, Weekday } from '../db/types'
 import { TEMPLATES, WORK_TASK } from '../data/templates'
 import { classById } from '../data/classes'
@@ -72,7 +73,7 @@ export function defaultChores(members: WizardMember[]): WizardChore[] {
   return out
 }
 
-const id = () => crypto.randomUUID()
+const id = uid
 const ALL: Weekday[] = [1, 2, 3, 4, 5, 6, 7]
 
 export function generateWeek(a: WizardAnswers, now = Date.now()) {

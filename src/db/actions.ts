@@ -1,4 +1,5 @@
 // Todas as escritas no banco passam por aqui.
+import { uid } from '../lib/uid'
 import { db, DEFAULT_SETTINGS } from './db'
 import type { Completion, Member, Mission, Reward, RoutineBlock, Settings, Task } from './types'
 import { completionId, plannedWeekXp } from '../domain/schedule'
@@ -8,7 +9,6 @@ import { MISSIONS, missionGoal } from '../data/missions'
 import { today, weekKey } from '../lib/date'
 import { hashPin, newSalt } from '../lib/pin'
 
-const uid = () => crypto.randomUUID()
 
 export async function getSettings(): Promise<Settings> {
   return (await db.settings.get('app')) ?? DEFAULT_SETTINGS
@@ -32,10 +32,9 @@ export async function checkPin(pin: string): Promise<boolean> {
 
 // ---------- Tarefas: marcar, validar ----------
 
-/** Marca uma ocorrência como feita. Tarefa de adulto marcada por adulto já nasce validada. */
+/** Marca uma ocorrência como feita. Quando quem marca é adulto, ela já nasce validada (o adulto atesta na hora). */
 export async function markDone(task: Task, date: string, slot: string, memberIds: string[], by: Member, helperId?: string) {
-  const members = await db.members.bulkGet(memberIds)
-  const allAdults = by.role === 'adult' && members.every((m) => m?.role === 'adult')
+  const allAdults = by.role === 'adult'
   const c: Completion = {
     id: completionId(task.id, date, slot), taskId: task.id, date, memberIds, helperId,
     status: allAdults ? 'validated' : 'done', xp: task.xp, title: task.title, emoji: task.emoji,

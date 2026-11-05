@@ -193,7 +193,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const toast = useCallback(
     (text: string, action?: Toast['action']) => {
       const id = ++seq.current
-      setToasts((t) => [...t.slice(-2), { id, text, action }])
+      setToasts((t) => [...t.slice(-1), { id, text, action }])
       window.setTimeout(() => dismissToast(id), 5000)
     },
     [dismissToast],
