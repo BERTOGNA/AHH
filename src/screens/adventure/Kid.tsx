@@ -3,11 +3,11 @@ import { TaskArt } from '../../components/taskart/TaskArt'
 import { useEffect, useRef, useState } from 'react'
 import type { Member } from '../../db/types'
 import { useFamily } from '../../state'
-import { memberDay, occurrencesFor, type Occurrence } from '../../domain/schedule'
+import { memberDay, occurrencesFor, routineAt, type Occurrence } from '../../domain/schedule'
 import { levelOf } from '../../domain/levels'
 import { xpOf } from '../../domain/economy'
 import { addHelper, markDone, markThanksSeen, unmark } from '../../db/actions'
-import { today } from '../../lib/date'
+import { addDays, nowMinutes, today } from '../../lib/date'
 import { speak } from '../../lib/speech'
 import { play } from '../../lib/sound'
 import { buzz } from '../../lib/haptics'
@@ -73,6 +73,8 @@ export function KidAdventure({ me }: { me: Member }) {
           <Icon name="speaker" size={36} strokeWidth={2} />
         </button>
       </header>
+
+      <Bedtime me={me} />
 
       {letters.length > 0 && (
         <button
@@ -260,5 +262,43 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
         )}
       </div>
     </article>
+  )
+}
+
+/** Na hora de dormir: céu calmo, as estrelas do dia e uma prévia de amanhã (nada de cobrança). */
+function Bedtime({ me }: { me: Member }) {
+  const f = useFamily()
+  const day = today()
+  const asleep = routineAt(me.id, day, nowMinutes(), f.routines)?.kind === 'sleep'
+  useEffect(() => {
+    if (asleep) setTimeout(() => speak(`Boa noite, ${me.name}! Amanhã tem mais aventura.`), 2600)
+  }, [asleep, me.name])
+  if (!asleep) return null
+  const stars = f.completions.filter((c) => c.date === day && c.status === 'validated' && c.memberIds.includes(me.id)).length
+  const tomorrow = memberDay(me.id, occurrencesFor(addDays(day, 1), f.tasks, [])).slice(0, 5)
+  return (
+    <section className="night-sky on-night relative mb-6 overflow-hidden rounded-[28px] p-6 text-center shadow-[var(--shadow-e3)]" aria-label="Boa noite">
+      <span className="absolute right-4 top-4 text-gold-light sm:right-6 sm:top-5" aria-hidden="true"><Icon name="moon" size={40} strokeWidth={1.5} filled /></span>
+      <h2 className="title-display px-10 text-[30px] leading-tight text-ivory">Boa noite, {me.name}!</h2>
+      {stars > 0 ? (
+        <div className="mt-3 flex flex-wrap justify-center gap-1" role="img" aria-label={`${stars} estrelas hoje`}>
+          {Array.from({ length: Math.min(stars, 8) }, (_, i) => <GoldStar key={i} size={40} glow={false} />)}
+        </div>
+      ) : (
+        <p className="story mt-2 text-xl text-moon">Hora de descansar, herói.</p>
+      )}
+      {tomorrow.length > 0 && (
+        <div className="mt-5">
+          <p className="eyebrow">Amanhã</p>
+          <div className="mt-2 flex justify-center gap-3" role="img" aria-label={`${tomorrow.length} missões amanhã`}>
+            {tomorrow.map((o) => (
+              <span key={o.task.id + o.slot} className="grid h-16 w-16 place-items-center rounded-full bg-white/[0.08] ring-1 ring-white/15">
+                <TaskArt emoji={o.task.emoji} size={44} />
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
   )
 }
