@@ -79,5 +79,17 @@ Corrigido e reconferido no navegador:
 
 Exceções conscientes:
 - Na grade semanal do **tablet**, cada pessoa tem uma faixa fina (≈30px), então os blocos ficam abaixo de 48px de largura. É o desenho escolhido para ver
-  os quatro lado a lado. Alternativas de toque grande: filtrar uma pessoa (a faixa ocupa o dia todo), a visão de celular (um dia) e a **Lista**.
+  os quatro lado a lado. Alternativas de toque grande: **tocar no nome do dia** abre a visão detalhada daquele dia (blocos de ~230×46px com nomes), filtrar uma pessoa, a visão de celular e a **Lista**.
 - O passo do assistente não tem botão "Pular — usar sugestão": todos os campos já vêm preenchidos, então "Próximo" faz o mesmo papel.
+
+## 7. Segunda rodada de QA independente (após as novidades)
+
+Nenhum bloqueador. Corrigido e reconferido no navegador:
+- Mover "só nesta semana" para um dia que já tinha a tarefa criava ocorrência duplicada → agora não duplica; o diálogo avisa e o dia de origem fica livre.
+- "Narrar" da Crônica ficava mudo para adultos e 12 anos (a leitura automática só é ligada para a criança) → pedidos explícitos de voz sempre falam.
+- Botão "Hoje" da Semana não voltava à semana atual → corrigido.
+- "Todas as semanas" para um dia que já tinha a tarefa não removia o dia de origem → corrigido.
+- Editor de personagem: abas só em texto para a criança → abas com ícone, 64px e voz.
+- Crônica dizia "fez N coisas" em cada cartão de herói, convidando à comparação → frase qualitativa (categorias e mentoria), sem números.
+- Mural e Crônica ainda tinham emojis nas linhas → ilustrações; "Escovar os dentes à noite" passou a usar a escova (a lua lia-se como "dormir").
+- Avisos com "Desfazer" sobreviviam à troca de tela → somem ao navegar. Áudio só toca depois de um gesto (sem avisos no console).
