@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import { ItemArt, hasItemArt } from './badges/ItemArt'
 import type { Member } from '../db/types'
 import { itemById } from '../data/items'
 import { heroColor } from './hero'
@@ -65,14 +66,14 @@ export function Avatar({ member, size = 96, className = '', glow }: Props) {
         size={size}
         className="absolute inset-0"
       />
-      {hat && charms && <Charm emoji={hat.emoji} size={size * 0.3} style={{ top: -size * 0.1, left: '50%', transform: 'translateX(-50%)' }} />}
-      {tool && charms && <Charm emoji={tool.emoji} size={size * 0.32} style={{ right: -size * 0.05, bottom: -size * 0.02 }} />}
-      {pet && charms && <Charm emoji={pet.emoji} size={size * 0.3} style={{ left: -size * 0.05, bottom: -size * 0.02 }} />}
+      {hat && charms && <Charm id={hat.id} emoji={hat.emoji} size={size * 0.3} style={{ top: -size * 0.1, left: '50%', transform: 'translateX(-50%)' }} />}
+      {tool && charms && <Charm id={tool.id} emoji={tool.emoji} size={size * 0.32} style={{ right: -size * 0.05, bottom: -size * 0.02 }} />}
+      {pet && charms && <Charm id={pet.id} emoji={pet.emoji} size={size * 0.3} style={{ left: -size * 0.05, bottom: -size * 0.02 }} />}
     </span>
   )
 }
 
-function Charm({ emoji, size, style }: { emoji: string; size: number; style: React.CSSProperties }) {
+function Charm({ id, emoji, size, style }: { id: string; emoji: string; size: number; style: React.CSSProperties }) {
   return (
     <span
       className="absolute grid place-items-center rounded-full"
@@ -83,7 +84,7 @@ function Charm({ emoji, size, style }: { emoji: string; size: number; style: Rea
         ...style,
       }}
     >
-      {emoji}
+      {hasItemArt(id) ? <ItemArt id={id} size={size * 0.84} /> : emoji}
     </span>
   )
 }

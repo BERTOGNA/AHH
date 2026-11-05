@@ -1,4 +1,5 @@
 // Crônica da Semana: cartões narrados que contam a semana do reino. Ordem fixa da família, nunca por desempenho.
+import { AchievementBadge } from './badges/AchievementBadge'
 import { TaskArt } from './taskart/TaskArt'
 import { useEffect, useMemo, useState } from 'react'
 import type { Category, Member } from '../db/types'
@@ -155,7 +156,7 @@ function useChronicle(date: string): Card[] {
           <ul className="mt-4 flex flex-wrap justify-center gap-2">
             {newAch.map((a) => (
               <li key={a!.id} className="flex items-center gap-2 rounded-full bg-gold/15 px-3 py-1.5 text-sm font-semibold text-gold-light ring-1 ring-gold-light/40">
-                <span aria-hidden="true">{a!.emoji}</span> {a!.name}
+                <AchievementBadge id={a!.id} size={28} /> {a!.name}
               </li>
             ))}
           </ul>

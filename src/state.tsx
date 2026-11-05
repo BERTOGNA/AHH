@@ -89,6 +89,8 @@ export interface Celebration {
   heroId?: string
   /** Cena da missão (celebração de estágio coletivo). */
   scene?: { missionId: string; stage: number }
+  /** Medalha de conquista desenhada. */
+  achievementId?: string
 }
 
 interface Session {

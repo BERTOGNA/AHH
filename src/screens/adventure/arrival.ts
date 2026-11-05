@@ -50,7 +50,7 @@ export function useArrival(me: Member): boolean {
     }
     for (const u of f.unlocks.filter((u) => u.memberId === me.id && !u.seen)) {
       const a = achievementById(u.achievementId)
-      if (a) q.push({ emoji: a.emoji, title: `Conquista: ${a.name}`, text: a.hint, speak: kid ? `Conquista nova: ${a.name}!` : undefined })
+      if (a) q.push({ emoji: a.emoji, achievementId: a.id, title: `Conquista: ${a.name}`, text: a.hint, speak: kid ? `Conquista nova: ${a.name}!` : undefined })
     }
     const ms = takeMissionCelebration(f, me.id, kid)
     if (ms) q.unshift(ms)

@@ -1,4 +1,6 @@
 // Ficha do Personagem: identidade e progresso de longo prazo. Itens e conquistas nunca se perdem.
+import { ItemArt, hasItemArt } from '../components/badges/ItemArt'
+import { AchievementBadge } from '../components/badges/AchievementBadge'
 import { useState } from 'react'
 import type { ItemSlot, Member } from '../db/types'
 import { useCurrent, useFamily, useSession } from '../state'
@@ -134,7 +136,7 @@ export function CharacterSheet({ id }: { id: string }) {
                         className={`grid aspect-square w-full place-items-center rounded-2xl border-2 text-3xl ${on ? 'border-gold bg-wait' : 'border-line bg-white'} ${ok ? '' : 'bg-bg'}`}
                         style={it.color && ok ? { boxShadow: `inset 0 0 0 4px ${it.color}55` } : undefined}
                       >
-                        {ok ? <span aria-hidden="true">{it.emoji}</span> : <Icon name="lock" size={22} className="text-muted" />}
+                        {ok ? (hasItemArt(it.id) ? <ItemArt id={it.id} size={52} /> : <span aria-hidden="true">{it.emoji}</span>) : <Icon name="lock" size={22} className="text-muted" />}
                       </button>
                     </li>
                   )
@@ -155,13 +157,7 @@ export function CharacterSheet({ id }: { id: string }) {
                 className={`card flex flex-col items-center gap-1.5 p-3 text-center ${ok ? '' : 'bg-bg/70 shadow-none'}`}
                 aria-label={`${a.name}${ok ? ', conquistada' : `. Como conseguir: ${a.hint}`}`}
               >
-                <span
-                  className={`grid h-16 w-16 place-items-center rounded-full text-3xl ${ok ? '' : 'text-muted'}`}
-                  style={{ background: ok ? 'radial-gradient(circle at 50% 35%, #FFF7DE, #F1D58A)' : '#EFE6D3', boxShadow: ok ? '0 0 0 2px #D4A23F, 0 0 0 4px #FFF3CF, 0 4px 12px rgb(138 90 18 / .25)' : 'inset 0 1px 3px rgb(30 26 43 / .12)' }}
-                  aria-hidden="true"
-                >
-                  {ok ? a.emoji : <Icon name="lock" size={24} />}
-                </span>
+                <AchievementBadge id={a.id} size={76} locked={!ok} />
                 <span className="text-sm font-bold">{a.name}</span>
                 <span className="text-xs text-muted">{a.hint}</span>
               </li>

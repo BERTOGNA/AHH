@@ -13,6 +13,7 @@ import { Avatar } from '../components/Avatar'
 import { Progress } from '../components/Progress'
 import { MissionScene } from '../components/MissionScene'
 import { Chronicle } from '../components/Chronicle'
+import { KingdomJourney } from '../components/KingdomJourney'
 import { Icon } from '../components/Icon'
 import { ThanksModal } from '../components/ThanksModal'
 import { className, heroStyle } from '../components/hero'
@@ -109,6 +110,10 @@ export function Mural({ chronicle }: { chronicle?: boolean }) {
         ) : (
           <Empty>Nenhum agradecimento ainda nesta semana. Um “obrigado” também faz o reino crescer.</Empty>
         )}
+      </Section>
+
+      <Section title="Ao longo das semanas">
+        <KingdomJourney />
       </Section>
 
       <KingdomMap />

@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { AchievementBadge } from './badges/AchievementBadge'
 import { useFamily, useSession } from '../state'
 import { Sparks } from './Sparks'
 import { Avatar } from './Avatar'
@@ -58,7 +59,7 @@ export function CelebrationOverlay() {
       ) : (
       <div className="relative grid place-items-center">
         <span className="absolute h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(241,213,138,0.35),transparent_65%)]" aria-hidden="true" />
-        {hero ? <Avatar member={hero} size={168} glow /> : celebration.emoji === '⭐' ? <span className="animate-pop"><GoldStar size={150} /></span> : <span className="animate-pop text-[120px] leading-none">{celebration.emoji}</span>}
+        {celebration.achievementId ? <span className="animate-pop"><AchievementBadge id={celebration.achievementId} size={180} /></span> : hero ? <Avatar member={hero} size={168} glow /> : celebration.emoji === '⭐' ? <span className="animate-pop"><GoldStar size={150} /></span> : <span className="animate-pop text-[120px] leading-none">{celebration.emoji}</span>}
         {hero && (
           <span className="animate-pop absolute -right-8 -top-6">
             {celebration.emoji === '⭐' ? <GoldStar size={84} /> : <span className="grid h-20 w-20 place-items-center rounded-full bg-night-2 text-5xl shadow-lg ring-2 ring-gold-light/60">{celebration.emoji}</span>}

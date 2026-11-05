@@ -171,14 +171,17 @@ const Estrela: Sym = ({ fg, ac, s }) => (
 
 const Coruja: Sym = ({ fg, ac, dk, s }) => (
   <g>
-    <path d="M34 34l6 6M66 34l-6 6" stroke={fg} strokeWidth="5" strokeLinecap="round" />
-    <ellipse cx="50" cy="54" rx="17" ry="19" fill={fg} />
-    <circle cx="43" cy="49" r="6.5" fill="#fff" />
-    <circle cx="57" cy="49" r="6.5" fill="#fff" />
-    <circle cx="43" cy="49" r="3.2" fill={dk} />
-    <circle cx="57" cy="49" r="3.2" fill={dk} />
+    <path d="M33 30l7 10h-6zM67 30l-7 10h6z" fill={fg} />
+    <ellipse cx="50" cy="55" rx="18" ry="20" fill={fg} />
+    <path d="M32 52c-4 8-2 16 4 20 0-8 0-14 2-20zM68 52c4 8 2 16-4 20 0-8 0-14-2-20z" fill={ac} opacity=".8" />
+    <circle cx="43" cy="48" r="7.5" fill={ac} />
+    <circle cx="57" cy="48" r="7.5" fill={ac} />
+    <circle cx="43" cy="48" r="5" fill="#FFFFFF" />
+    <circle cx="57" cy="48" r="5" fill="#FFFFFF" />
+    <circle cx="43.5" cy="48.5" r="2.6" fill={dk} />
+    <circle cx="56.5" cy="48.5" r="2.6" fill={dk} />
     <path d="M47.5 55h5L50 60z" fill={ac} />
-    {!s && <path d="M42 64q8 4 16 0" stroke={dk} strokeOpacity=".25" strokeWidth="1.6" fill="none" />}
+    {!s && <path d="M43 64l3 2 4-2 4 2 3-2M44 69l3 2 3-2 3 2 3-2" stroke={dk} strokeOpacity=".3" strokeWidth="1.3" fill="none" />}
   </g>
 )
 

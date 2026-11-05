@@ -60,22 +60,8 @@ export function AchievementBadge({ id, size = 72, locked = false, className }: {
       {rich && !locked && <path d="M30 70l-10 22 9-3 5 8 9-22zM70 70l10 22-9-3-5 8-9-22z" fill={`url(#${u}g)`} />}
       <path d="M36 72l-7 20 8-3 5 7 7-19zM64 72l7 20-8-3-5 7-7-19z" fill={`url(#${u}r)`} />
 
-      {/* louros */}
-      {rich && (
-        <g fill={locked ? '#D6CBB4' : '#D4A23F'}>
-          {[0, 1, 2, 3, 4].map((i) => {
-            const a = (200 + i * 22) * (Math.PI / 180)
-            const b = (-20 - i * 22) * (Math.PI / 180)
-            const r = 44
-            return (
-              <g key={i}>
-                <ellipse cx={50 + r * Math.cos(a)} cy={50 - r * Math.sin(a)} rx="3.6" ry="6.5" transform={`rotate(${-(200 + i * 22) + 90} ${50 + r * Math.cos(a)} ${50 - r * Math.sin(a)})`} />
-                <ellipse cx={50 + r * Math.cos(b)} cy={50 - r * Math.sin(b)} rx="3.6" ry="6.5" transform={`rotate(${20 + i * 22 + 90} ${50 + r * Math.cos(b)} ${50 - r * Math.sin(b)})`} />
-              </g>
-            )
-          })}
-        </g>
-      )}
+      {/* louros: dois ramos subindo pelas laterais */}
+      {rich && <Laurels color={locked ? '#D6CBB4' : '#D4A23F'} stem={locked ? '#C9BCA2' : '#B8862C'} s={s} />}
 
       {/* moldura e joia */}
       <circle cx="50" cy="48" r="37" fill={`url(#${u}g)`} />
@@ -103,5 +89,34 @@ export function AchievementBadge({ id, size = 72, locked = false, className }: {
         </g>
       )}
     </svg>
+  )
+}
+
+function Laurels({ color, stem, s }: { color: string; stem: string; s: boolean }) {
+  const r = 43
+  const angles = s ? [212, 188, 164, 140] : [214, 198, 182, 166, 150, 134]
+  const pos = (deg: number, rr = r) => {
+    const t = (deg * Math.PI) / 180
+    return [50 + rr * Math.cos(t), 48 - rr * Math.sin(t)] as const
+  }
+  const leaves = (mirror: boolean) =>
+    angles.map((deg, i) => {
+      const [x1, y1] = pos(deg)
+      const [x2, y2] = pos(deg - 6)
+      const out = i % 2 ? 3 : -3 // folhas alternadas para dentro e para fora do ramo
+      const [lx, ly] = pos(deg - 3, r + out)
+      const ang = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI + (i % 2 ? 25 : -25)
+      const x = mirror ? 100 - lx : lx
+      return <ellipse key={`${mirror}${deg}`} cx={x} cy={ly} rx="6" ry="2.9" fill={color} transform={`rotate(${mirror ? 180 - ang : ang} ${x} ${ly})`} />
+    })
+  const [sx, sy] = pos(216)
+  const [ex, ey] = pos(128)
+  return (
+    <g>
+      <path d={`M${sx} ${sy}A${r} ${r} 0 0 1 ${ex} ${ey}`} stroke={stem} strokeWidth="1.6" fill="none" />
+      <path d={`M${100 - sx} ${sy}A${r} ${r} 0 0 0 ${100 - ex} ${ey}`} stroke={stem} strokeWidth="1.6" fill="none" />
+      {leaves(false)}
+      {leaves(true)}
+    </g>
   )
 }
