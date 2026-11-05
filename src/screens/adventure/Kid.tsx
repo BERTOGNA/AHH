@@ -277,8 +277,10 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
 /** Na hora de dormir: céu calmo, as estrelas do dia e uma prévia de amanhã (nada de cobrança). */
 function Bedtime({ me }: { me: Member }) {
   const f = useFamily()
-  const day = today()
-  const asleep = routineAt(me.id, day, nowMinutes(), f.routines)?.kind === 'sleep'
+  const now = nowMinutes()
+  const asleep = routineAt(me.id, today(), now, f.routines)?.kind === 'sleep'
+  // De madrugada, o "dia" da criança ainda é o que passou: estrelas de ontem, e "amanhã" é hoje.
+  const day = now < 5 * 60 ? addDays(today(), -1) : today()
   useEffect(() => {
     if (asleep) setTimeout(() => speak(`Boa noite, ${me.name}! Amanhã tem mais aventura.`), 2600)
   }, [asleep, me.name])
@@ -294,7 +296,7 @@ function Bedtime({ me }: { me: Member }) {
           {Array.from({ length: Math.min(stars, 8) }, (_, i) => <GoldStar key={i} size={40} glow={false} />)}
         </div>
       ) : (
-        <p className="story mt-2 text-xl text-moon">Hora de descansar, herói.</p>
+        <p className="story mt-2 text-xl text-moon">Hora de descansar, {me.treatment === 'a' ? 'heroína' : 'herói'}.</p>
       )}
       {tomorrow.length > 0 && (
         <div className="mt-5">

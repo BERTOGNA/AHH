@@ -229,10 +229,13 @@ export async function updateMember(id: string, patch: Partial<Member>) {
 
 /** Migração leve: tarefas antigas sem "Como fazer?" ganham os passos da sugestão de mesmo nome. */
 export async function backfillSteps() {
+  const s = await getSettings()
+  if (s.stepsBackfilled) return
+  await updateSettings({ stepsBackfilled: true })
   const all = Object.values(TEMPLATES).flat()
   const tasks = await db.tasks.toArray()
   const updates = tasks
-    .filter((t) => !t.steps?.length)
+    .filter((t) => t.steps === undefined)
     .map((t) => ({ t, tpl: all.find((x) => x.title === t.title && x.steps?.length) }))
     .filter((x) => x.tpl)
   if (!updates.length) return

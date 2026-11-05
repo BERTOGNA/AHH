@@ -204,17 +204,18 @@ function MissionSettings() {
 function Growth() {
   const { members, tasks, completions } = useFamily()
   const { toast } = useSession()
-  const ideas = growthIdeas(members, tasks, completions, today())
+  const [added, setAdded] = useState<string[]>([])
+  const ideas = growthIdeas(members, tasks, completions, today()).filter((g) => !added.includes(g.member.id))
   if (!ideas.length) return null
   return (
     <Section title="Prontos para o próximo passo">
-      <ul className="grid gap-3 lg:grid-cols-2">
+      <ul className="flex flex-col gap-3">
         {ideas.map((g) => (
           <li key={g.member.id} className="card-gilded flex flex-wrap items-center gap-4 p-4">
             <Avatar member={g.member} size={52} />
             <div className="min-w-[200px] flex-1">
               <p className="font-semibold">{g.member.name} já domina “{g.mastered}”.</p>
-              <p className="text-sm text-muted">Foram {g.times} vezes nas últimas duas semanas. Que tal um desafio novo?</p>
+              <p className="text-sm text-muted">Tem feito com constância nas últimas semanas. Que tal um desafio novo?</p>
               <p className="mt-2 flex items-center gap-2 font-semibold"><TaskArt emoji={g.next.emoji} size={30} /> {g.next.title}</p>
             </div>
             <button
@@ -224,6 +225,7 @@ function Growth() {
                   title: g.next.title, emoji: g.next.emoji, speak: g.next.speak, steps: g.next.steps, category: g.next.category,
                   kind: 'individual', assigneeIds: [g.member.id], weekdays: g.next.weekdays, time: g.next.time, xp: g.next.xp,
                 })
+                setAdded((a) => [...a, g.member.id])
                 toast(`${g.next.title}: na semana de ${g.member.name}.`)
               }}
             >

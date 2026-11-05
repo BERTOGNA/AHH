@@ -3,6 +3,8 @@ import type { Completion, Member, Task } from '../db/types'
 import { TEMPLATES, type TaskTemplate } from '../data/templates'
 import { addDays } from '../lib/date'
 
+const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
+
 export interface GrowthIdea {
   member: Member
   mastered: string // título da tarefa dominada
@@ -20,8 +22,10 @@ export function growthIdeas(members: Member[], tasks: Task[], completions: Compl
     for (const c of mine) counts.set(c.title, (counts.get(c.title) ?? 0) + 1)
     const best = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]
     if (!best || best[1] < min) continue
-    const has = new Set(tasks.filter((t) => t.active && t.assigneeIds.includes(m.id)).map((t) => t.title))
-    const next = TEMPLATES[m.role].find((t) => !has.has(t.title))
+    const mineTitles = tasks.filter((t) => t.active && t.assigneeIds.includes(m.id)).map((t) => norm(t.title))
+    // Aproximado: "Escovar os dentes" e "Escovar os dentes à noite" contam como a mesma tarefa.
+    const has = (title: string) => mineTitles.some((x) => x.startsWith(norm(title)) || norm(title).startsWith(x))
+    const next = TEMPLATES[m.role].find((t) => !has(t.title))
     if (next) out.push({ member: m, mastered: best[0], times: best[1], next })
   }
   return out

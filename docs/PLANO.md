@@ -93,3 +93,13 @@ Nenhum bloqueador. Corrigido e reconferido no navegador:
 - Crônica dizia "fez N coisas" em cada cartão de herói, convidando à comparação → frase qualitativa (categorias e mentoria), sem números.
 - Mural e Crônica ainda tinham emojis nas linhas → ilustrações; "Escovar os dentes à noite" passou a usar a escova (a lua lia-se como "dormir").
 - Avisos com "Desfazer" sobreviviam à troca de tela → somem ao navegar. Áudio só toca depois de um gesto (sem avisos no console).
+
+## 8. Terceira rodada de QA independente
+
+Nenhum bloqueador. Corrigido e reconferido:
+- "Sair do modo pais" pedia o PIN de novo na hora (e o teclado podia ficar por cima de outras telas) → sair volta ao Salão; o pedido de PIN some ao trocar de tela.
+- Semana no celular em modo pais: botões cortados → quebram linha.
+- A migração do "Como fazer?" desfazia passos apagados pelos pais → roda uma vez só; "sem passos" fica salvo.
+- Boa-noite depois da meia-noite mostrava o "amanhã" errado → até as 5h o dia da criança ainda é o que passou.
+- "Prontos para o próximo passo" mostrava contagens dos dois filhos lado a lado → texto qualitativo, cartões empilhados; o cartão some depois de adicionar; nomes aproximados não são sugeridos de novo.
+- Textos de compromisso ("Compromisso salvo/movido/removido"); alvos de 48px no nome do dia e no "Ver como tabela"; "Personalizar" com 64px para a criança; nomes de conquistas neutros em gênero; "heroína" no boa-noite; dica do gráfico não sai da área; tela de abertura imediata com aviso se o armazenamento não responder.

@@ -59,7 +59,7 @@ export function Parents({ tab }: { tab?: string }) {
   return (
     <Screen title="Painel dos Pais" subtitle="Validar, aprovar e cuidar do reino.">
       <BackupReminder />
-      <nav aria-label="Seções do painel" className="-mx-4 mb-5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+      <nav aria-label="Seções do painel" className="mb-5 max-w-full overflow-x-auto">
         <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
           {TABS.map((t) => (
             <button

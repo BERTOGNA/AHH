@@ -50,7 +50,7 @@ export function KingdomJourney() {
     <section className="card mb-6 p-5" aria-labelledby="jornada">
       <div className="mb-2 flex flex-wrap items-baseline gap-x-3">
         <h3 id="jornada" className="title-display flex-1 text-xl">Jornada do Reino</h3>
-        <button className="text-sm font-semibold text-gold-deep underline-offset-4 hover:underline" onClick={() => setTable((t) => !t)} aria-expanded={table}>
+        <button className="min-h-12 px-2 text-sm font-semibold text-gold-deep underline-offset-4 hover:underline" onClick={() => setTable((t) => !t)} aria-expanded={table}>
           {table ? 'Ver gráfico' : 'Ver como tabela'}
         </button>
       </div>
@@ -104,7 +104,7 @@ export function KingdomJourney() {
                     </text>
                   )}
                   <text x={cx} y={H - 10} textAnchor="middle" fontSize="11" fontWeight={d.current ? 700 : 400} fill={d.current ? '#1E1A2B' : '#5B5468'}>
-                    {d.current ? 'esta' : wide || i % 2 === 0 ? formatDayMonth(d.monday) : ''}
+                    {d.current ? 'agora' : wide || i % 2 === 0 ? formatDayMonth(d.monday) : ''}
                   </text>
                   {/* alvo de toque/hover maior que a barra */}
                   <rect
@@ -124,8 +124,8 @@ export function KingdomJourney() {
           </svg>
           {hover !== null && (
             <div
-              className="pointer-events-none absolute top-0 z-10 -translate-x-1/2 rounded-xl bg-night-2 px-3 py-2 text-sm text-ivory shadow-lg"
-              style={{ left: `${((padL + band * hover + band / 2) / W) * 100}%` }}
+              className="pointer-events-none absolute -top-2 z-10 w-44 -translate-x-1/2 rounded-xl bg-night-2 px-3 py-2 text-sm text-ivory shadow-lg"
+              style={{ left: `clamp(5.5rem, ${((padL + band * hover + band / 2) / W) * 100}%, calc(100% - 5.5rem))` }}
               role="status"
             >
               <b>Semana de {formatDayMonth(data[hover].monday)}</b>

@@ -156,7 +156,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const lock = useCallback(() => setAdultId(null), [])
+  // Sair do modo pais também sai das telas que são só de adulto (senão o PIN seria pedido de novo na hora).
+  const lock = useCallback(() => {
+    setAdultId(null)
+    if (/^#\/(pais|heroi)/.test(location.hash)) go('/')
+  }, [])
   const unlock = useCallback((id: string) => setAdultId(id), [])
 
   // Trocar para um perfil que não é o adulto destravado trava o modo pais.
@@ -203,9 +207,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [dismissToast],
   )
 
-  // Avisos (com "Desfazer") pertencem à tela onde nasceram.
+  // Avisos (com "Desfazer") e o pedido de PIN pertencem à tela onde nasceram.
   useEffect(() => {
-    const clear = () => setToasts([])
+    const clear = () => {
+      setToasts([])
+      setPinRequest(null)
+    }
     window.addEventListener('hashchange', clear)
     return () => window.removeEventListener('hashchange', clear)
   }, [])

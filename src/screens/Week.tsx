@@ -58,7 +58,7 @@ export function Week() {
       const r = item.routine
       const delta = startMin - minutes(r.start)
       await saveRoutine({ ...r, ...(r.date ? { date: to, weekdays: [toWd] } : { weekdays: swapDay(r.weekdays) }), start: hhmm(minutes(r.start) + delta), end: hhmm(minutes(r.end) + delta) })
-      toast(`Rotina ajustada: ${formatTime(hhmm(startMin))} (todas as semanas)`)
+      toast(r.date ? `Compromisso movido: ${WEEKDAY_SHORT[toWd]} ${formatTime(hhmm(startMin))}` : `Rotina ajustada: ${formatTime(hhmm(startMin))} (todas as semanas)`)
     }
   }
 
@@ -87,7 +87,7 @@ export function Week() {
           </button>
         ))}
         {adultId && (
-          <span className="ml-auto flex gap-2">
+          <span className="flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto">
             <button className="btn btn-primary h-12 min-h-12" onClick={() => setEditTask({})}><Icon name="plus" size={18} strokeWidth={2.25} /> Tarefa</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}><Icon name="plus" size={18} strokeWidth={2.25} /> Rotina</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('compromisso')}><Icon name="calendar" size={18} /> Compromisso</button>
@@ -405,14 +405,14 @@ function RoutineEditor({ routine, readOnly, onClose, oneOff }: { routine?: Routi
             disabled={(!date && !days.length) || !memberId}
             onClick={async () => {
               await saveRoutine({ ...routine, memberId, kind, label: label.trim() || undefined, weekdays: date ? [isoWeekday(date)] : [...days].sort(), date, start, end })
-              toast('Rotina salva.')
+              toast(date ? 'Compromisso salvo.' : 'Rotina salva.')
               onClose()
             }}
           >
             Salvar
           </button>
           {routine && (
-            <button className="btn btn-ghost" onClick={async () => { await deleteRoutine(routine.id); toast('Rotina removida.'); onClose() }}>
+            <button className="btn btn-ghost" onClick={async () => { await deleteRoutine(routine.id); toast(routine.date ? 'Compromisso removido.' : 'Rotina removida.'); onClose() }}>
               Remover
             </button>
           )}

@@ -172,7 +172,7 @@ export function WeekGrid(p: WeekGridProps) {
         <div className="relative flex" style={{ minWidth: wide ? Math.max(640, days.length * 120 + 56) : undefined }}>
           {/* coluna de horas */}
           <div className="sticky left-0 z-20 w-11 shrink-0 bg-surface sm:w-14">
-            <div className="sticky top-0 z-10 h-[76px] border-b border-line bg-surface" />
+            <div className="sticky top-0 z-10 h-[96px] border-b border-line bg-surface" />
             <div className="relative" style={{ height }}>
               {Array.from({ length: (TO - FROM) / 60 + 1 }, (_, i) => (
                 <span key={i} className="absolute right-1.5 -translate-y-1/2 text-xs font-semibold tabular-nums text-muted" style={{ top: i * pxh }}>
@@ -191,10 +191,10 @@ export function WeekGrid(p: WeekGridProps) {
             return (
               <div key={d} className={`min-w-0 flex-1 border-l border-line ${isToday ? 'bg-[#fffdf5]' : ''}`} style={{ minWidth: wide ? 120 : undefined }}>
                 {/* cabeçalho do dia + "dia todo" */}
-                <div className="sticky top-0 z-10 h-[76px] border-b border-line bg-surface px-1 pt-1">
+                <div className="sticky top-0 z-10 h-[96px] border-b border-line bg-surface px-1 pt-1">
                   {wide && p.onDayTap && !p.focusDay ? (
                     <button
-                      className={`block w-full rounded-lg text-center text-sm font-bold hover:bg-wait ${isToday ? 'text-gold-deep' : ''}`}
+                      className={`block min-h-12 w-full rounded-lg text-center text-sm font-bold hover:bg-wait ${isToday ? 'text-gold-deep' : ''}`}
                       onClick={() => p.onDayTap!(d)}
                       aria-label={`Ver ${WEEKDAY_SHORT[isoWeekday(d)]} ${formatDayMonth(d)} em detalhe`}
                     >

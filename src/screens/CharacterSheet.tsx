@@ -85,7 +85,7 @@ export function CharacterSheet({ id }: { id: string }) {
             )}
           </div>
           {canEdit && (
-            <button className="btn btn-ghost mt-4" onClick={() => setCustom(true)}><Icon name="wand" size={18} /> Personalizar</button>
+            <button className={`btn btn-ghost mt-4 ${kid ? 'h-16 px-6 text-lg' : ''}`} onClick={() => setCustom(true)}><Icon name="wand" size={kid ? 24 : 18} /> Personalizar</button>
           )}
         </div>
         {(own || adultId) && (m.role !== 'adult' || f.settings.adultChest) && (

@@ -81,7 +81,7 @@ function RewardEditor({ reward, onClose }: { reward?: Reward; onClose: () => voi
           <legend className="mb-1 text-sm font-semibold">Ícone</legend>
           <div className="grid grid-cols-10 gap-1 rounded-2xl border border-line bg-white p-2">
             {REWARD_EMOJIS.map((e) => (
-              <button key={e} aria-pressed={e === emoji} aria-label={e} className={`h-11 rounded-xl grid place-items-center ${e === emoji ? 'bg-wait ring-2 ring-gold' : ''}`} onClick={() => setEmoji(e)}>
+              <button key={e} aria-pressed={e === emoji} aria-label={e} className={`h-12 rounded-xl grid place-items-center ${e === emoji ? 'bg-wait ring-2 ring-gold' : ''}`} onClick={() => setEmoji(e)}>
                 <TaskArt emoji={e} size={32} />
               </button>
             ))}

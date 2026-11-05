@@ -85,6 +85,11 @@ describe('migração do passo a passo', () => {
     const t = (await db.tasks.toArray()).find((x) => x.title === 'Arrumar a cama')!
     await db.tasks.update(t.id, { steps: undefined })
     await backfillSteps()
+    // roda uma vez só: se os pais apagarem os passos depois, eles não voltam
+    await db.tasks.update(t.id, { steps: [] })
+    await backfillSteps()
+    expect((await db.tasks.get(t.id))!.steps).toEqual([])
+    await db.tasks.update(t.id, { steps: ['x'] })
     expect((await db.tasks.get(t.id))!.steps?.length).toBeGreaterThan(0)
   })
 })
