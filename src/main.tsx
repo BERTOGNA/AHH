@@ -4,6 +4,8 @@ import { registerSW } from 'virtual:pwa-register'
 import './index.css'
 import { App } from './App'
 import { FamilyProvider, SessionProvider } from './state'
+import { ErrorBoundary, Trouble } from './components/ErrorBoundary'
+import { db } from './db/db'
 
 registerSW({ immediate: true })
 
@@ -18,12 +20,28 @@ function Splash() {
   )
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <FamilyProvider fallback={<Splash />}>
-      <SessionProvider>
-        <App />
-      </SessionProvider>
-    </FamilyProvider>
-  </StrictMode>,
-)
+const root = createRoot(document.getElementById('root')!)
+
+// Sem IndexedDB (ex.: navegação privada em alguns navegadores) o app não consegue guardar nada: avisa com calma.
+db.open()
+  .then(() =>
+    root.render(
+      <StrictMode>
+        <ErrorBoundary>
+          <FamilyProvider fallback={<Splash />}>
+            <SessionProvider>
+              <App />
+            </SessionProvider>
+          </FamilyProvider>
+        </ErrorBoundary>
+      </StrictMode>,
+    ),
+  )
+  .catch(() =>
+    root.render(
+      <Trouble
+        title="Este navegador não deixa guardar o reino"
+        text="Parece uma janela privada ou um navegador com armazenamento bloqueado. Abra o Reino da Família numa janela normal (ou instale-o na tela inicial) para que os dados fiquem salvos no aparelho."
+      />,
+    ),
+  )
