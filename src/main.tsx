@@ -6,6 +6,7 @@ import { App } from './App'
 import { FamilyProvider, SessionProvider } from './state'
 import { ErrorBoundary, Trouble } from './components/ErrorBoundary'
 import { db } from './db/db'
+import { backfillSteps } from './db/actions'
 
 registerSW({ immediate: true })
 
@@ -24,6 +25,9 @@ const root = createRoot(document.getElementById('root')!)
 
 // Sem IndexedDB (ex.: navegação privada em alguns navegadores) o app não consegue guardar nada: avisa com calma.
 db.open()
+  .then(async () => {
+    await backfillSteps().catch(() => {})
+  })
   .then(() =>
     root.render(
       <StrictMode>

@@ -6,6 +6,7 @@ import { completionId, plannedWeekXp } from '../domain/schedule'
 import { coinBalance, ledger } from '../domain/economy'
 import { newlyUnlocked } from '../domain/achievements'
 import { MISSIONS, missionGoal } from '../data/missions'
+import { TEMPLATES } from '../data/templates'
 import { today, weekKey } from '../lib/date'
 import { hashPin, newSalt } from '../lib/pin'
 
@@ -224,6 +225,20 @@ export async function deleteRoutine(id: string) {
 
 export async function updateMember(id: string, patch: Partial<Member>) {
   await db.members.update(id, patch)
+}
+
+/** Migração leve: tarefas antigas sem "Como fazer?" ganham os passos da sugestão de mesmo nome. */
+export async function backfillSteps() {
+  const all = Object.values(TEMPLATES).flat()
+  const tasks = await db.tasks.toArray()
+  const updates = tasks
+    .filter((t) => !t.steps?.length)
+    .map((t) => ({ t, tpl: all.find((x) => x.title === t.title && x.steps?.length) }))
+    .filter((x) => x.tpl)
+  if (!updates.length) return
+  await db.transaction('rw', db.tasks, async () => {
+    for (const { t, tpl } of updates) await db.tasks.update(t.id, { steps: tpl!.steps })
+  })
 }
 
 export async function resetAll() {

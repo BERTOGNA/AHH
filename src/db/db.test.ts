@@ -77,3 +77,14 @@ describe('banco local', () => {
     expect(() => parseBackup(JSON.stringify({ app: 'reino-da-familia', version: 99, data: {} }))).toThrow(/versão mais nova/)
   })
 })
+
+import { backfillSteps } from './actions'
+
+describe('migração do passo a passo', () => {
+  it('tarefas antigas sem passos ganham os passos da sugestão de mesmo nome', async () => {
+    const t = (await db.tasks.toArray()).find((x) => x.title === 'Arrumar a cama')!
+    await db.tasks.update(t.id, { steps: undefined })
+    await backfillSteps()
+    expect((await db.tasks.get(t.id))!.steps?.length).toBeGreaterThan(0)
+  })
+})
