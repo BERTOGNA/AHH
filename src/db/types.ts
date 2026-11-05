@@ -36,6 +36,8 @@ export interface RoutineBlock {
   weekdays: Weekday[]
   /** Compromisso pontual: vale só nesta data (os dias da semana são ignorados). */
   date?: ISODate
+  /** Datas de folga (férias, feriado): o bloco não vale nesses dias. */
+  skipDates?: ISODate[]
   start: HHMM
   end: HHMM // end <= start = cruza a meia-noite (sono)
 }

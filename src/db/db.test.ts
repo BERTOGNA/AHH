@@ -93,3 +93,25 @@ describe('migração do passo a passo', () => {
     expect((await db.tasks.get(t.id))!.steps?.length).toBeGreaterThan(0)
   })
 })
+
+import { clearTimeOff, setTimeOff } from './actions'
+import { routineAt } from '../domain/schedule'
+import { addDays as add } from '../lib/date'
+
+describe('férias e folgas', () => {
+  it('tira a escola e as tarefas de dia de aula só no período; desfazer volta', async () => {
+    // próxima segunda-feira
+    let mon = today()
+    while (new Date(mon + 'T12:00').getDay() !== 1) mon = add(mon, 1)
+    const routines = () => db.routines.toArray()
+    expect(routineAt('bia', mon, 9 * 60, await routines())?.kind).toBe('school')
+    await setTimeOff(['bia', 'leo'], mon, add(mon, 4), ['school'])
+    expect(routineAt('bia', mon, 9 * 60, await routines())?.kind).not.toBe('school')
+    const tasks = await db.tasks.toArray()
+    expect(occurrencesFor(mon, tasks, []).some((o) => o.task.title === 'Lição de casa')).toBe(false)
+    expect(occurrencesFor(add(mon, 7), tasks, []).some((o) => o.task.title === 'Lição de casa')).toBe(true) // semana seguinte normal
+    expect(occurrencesFor(mon, tasks, []).some((o) => o.task.title === 'Arrumar a cama')).toBe(true) // casa continua
+    await clearTimeOff(['bia', 'leo'], mon, add(mon, 4))
+    expect(routineAt('bia', mon, 9 * 60, await routines())?.kind).toBe('school')
+  })
+})

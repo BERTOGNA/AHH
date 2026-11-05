@@ -7,7 +7,7 @@ import { coinBalance, ledger } from '../domain/economy'
 import { newlyUnlocked } from '../domain/achievements'
 import { MISSIONS, missionGoal } from '../data/missions'
 import { TEMPLATES } from '../data/templates'
-import { today, weekKey } from '../lib/date'
+import { addDays, today, weekKey } from '../lib/date'
 import { hashPin, newSalt } from '../lib/pin'
 
 
@@ -241,6 +241,41 @@ export async function backfillSteps() {
   if (!updates.length) return
   await db.transaction('rw', db.tasks, async () => {
     for (const { t, tpl } of updates) await db.tasks.update(t.id, { steps: tpl!.steps })
+  })
+}
+
+/**
+ * Férias / folga: entre `from` e `to`, tira escola e/ou trabalho da rotina das pessoas escolhidas
+ * e dispensa as tarefas de dia de aula (estudo só em dias úteis) e a expedição de trabalho. Nada é apagado.
+ */
+export async function setTimeOff(memberIds: string[], from: string, to: string, kinds: ('school' | 'work')[]) {
+  const dates: string[] = []
+  for (let d = from; d <= to && dates.length < 120; d = addDays(d, 1)) dates.push(d)
+  const [routines, tasks] = await Promise.all([db.routines.toArray(), db.tasks.toArray()])
+  await db.transaction('rw', db.routines, db.tasks, async () => {
+    for (const r of routines) {
+      if (!memberIds.includes(r.memberId) || !kinds.includes(r.kind as 'school' | 'work')) continue
+      await db.routines.update(r.id, { skipDates: [...new Set([...(r.skipDates ?? []), ...dates])] })
+    }
+    for (const t of tasks) {
+      const mine = t.assigneeIds.some((id) => memberIds.includes(id))
+      const schoolDay = t.category === 'estudo' && t.weekdays.every((w) => w <= 5) && kinds.includes('school')
+      const work = t.category === 'trabalho' && kinds.includes('work')
+      if (!mine || !(schoolDay || work)) continue
+      const ex = (t.exceptions ?? []).filter((e) => !dates.includes(e.date))
+      await db.tasks.update(t.id, { exceptions: [...ex, ...dates.map((date) => ({ date, skip: true }))] })
+    }
+  })
+  return dates.length
+}
+
+/** Desfaz a folga num período (volta ao combinado de sempre). */
+export async function clearTimeOff(memberIds: string[], from: string, to: string) {
+  const inRange = (d: string) => d >= from && d <= to
+  const [routines, tasks] = await Promise.all([db.routines.toArray(), db.tasks.toArray()])
+  await db.transaction('rw', db.routines, db.tasks, async () => {
+    for (const r of routines) if (memberIds.includes(r.memberId) && r.skipDates?.length) await db.routines.update(r.id, { skipDates: r.skipDates.filter((d) => !inRange(d)) })
+    for (const t of tasks) if (t.assigneeIds.some((id) => memberIds.includes(id)) && t.exceptions?.length) await db.tasks.update(t.id, { exceptions: t.exceptions.filter((e) => !(e.skip && inRange(e.date))) })
   })
 }
 

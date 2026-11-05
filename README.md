@@ -44,6 +44,7 @@ Para instalar no tablet/celular, sirva o `dist/` por **https** (qualquer hospeda
 - **Instalar no aparelho**: botão na abertura e em Ajustes (no iPhone/iPad, instruções do "Adicionar à Tela de Início").
 - **Lembrete de backup** gentil para os pais a cada 14 dias.
 - **Sugestões para o 12 anos** assumir tarefas extras na própria semana.
+- **Férias e folgas** (Semana → Férias / folga): escola e/ou trabalho saem da agenda no período, com as tarefas de dia de aula; desfazer volta ao normal.
 - **Tema noite** (Ajustes › Aparência: Claro, Noite ou Automático das 19h às 6h).
 - **Quadro da semana para imprimir** (Semana → Imprimir quadro): uma folha A4 para a geladeira; para os pequenos, só desenhos.
 - **Compromissos pontuais** na Semana (consulta, aniversário, reunião): valem só na data marcada.

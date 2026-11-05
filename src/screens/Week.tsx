@@ -12,7 +12,7 @@ import { Modal } from '../components/Modal'
 import { TaskEditor } from '../components/TaskEditor'
 import { Avatar } from '../components/Avatar'
 import { heroColor, heroTint } from '../components/hero'
-import { clearException, deleteRoutine, saveRoutine, saveTask, setException } from '../db/actions'
+import { clearException, clearTimeOff, deleteRoutine, saveRoutine, saveTask, setException, setTimeOff as applyTimeOff } from '../db/actions'
 import { occurrencesFor, ROUTINE_INFO, routineOn } from '../domain/schedule'
 import {
   addDays, formatDayMonth, formatTime, hhmm, isoWeekday, minutes, today, weekDates, weekStart, WEEKDAYS, WEEKDAY_LONG, WEEKDAY_SHORT,
@@ -28,6 +28,7 @@ export function Week() {
   const [hidden, setHidden] = useState<string[]>([])
   const [view, setView] = useState<'grade' | 'lista'>('grade')
   const [focus, setFocus] = useState<string | null>(null)
+  const [timeOff, setTimeOff] = useState(false)
   const [taskDetail, setTaskDetail] = useState<{ task: Task; date: string } | null>(null)
   const [editTask, setEditTask] = useState<{ task?: Task } | null>(null)
   const [routine, setRoutine] = useState<RoutineBlock | 'new' | 'compromisso' | null>(null)
@@ -92,6 +93,7 @@ export function Week() {
             <button className="btn btn-primary h-12 min-h-12" onClick={() => setEditTask({})}><Icon name="plus" size={18} strokeWidth={2.25} /> Tarefa</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}><Icon name="plus" size={18} strokeWidth={2.25} /> Rotina</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('compromisso')}><Icon name="calendar" size={18} /> Compromisso</button>
+            <button className="btn btn-ghost h-12 min-h-12" onClick={() => setTimeOff(true)}><Icon name="sun" size={18} /> Férias / folga</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => go('/quadro')}><Icon name="list" size={18} /> Imprimir quadro</button>
           </span>
         )}
@@ -161,6 +163,7 @@ export function Week() {
         )}
       </div>
 
+      {timeOff && <TimeOff onClose={() => setTimeOff(false)} />}
       {pendingMove && (
         <MoveScope
           move={pendingMove}
@@ -325,6 +328,70 @@ function MoveScope({ move, onClose, onDone }: {
           <span>Todas as semanas</span>
           <span className="text-xs font-medium opacity-80">muda o combinado</span>
         </button>
+      </div>
+    </Modal>
+  )
+}
+
+/** Férias / folga: escolhe período, pessoas e o que pausa (escola, trabalho). Nada é apagado. */
+function TimeOff({ onClose }: { onClose: () => void }) {
+  const f = useFamily()
+  const { toast } = useSession()
+  const [from, setFrom] = useState(today())
+  const [to, setTo] = useState(addDays(today(), 4))
+  const [who, setWho] = useState<string[]>(f.members.filter((m) => m.role !== 'adult').map((m) => m.id))
+  const [kinds, setKinds] = useState<('school' | 'work')[]>(['school'])
+  const valid = who.length > 0 && kinds.length > 0 && from <= to
+  const toggle = <T,>(xs: T[], x: T) => (xs.includes(x) ? xs.filter((y) => y !== x) : [...xs, x])
+  return (
+    <Modal title="Férias / folga" onClose={onClose}>
+      <div className="flex flex-col gap-4">
+        <p className="text-muted">No período, a escola e/ou o trabalho saem da agenda, junto com as tarefas de dia de aula. O resto da rotina continua.</p>
+        <div className="flex flex-wrap gap-3">
+          <label className="flex items-center gap-2">De <input type="date" className="field w-44" value={from} onChange={(e) => e.target.value && setFrom(e.target.value)} /></label>
+          <label className="flex items-center gap-2">Até <input type="date" className="field w-44" value={to} onChange={(e) => e.target.value && setTo(e.target.value)} /></label>
+        </div>
+        <fieldset>
+          <legend className="mb-1 text-sm font-semibold">Quem está de folga</legend>
+          <div className="flex flex-wrap gap-2">
+            {f.members.map((m) => (
+              <button key={m.id} className="chip pl-1" aria-pressed={who.includes(m.id)} onClick={() => setWho((x) => toggle(x, m.id))}>
+                <Avatar member={m} size={32} /> {m.name}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend className="mb-1 text-sm font-semibold">O que pausa</legend>
+          <div className="flex flex-wrap gap-2">
+            <button className="chip" aria-pressed={kinds.includes('school')} onClick={() => setKinds((x) => toggle(x, 'school'))}>Escola</button>
+            <button className="chip" aria-pressed={kinds.includes('work')} onClick={() => setKinds((x) => toggle(x, 'work'))}>Trabalho</button>
+          </div>
+        </fieldset>
+        <div className="flex flex-wrap gap-3">
+          <button
+            className="btn btn-primary flex-1"
+            disabled={!valid}
+            onClick={async () => {
+              const n = await applyTimeOff(who, from, to, kinds)
+              toast(`Folga marcada: ${n === 1 ? '1 dia' : `${n} dias`}. Boas férias!`)
+              onClose()
+            }}
+          >
+            Marcar folga
+          </button>
+          <button
+            className="btn btn-ghost"
+            disabled={!who.length || from > to}
+            onClick={async () => {
+              await clearTimeOff(who, from, to)
+              toast('Folga desfeita: de volta ao combinado de sempre.')
+              onClose()
+            }}
+          >
+            Desfazer neste período
+          </button>
+        </div>
       </div>
     </Modal>
   )
