@@ -261,7 +261,8 @@ export function WeekGrid(p: WeekGridProps) {
                     if (start >= TO || start + 1 < FROM) return null
                     const dragging = drag?.item.task?.id === o.task.id && drag.fromDate === d
                     const top = dragging ? yOf(drag.min) : yOf(Math.max(FROM, start))
-                    const h = Math.max(showText ? 30 : 26, Math.min(o.task.duration, TO - start) / 60 * pxh - 2)
+                    // Tarefas longas (ex.: expedição de trabalho) não cobrem o bloco de rotina: no máximo 1h de altura.
+                    const h = Math.max(showText ? 30 : 26, (Math.min(o.task.duration, 60, TO - start) / 60) * pxh - 2)
                     const st = o.completion?.status
                     const owner = lanes[lane]
                     return (

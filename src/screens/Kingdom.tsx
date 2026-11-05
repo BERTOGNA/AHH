@@ -5,7 +5,8 @@ import type { Member } from '../db/types'
 import { go } from '../router'
 import { Avatar } from '../components/Avatar'
 import { Progress } from '../components/Progress'
-import { className, heroStyle } from '../components/hero'
+import { capitalize, className, heroStyle } from '../components/hero'
+import { useWide } from '../components/WeekGrid'
 import { occurrencesFor, routineAt, statusAt } from '../domain/schedule'
 import { weekXp } from '../domain/economy'
 import { missionById, stageOf } from '../data/missions'
@@ -16,6 +17,7 @@ export function Kingdom() {
   const f = useFamily()
   const { setCurrent, adultId, lock } = useSession()
   const gate = useParentGate()
+  const wide = useWide('(min-width: 640px)')
   const day = today()
   const now = nowMinutes()
   const mission = f.missions.find((m) => m.weekKey === weekKey(day))
@@ -40,7 +42,7 @@ export function Kingdom() {
       <header className="night-sky relative overflow-hidden px-4 pb-16 pt-6 text-bg sm:px-8">
         <div className="mx-auto flex max-w-5xl items-start gap-3">
           <div className="flex-1">
-            <p className="text-sm capitalize opacity-85">{formatLong(day)}</p>
+            <p className="text-sm opacity-85">{capitalize(formatLong(day))}</p>
             <h1 className="title-display text-3xl font-bold text-gold-bright sm:text-4xl">{f.settings.kingdomName}</h1>
             <p className="story mt-1 text-lg opacity-90">A casa funciona porque cada um faz a sua parte.</p>
           </div>
@@ -74,8 +76,7 @@ export function Kingdom() {
                   className="banner group flex w-full flex-col items-center px-2 pb-8 pt-5 text-center transition-transform active:scale-[0.98]"
                 >
                   <span className="relative">
-                    <Avatar member={m} size={112} className="sm:hidden" />
-                    <Avatar member={m} size={128} className="hidden sm:inline-grid" />
+                    <Avatar member={m} size={wide ? 128 : 100} />
                     {waiting > 0 && (
                       <span className="absolute -right-2 top-0 grid h-9 min-w-9 place-items-center rounded-full border-2 border-gold bg-wait px-1 text-sm font-bold" aria-hidden="true">
                         ⏳{waiting}
@@ -83,7 +84,7 @@ export function Kingdom() {
                     )}
                   </span>
                   <span className="title-display mt-2 text-xl font-bold">{m.name}</span>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold">
+                  <span className="inline-flex items-center justify-center gap-1 text-sm font-semibold leading-tight">
                     <span className="h-2.5 w-2.5 rounded-full" style={{ background: 'var(--hero)' }} aria-hidden="true" />
                     {className(m)}
                   </span>
