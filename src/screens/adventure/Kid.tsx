@@ -85,7 +85,7 @@ export function KidAdventure({ me }: { me: Member }) {
           }}
           aria-label="Uma carta chegou! Toque para ouvir."
         >
-          <span className="text-6xl" aria-hidden="true">💌</span>
+          <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-b from-[#FFF7DE] to-gold-light text-gold-deep shadow-md" aria-hidden="true"><Icon name="heart" size={36} strokeWidth={2} filled /></span>
           {f.byId.get(letters[0].fromId) && <Avatar member={f.byId.get(letters[0].fromId)!} size={72} />}
           <span className="title-display text-[26px]">Uma carta chegou!</span>
           <span className="ml-auto grid h-16 w-16 place-items-center rounded-full bg-gold/20 text-gold-deep"><Icon name="speaker" size={32} strokeWidth={2} /></span>

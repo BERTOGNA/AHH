@@ -341,7 +341,7 @@ function ChoreRow({ emoji, title, xp, category, on, onToggle, children }: {
     <li className={`rounded-2xl border-2 px-3 py-2 ${on ? 'border-gold bg-surface' : 'border-line bg-white/60'}`}>
       <label className="flex min-h-12 cursor-pointer items-center gap-3">
         <input type="checkbox" className="h-6 w-6 shrink-0 accent-[#8a5b00]" checked={on} onChange={onToggle} />
-        <span className="text-2xl" aria-hidden="true">{emoji}</span>
+        <TaskArt emoji={emoji} size={34} />
         <span className="flex-1 font-semibold">{title}</span>
         <span className="hidden text-sm text-muted sm:inline">{CATEGORIES[category].name}</span>
         <span className="text-sm font-bold text-gold-deep tabular-nums">{xp} XP</span>

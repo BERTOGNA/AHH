@@ -31,6 +31,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // pt-BR só usa o subconjunto latino das fontes; os outros carregam sob demanda se aparecerem.
+        globIgnores: ['**/*vietnamese*', '**/*latin-ext*'],
         navigateFallback: 'index.html',
       },
     }),

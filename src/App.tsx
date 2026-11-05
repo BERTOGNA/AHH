@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { useRoute, go } from './router'
 import { useFamily, useSession } from './state'
 import { Nav } from './components/Nav'
@@ -6,12 +6,17 @@ import { PinPad } from './components/PinPad'
 import { CelebrationOverlay, Toasts } from './components/Overlays'
 import { Kingdom } from './screens/Kingdom'
 import { Adventure } from './screens/Adventure'
-import { CharacterSheet } from './screens/CharacterSheet'
-import { Week } from './screens/Week'
-import { Chest } from './screens/Chest'
-import { Mural } from './screens/Mural'
-import { Parents } from './screens/Parents'
-import { Welcome } from './screens/Welcome'
+// Salão e Aventura carregam já; as demais telas vêm em pedaços (todos ficam no cache offline).
+const CharacterSheet = lazy(() => import('./screens/CharacterSheet').then((m) => ({ default: m.CharacterSheet })))
+const Week = lazy(() => import('./screens/Week').then((m) => ({ default: m.Week })))
+const Chest = lazy(() => import('./screens/Chest').then((m) => ({ default: m.Chest })))
+const Mural = lazy(() => import('./screens/Mural').then((m) => ({ default: m.Mural })))
+const Parents = lazy(() => import('./screens/Parents').then((m) => ({ default: m.Parents })))
+const Welcome = lazy(() => import('./screens/Welcome').then((m) => ({ default: m.Welcome })))
+
+function Loading() {
+  return <div className="grid min-h-[60dvh] place-items-center" aria-busy="true"><span className="sr-only">Carregando…</span></div>
+}
 
 export function App() {
   const route = useRoute()
@@ -26,7 +31,9 @@ export function App() {
   if (route.name === 'bem-vindo' || !settings.onboardingDone) {
     return (
       <>
-        <Welcome />
+        <Suspense fallback={<Loading />}>
+          <Welcome />
+        </Suspense>
         <Toasts />
       </>
     )
@@ -34,6 +41,7 @@ export function App() {
 
   return (
     <>
+      <Suspense fallback={<Loading />}>
       {route.name === 'salao' && <Kingdom />}
       {route.name === 'heroi' && <Adventure id={route.id} />}
       {route.name === 'ficha' && <CharacterSheet id={route.id} />}
@@ -41,6 +49,7 @@ export function App() {
       {route.name === 'bau' && <Chest />}
       {route.name === 'mural' && <Mural chronicle={route.chronicle} />}
       {route.name === 'pais' && <Parents tab={route.tab} />}
+      </Suspense>
       <Nav />
       {pinRequest && <PinPad />}
       <CelebrationOverlay />

@@ -51,6 +51,7 @@ async function pin(page) {
   await pin(page)
   await closeCelebrations(page)
   await page.goto(BASE + '#/pais')
+  await page.getByRole('button', { name: /^Validar: / }).first().waitFor()
   const before = await page.getByRole('button', { name: /^Validar: / }).count()
   await page.getByRole('button', { name: /^Validar: / }).first().click()
   await page.waitForTimeout(300)

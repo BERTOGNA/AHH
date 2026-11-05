@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TaskArt } from './taskart/TaskArt'
 import type { Member } from '../db/types'
 import { useFamily, useSession } from '../state'
 import { QUICK_THANKS } from '../data/thanks'
@@ -73,11 +74,11 @@ export function ThanksModal({ from, to, completionId, about, onClose }: Props) {
                     void send(msg, q.emoji)
                   }}
                 >
-                  {q.emoji}
+                  <TaskArt emoji={q.emoji} size={52} />
                 </button>
               ) : (
                 <button key={q.text} className="btn btn-ghost justify-start text-left" onClick={() => send(msg, q.emoji)}>
-                  <span aria-hidden="true">{q.emoji}</span> {msg}
+                  <TaskArt emoji={q.emoji} size={26} /> {msg}
                 </button>
               )
             })}
