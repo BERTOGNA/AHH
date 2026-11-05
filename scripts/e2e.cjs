@@ -68,6 +68,42 @@ async function pin(page) {
   if (process.env.DEBUG) await page.screenshot({ path: 'e2e-debug.png', fullPage: true })
   ok(await page.getByText('Levei ao médico').first().isVisible(), 'feito invisível aparece no Mural (Bastidores do Reino)')
 
+  // Crônica da Semana: abre, navega e fecha
+  await page.getByRole('button', { name: /Crônica/ }).click()
+  await page.getByRole('dialog', { name: 'Crônica da Semana' }).waitFor()
+  let cards = 1
+  while (await page.getByRole('button', { name: 'Próximo cartão' }).isVisible().catch(() => false)) {
+    await page.getByRole('button', { name: 'Próximo cartão' }).click()
+    cards++
+  }
+  ok(cards >= 6, `Crônica da Semana com ${cards} cartões`)
+  await page.getByRole('button', { name: 'Fim' }).click()
+
+  // Semana: "neste dia não precisa" tira só aquela ocorrência e "Desfazer" devolve
+  await page.goto(BASE + '#/semana')
+  const pills = page.getByRole('button', { name: /^Guardar os brinquedos, 18h/ })
+  await pills.first().waitFor()
+  const n0 = await pills.count()
+  await pills.last().click()
+  await page.getByRole('button', { name: /Neste dia não precisa/ }).click()
+  await page.waitForTimeout(200)
+  const n1 = await pills.count()
+  await page.getByRole('button', { name: 'Desfazer' }).click()
+  await page.waitForTimeout(200)
+  ok(n1 === n0 - 1 && (await pills.count()) === n0, `"neste dia não precisa" e desfazer (${n0} → ${n1} → ${await pills.count()})`)
+
+  // Editor de personagem: muda o cabelo e persiste
+  await page.goto(BASE + '#/ficha/ana')
+  await page.getByRole('button', { name: /Personalizar/ }).click()
+  await page.getByRole('radio', { name: 'Crespo' }).click()
+  await page.getByRole('button', { name: 'Fechar' }).click()
+  const hair = await page.evaluate(async () => {
+    const r = indexedDB.open('reino-da-familia')
+    const db = await new Promise((x) => (r.onsuccess = () => x(r.result)))
+    return new Promise((x) => { const q = db.transaction('members').objectStore('members').get('ana'); q.onsuccess = () => x(q.result.avatar.look.hair) })
+  })
+  ok(hair === 'crespo', `editor de personagem salva o visual (${hair})`)
+
   // Persistência + offline
   await page.evaluate(() => navigator.serviceWorker.ready)
   await page.waitForTimeout(1000)
