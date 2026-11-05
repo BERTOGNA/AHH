@@ -26,11 +26,11 @@ deste plano, vale este plano.
 
 ## 2. Simplificações deliberadas do MVP (registradas)
 
-- **Mover tarefa na Semana muda a recorrência** ("todas as semanas"). Não existe exceção "só esta semana", que exigiria um modelo de exceções.
+- ~~Mover tarefa só muda a recorrência~~ → **implementado depois**: ao mover, os pais escolhem "Só nesta semana" ou "Todas as semanas"; e há "Neste dia não precisa" (exceções em `Task.exceptions`, sem registro negativo).
 - **Tema "Noite"** (escuro) fica fora do MVP. Só o tema Pergaminho.
-- **A Crônica da Semana** não é uma sequência animada de cartões: o próprio **Mural** é a crônica (missão, uma faixa por herói, Bastidores do Reino, mentorias e agradecimentos). Aos domingos, o Salão mostra o atalho "Crônica da Semana" para o Mural.
+- **Crônica da Semana** → **implementada depois** como sequência de cartões narrados (missão, um cartão por herói na ordem da família, Bastidores, gratidão). Abre pelo Mural e, aos domingos, pelo Salão.
 - **Mapa do Reino**: lista com cada lugar já visitado pelas missões e o maior estágio alcançado, tudo derivado das semanas anteriores.
-- **Recompensa coletiva** só em 100%. A mini-celebração de 50% é apenas visual.
+- **Recompensa coletiva** só em 100%. Cada estágio cruzado (25/50/75/100%) é celebrado em tela cheia com a cena da missão na próxima abertura (Salão ou aventura de cada herói).
 - **"Ritual do Selo"**: em vez de lembrete com horário, o Salão mostra um botão de selo com o número de pendentes, que abre o Painel dos Pais.
 - **Baú dos adultos**: desligado por padrão, liga em Ajustes.
 - **Tarefas "sob demanda"** dos adultos (consulta médica, reunião da escola) entram como atalhos do botão **"Registrar feito invisível"**.

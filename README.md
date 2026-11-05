@@ -34,6 +34,17 @@ Para instalar no tablet/celular, sirva o `dist/` por **https** (qualquer hospeda
 6. **Baú** — trocar moedas por recompensas reais definidas pelos pais. Trocar nunca reduz XP nem nível.
 7. **Mural do Reino** — o que cada um fez na semana, em linguagem de fantasia, com os **Bastidores do Reino** (trabalho invisível dos adultos), mentorias, agradecimentos e o Mapa do Reino.
 
+### Novidades depois do MVP
+
+- **Heróis ilustrados**: cada membro monta o seu personagem (pele, cabelo, rosto, detalhes) na Ficha → Personalizar; a roupa vem da classe.
+- **Ilustrações das tarefas** em todos os cartões, listas e na grade.
+- **Crônica da Semana** (Mural → Crônica): a semana contada em cartões narrados.
+- **Missão que evolui**: cada estágio que a família cruza é celebrado com a cena nova.
+- **Exceções da semana**: na Semana, toque numa tarefa → "Neste dia não precisa" ou mova escolhendo "Só nesta semana".
+- **Instalar no aparelho**: botão na abertura e em Ajustes (no iPhone/iPad, instruções do "Adicionar à Tela de Início").
+- **Lembrete de backup** gentil para os pais a cada 14 dias.
+- **Sugestões para o 12 anos** assumir tarefas extras na própria semana.
+
 ### Backup
 
 Painel dos Pais → **Ajustes** → **Exportar backup (JSON)**. Para restaurar: **Importar backup** → confirmar "Substituir tudo". Como os dados vivem só neste aparelho, exporte de tempos em tempos e guarde o arquivo em lugar seguro.
@@ -63,4 +74,4 @@ src/
 
 ## Fora do MVP
 
-Sincronização entre aparelhos, contas online, notificações push, tema escuro, exceções "só esta semana" ao mover tarefas.
+Sincronização entre aparelhos, contas online, notificações push e tema escuro completo.
