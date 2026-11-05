@@ -2,12 +2,12 @@
 import { uid } from '../lib/uid'
 import { db, DEFAULT_SETTINGS } from './db'
 import type { Completion, Member, Mission, Reward, RoutineBlock, Settings, Task, TaskException } from './types'
-import { completionId, plannedWeekXp } from '../domain/schedule'
+import { completionId, plannedXpForWeek } from '../domain/schedule'
 import { coinBalance, ledger } from '../domain/economy'
 import { newlyUnlocked } from '../domain/achievements'
 import { MISSIONS, missionGoal } from '../data/missions'
 import { TEMPLATES } from '../data/templates'
-import { addDays, today, weekKey } from '../lib/date'
+import { addDays, today, weekDates, weekKey } from '../lib/date'
 import { hashPin, newSalt } from '../lib/pin'
 
 
@@ -173,7 +173,7 @@ export async function ensureMission(date = today()): Promise<Mission> {
   const s = await getSettings()
   const tasks = await db.tasks.toArray()
   const t = MISSIONS[s.nextMissionIndex % MISSIONS.length]
-  const m: Mission = { weekKey: wk, templateId: t.id, goalXp: missionGoal(plannedWeekXp(tasks)), reward: t.reward, delivered: false }
+  const m: Mission = { weekKey: wk, templateId: t.id, goalXp: missionGoal(plannedXpForWeek(weekDates(date), tasks)), reward: t.reward, delivered: false }
   await db.missions.put(m)
   await updateSettings({ nextMissionIndex: s.nextMissionIndex + 1 })
   return m
@@ -266,6 +266,13 @@ export async function setTimeOff(memberIds: string[], from: string, to: string, 
       await db.tasks.update(t.id, { exceptions: [...ex, ...dates.map((date) => ({ date, skip: true }))] })
     }
   })
+  // Semana com folga: a meta da missão acompanha o que ficou planejado (nunca sobe por causa disso).
+  const wk = weekKey(today())
+  const mission = await db.missions.get(wk)
+  if (mission && dates.some((d) => weekKey(d) === wk)) {
+    const goal = missionGoal(plannedXpForWeek(weekDates(today()), await db.tasks.toArray()))
+    if (goal < mission.goalXp) await db.missions.update(wk, { goalXp: goal })
+  }
   return dates.length
 }
 

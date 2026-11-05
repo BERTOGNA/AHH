@@ -58,6 +58,11 @@ export function householdDay(occ: Occurrence[]): Occurrence[] {
   return occ.filter((o) => o.task.kind === 'household')
 }
 
+/** XP planejado de uma semana específica, já contando folgas e dias dispensados (base justa da meta). */
+export function plannedXpForWeek(dates: ISODate[], tasks: Task[]): number {
+  return dates.reduce((sum, d) => sum + occurrencesFor(d, tasks, []).reduce((s, o) => s + o.task.xp * Math.max(1, o.forIds.length), 0), 0)
+}
+
 /** XP planejado para uma semana (base da meta da missão). */
 export function plannedWeekXp(tasks: Task[]): number {
   return tasks
