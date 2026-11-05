@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { InstallCard } from '../components/InstallCard'
 import { useFamily, useSession } from '../state'
 import { go } from '../router'
 import { createFamily, seedDemo } from '../db/seed'
@@ -175,6 +176,7 @@ export function Welcome() {
             <input type="file" accept="application/json,.json" className="sr-only" disabled={Boolean(busy)} onChange={(e) => restore(e.target.files?.[0])} />
           </label>
         </div>
+        <div className="w-full max-w-md"><InstallCard night /></div>
         <p className="max-w-sm text-sm text-[#cdbfa3]">Tudo fica guardado só neste aparelho. Nada é enviado para a internet.</p>
       </main>
     )

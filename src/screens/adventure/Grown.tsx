@@ -6,9 +6,9 @@ import { useFamily, useParentGate, useSession } from '../../state'
 import { householdDay, memberDay, occurrencesFor, type Occurrence } from '../../domain/schedule'
 import { levelOf, titleOf } from '../../domain/levels'
 import { coinBalance, flamesOf, pendingXp, RULES, xpOf } from '../../domain/economy'
-import { addHelper, joinHousehold, markDone, registerDeed, unmark } from '../../db/actions'
+import { addHelper, joinHousehold, markDone, registerDeed, saveTask, unmark } from '../../db/actions'
 import { CATEGORIES } from '../../data/categories'
-import { INVISIBLE_DEEDS } from '../../data/templates'
+import { INVISIBLE_DEEDS, TEMPLATES } from '../../data/templates'
 import { formatTime, isoWeekday, today, weekDates, WEEKDAY_LONG, WEEKDAY_SHORT } from '../../lib/date'
 import { play } from '../../lib/sound'
 import { buzz } from '../../lib/haptics'
@@ -283,7 +283,7 @@ function DeedModal({ me, onClose }: { me: Member; onClose: () => void }) {
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {INVISIBLE_DEEDS.map((d) => (
           <button key={d.title} className="btn btn-ghost justify-start" onClick={() => save(d)}>
-            <span aria-hidden="true">{d.emoji}</span> {d.title}
+            <TaskArt emoji={d.emoji} size={26} /> {d.title}
             <span className="ml-auto text-sm text-gold-deep">+{d.xp}</span>
           </button>
         ))}
@@ -337,7 +337,7 @@ function MyWeek({ me }: { me: Member }) {
                   {list.map((o) => (
                     <li key={o.task.id + o.slot}>
                       <button className="flex min-h-12 w-full items-center gap-2 rounded-xl px-2 text-left hover:bg-wait/60" onClick={() => setEdit({ task: o.task })}>
-                        <span aria-hidden="true">{o.task.emoji}</span>
+                        <TaskArt emoji={o.task.emoji} size={26} />
                         <span className="flex-1 truncate">{o.task.title}</span>
                         {o.task.proposedBy === me.id && <span className="text-muted" title="proposta por você"><Icon name="pencil" size={14} /></span>}
                         <span className="text-sm tabular-nums text-muted">{o.task.time ? formatTime(o.task.time) : '—'}</span>
@@ -352,6 +352,7 @@ function MyWeek({ me }: { me: Member }) {
           )
         })}
       </div>
+      <Catalog me={me} />
       {edit && (
         <TaskEditor
           task={edit.task}
@@ -362,6 +363,42 @@ function MyWeek({ me }: { me: Member }) {
         />
       )}
     </Section>
+  )
+}
+
+/** Sugestões prontas para o 12 anos propor na própria semana (entram com 10 XP; os pais ajustam depois). */
+function Catalog({ me }: { me: Member }) {
+  const f = useFamily()
+  const { toast } = useSession()
+  const mine = new Set(f.tasks.filter((t) => t.assigneeIds.includes(me.id)).map((t) => t.title))
+  const ideas = TEMPLATES.teen.filter((t) => !mine.has(t.title))
+  if (!ideas.length) return null
+  return (
+    <div className="mt-6">
+      <h3 className="title-display mb-1 text-lg">Sugestões para a sua semana</h3>
+      <p className="mb-3 text-sm text-muted">Escolha o que quiser assumir. Entra com 10 XP; dá para mudar o dia depois.</p>
+      <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {ideas.map((t) => (
+          <li key={t.id} className="card flex items-center gap-3 p-3">
+            <TaskArt emoji={t.emoji} size={36} />
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold leading-tight">{t.title}</p>
+              <p className="text-xs text-muted">{t.weekdays.length === 7 ? 'Todos os dias' : t.weekdays.map((d) => WEEKDAY_SHORT[d]).join(', ')}{t.time ? ` · ${formatTime(t.time)}` : ''}</p>
+            </div>
+            <button
+              className="btn btn-ghost h-12 min-h-12 px-3"
+              aria-label={`Assumir: ${t.title}`}
+              onClick={async () => {
+                await saveTask({ title: t.title, emoji: t.emoji, category: t.category, kind: 'individual', assigneeIds: [me.id], weekdays: t.weekdays, time: t.time, xp: 10, proposedBy: me.id })
+                toast(`${t.title}: adicionada à sua semana.`)
+              }}
+            >
+              <Icon name="plus" size={18} strokeWidth={2.25} /> Assumir
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 

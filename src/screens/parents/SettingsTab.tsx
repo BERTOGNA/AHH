@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { InstallCard } from '../../components/InstallCard'
 import type { ParentTitle, Settings } from '../../db/types'
 import { useFamily, useSession } from '../../state'
 import { resetAll, setPin, updateSettings } from '../../db/actions'
@@ -24,6 +25,7 @@ export function SettingsTab() {
         <PinSettings />
       </div>
       <div>
+        <div className="mb-6"><InstallCard /></div>
         <BackupSettings />
         <ResetSettings demo={settings.demo} />
       </div>
