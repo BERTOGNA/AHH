@@ -39,3 +39,6 @@ export function stopSpeaking() {
     /* nada */
   }
 }
+
+/** O aparelho sabe falar? Sem a API, os botões de ouvir somem (fallback silencioso). */
+export const canSpeak = () => typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined'

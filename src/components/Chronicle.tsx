@@ -9,7 +9,7 @@ import { achievementById } from '../data/achievements'
 import { missionById, stageOf } from '../data/missions'
 import { weekXp } from '../domain/economy'
 import { formatDayMonth, weekDates, weekKey } from '../lib/date'
-import { speak, stopSpeaking } from '../lib/speech'
+import { canSpeak, speak, stopSpeaking } from '../lib/speech'
 import { Avatar } from './Avatar'
 import { Icon } from './Icon'
 import { MissionScene } from './MissionScene'
@@ -51,9 +51,11 @@ export function Chronicle({ date, onClose, onThank }: { date: string; onClose: (
     <div role="dialog" aria-modal="true" aria-label="Crônica da Semana" className="night-sky on-night fixed inset-0 z-[65] flex flex-col overflow-y-auto">
       <header className="flex items-center gap-3 px-4 pt-4 sm:px-8">
         <p className="insignia flex-1 text-lg text-gold-light">Crônica da Semana</p>
-        <button className="btn btn-ghost h-12 px-3" aria-pressed={narrate} onClick={() => (narrate ? (stopSpeaking(), setNarrate(false)) : setNarrate(true))}>
-          <Icon name="speaker" size={20} /> {narrate ? 'Narrando' : 'Narrar'}
-        </button>
+        {canSpeak() && (
+          <button className="btn btn-ghost h-12 px-3" aria-pressed={narrate} onClick={() => (narrate ? (stopSpeaking(), setNarrate(false)) : setNarrate(true))}>
+            <Icon name="speaker" size={20} /> {narrate ? 'Narrando' : 'Narrar'}
+          </button>
+        )}
         <button className="btn btn-ghost h-12 w-12 rounded-full p-0" onClick={onClose} aria-label="Fechar a crônica">
           <Icon name="close" size={22} />
         </button>

@@ -8,7 +8,7 @@ import { levelOf } from '../../domain/levels'
 import { xpOf } from '../../domain/economy'
 import { addHelper, markDone, markThanksSeen, unmark } from '../../db/actions'
 import { addDays, nowMinutes, today } from '../../lib/date'
-import { speak } from '../../lib/speech'
+import { canSpeak, speak } from '../../lib/speech'
 import { play } from '../../lib/sound'
 import { buzz } from '../../lib/haptics'
 import { Avatar } from '../../components/Avatar'
@@ -64,14 +64,16 @@ export function KidAdventure({ me }: { me: Member }) {
             ))}
           </div>
         </div>
-        <button
-          className="grid h-[72px] w-[72px] shrink-0 place-items-center rounded-full text-white shadow-[var(--shadow-e2)]"
-          style={{ background: 'var(--hero)' }}
-          aria-label="Ouvir de novo"
-          onClick={() => speak(`Você tem ${occ.length} missões hoje.`)}
-        >
-          <Icon name="speaker" size={36} strokeWidth={2} />
-        </button>
+        {canSpeak() && (
+          <button
+            className="grid h-[72px] w-[72px] shrink-0 place-items-center rounded-full text-white shadow-[var(--shadow-e2)]"
+            style={{ background: 'var(--hero)' }}
+            aria-label="Ouvir de novo"
+            onClick={() => speak(`Você tem ${occ.length} missões hoje.`)}
+          >
+            <Icon name="speaker" size={36} strokeWidth={2} />
+          </button>
+        )}
       </header>
 
       <Bedtime me={me} />
@@ -189,15 +191,17 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
           </span>
         )}
       </button>
-      <button
-        className="absolute right-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-[var(--hero)] shadow-[var(--shadow-e1)] ring-1 ring-line"
-        onClick={() => speak(say)}
-        tabIndex={-1}
-        aria-hidden="true"
-      >
-        <Icon name="speaker" size={34} strokeWidth={2} />
-      </button>
-      {o.task.steps?.length ? (
+      {canSpeak() && (
+        <button
+          className="absolute right-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-[var(--hero)] shadow-[var(--shadow-e1)] ring-1 ring-line"
+          onClick={() => speak(say)}
+          tabIndex={-1}
+          aria-hidden="true"
+        >
+          <Icon name="speaker" size={34} strokeWidth={2} />
+        </button>
+      )}
+      {o.task.steps?.length && canSpeak() ? (
         <button
           className="absolute left-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-gold-deep shadow-[var(--shadow-e1)] ring-1 ring-line"
           onClick={() => speak(`Como fazer: ${o.task.steps!.map((x, i) => `${i + 1}. ${x}.`).join(' ')}`, true)}
