@@ -15,13 +15,13 @@ deste plano, vale este plano.
 | Moedas | `floor(XP total/5)` (ARQ) × 1 XP = 1 moeda (UX) × XP÷5 por tarefa (GD) | **GD**: cada tarefa validada dá `xp/5` moedas, mentoria dá +1; agradecimentos e bônus não dão moedas | Custos das recompensas (10–200) foram calibrados assim |
 | Recompensas do onboarding | Custos 40–150 (UX) | Custos da escala GD (10–180) | Coerência com a economia |
 | Mentoria | 50% do XP (ARQ) × card com as missões do irmão (UX) × só tarefas já feitas, +5 XP/+1 moeda, até 3/dia (GD) | **GD**. O mentor vê apenas tarefas do irmão já marcadas e toca "🤝 Eu ajudei"; o de 6 anos também pode apontar "Alguém te ajudou?" | Evita fiscalização: o mentor nunca vê o que está em aberto |
-| Agradecimento | +5 XP para quem recebe (ARQ) × +2/+2 nos 5 primeiros envios do dia (GD) | **GD** | Valoriza também quem agradece |
+| Agradecimento | +5 XP para quem recebe (ARQ) × +2/+2 nos 5 primeiros envios do dia (GD) | **GD, com limites independentes**: +2 para quem envia (até 5 envios/dia) e +2 para quem recebe (até 5/dia vindos do mesmo remetente) | Valoriza também quem agradece. O teste de monotonicidade mostrou que um limite dependente da ordem podia tirar XP de alguém ao importar registros antigos |
 | Streak | Dias seguidos com 1 folga (UX) × "Chamas da Semana", sem dias seguidos (GD) | **GD**: 7 lareiras por semana; 5 acesas = Semana Acesa (+15 XP). Contadores de longo prazo só sobem | Não existe sequência para "quebrar" |
 | Meta da missão | 70% (ARQ) × 60% arredondado a 50, entre 300 e 3.000 (GD) | **GD** | |
 | Bônus de missão | +30 XP (ARQ) × nenhum (GD) | **Nenhum**; a recompensa da missão é coletiva e real | Evita dobrar a recompensa |
 | Dias da semana | 0–6 × ISO 1–7 | **ISO 1 = seg … 7 = dom**, semana começa na segunda | |
 | Devolver tarefa | "Ainda não" (GD) × "Devolver" (UX) | Botão **"Ainda não"** nos pais: apaga a marcação, sem nenhum registro | Não pode haver estado de falha |
-| Tarefas dos pais | Autovalidação | Adulto marca = validada na hora, com o mesmo carimbo das crianças | Igual nos três documentos |
+| Tarefas dos pais | Autovalidação | Quando um adulto marca (inclusive uma tarefa em dupla com o filho), ela já nasce validada | O adulto está presente e atesta |
 | Tela do herói adulto | Exige PIN (UX) | Exige PIN; as crianças veem os pais no Salão, no Mural e na Semana | |
 
 ## 2. Simplificações deliberadas do MVP (registradas)

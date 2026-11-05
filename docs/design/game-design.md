@@ -1,6 +1,6 @@
 # Game Design: Reino de Aurora
 
-> Documento de referência para implementação. Todas as decisões são finais para o MVP. "XP" = experiência (progressão); "moedas" = moeda do Baú.
+> Documento de referência para implementação. Onde ele diverge do que foi construído, vale `docs/PLANO.md` (ex.: limites do agradecimento, recorrência ao mover tarefas). Todas as decisões são finais para o MVP. "XP" = experiência (progressão); "moedas" = moeda do Baú.
 
 ## 1. Universo e tom
 
