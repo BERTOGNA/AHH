@@ -43,3 +43,7 @@ O mais velho pode registrar quando ajudou o irmão ("Eu ajudei") — só em tare
 - **Instalem** o app na tela inicial do tablet da casa (botão "Instalar" em Ajustes) — abre em tela cheia e funciona sem internet.
 - **PIN:** é só para as crianças não validarem sozinhas; não é um cofre. Troquem em Ajustes se alguém descobrir.
 - **Dia atípico** (doença, viagem, feriado): na Semana, toque na tarefa → "Neste dia não precisa". Compromissos de uma data só (dentista, aniversário) entram em "Compromisso".
+- **Férias e feriados prolongados:** Semana → "Férias / folga". Escolham o período, quem está de folga e o que pausa (escola, trabalho). A meta da missão se ajusta sozinha — ninguém "fica devendo".
+- **À noite:** em Ajustes → Aparência, o modo "Automático" escurece as telas das 19h às 6h (bom para o Ritual do Selo sem ofuscar ninguém).
+- **Quadro na geladeira:** Semana → "Imprimir quadro". Para os pequenos, só desenhos e um quadradinho para marcar à mão.
+- **Esqueceram o PIN?** No teclado do PIN, toque em "Esqueci o PIN": uma conta de adulto e vocês cadastram um novo.
