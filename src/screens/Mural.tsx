@@ -218,7 +218,7 @@ function HeroColumn({ member, completions, canThank, onThank }: {
       <div className="p-3">
         {front.map(renderCat)}
         {back.length > 0 && (
-          <div className="mt-3 rounded-2xl bg-[linear-gradient(180deg,#FFF7E3,#FBEFD2)] p-3 ring-1 ring-gold/40">
+          <div className="mt-3 rounded-2xl bg-[linear-gradient(180deg,var(--color-state-wait-a),var(--color-state-wait-b))] p-3 ring-1 ring-gold/40">
             <p className="eyebrow mb-2 flex items-center gap-1.5"><Icon name="sparkle" size={14} /> Bastidores do Reino</p>
             {back.map(renderCat)}
           </div>

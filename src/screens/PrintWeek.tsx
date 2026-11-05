@@ -13,8 +13,16 @@ export function PrintWeek() {
   const f = useFamily()
   const dates = weekDates(today())
   useEffect(() => {
+    const root = document.documentElement
+    const prev = root.dataset.theme
     document.body.classList.add('printing')
-    return () => document.body.classList.remove('printing')
+    root.dataset.print = '1'
+    root.dataset.theme = 'claro'
+    return () => {
+      document.body.classList.remove('printing')
+      delete root.dataset.print
+      if (prev) root.dataset.theme = prev
+    }
   }, [])
   return (
     <main className="print-sheet mx-auto max-w-[1100px] bg-white p-6 text-ink">

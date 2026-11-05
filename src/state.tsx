@@ -62,6 +62,26 @@ export function FamilyProvider({ children, fallback }: { children: ReactNode; fa
     setVibrationEnabled(family.settings.vibration)
   }, [family?.settings.sounds, family?.settings.vibration]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Tema: claro, noite ou automático (noite das 19h às 6h). A impressão força o claro.
+  const theme = family?.settings.theme ?? 'claro'
+  useEffect(() => {
+    const apply = () => {
+      const h = new Date().getHours()
+      const night = theme === 'noite' || (theme === 'auto' && (h >= 19 || h < 6))
+      const root = document.documentElement
+      if (root.dataset.print) root.dataset.theme = 'claro'
+      else root.dataset.theme = night ? 'noite' : 'claro'
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', night ? '#121534' : '#1c1f3a')
+    }
+    apply()
+    const t = window.setInterval(apply, 60000)
+    window.addEventListener('hashchange', apply)
+    return () => {
+      window.clearInterval(t)
+      window.removeEventListener('hashchange', apply)
+    }
+  }, [theme])
+
   // A missão da semana nasce na primeira abertura da semana.
   const wk = weekKey(today())
   const hasMission = family?.missions.some((m) => m.weekKey === wk)

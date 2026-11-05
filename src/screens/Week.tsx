@@ -11,7 +11,7 @@ import { Screen } from '../components/Screen'
 import { Modal } from '../components/Modal'
 import { TaskEditor } from '../components/TaskEditor'
 import { Avatar } from '../components/Avatar'
-import { heroColor } from '../components/hero'
+import { heroColor, heroTint } from '../components/hero'
 import { clearException, deleteRoutine, saveRoutine, saveTask, setException } from '../db/actions'
 import { occurrencesFor, ROUTINE_INFO, routineOn } from '../domain/schedule'
 import {
@@ -82,7 +82,7 @@ export function Week() {
             className="chip pl-1"
             aria-pressed={!hidden.includes(m.id)}
             onClick={() => setHidden((h) => (h.includes(m.id) ? h.filter((x) => x !== m.id) : lanes.length > 1 ? [...h, m.id] : h))}
-            style={!hidden.includes(m.id) ? { background: heroColor(m).tint, color: 'var(--color-ink)', borderColor: heroColor(m).solid } : undefined}
+            style={!hidden.includes(m.id) ? { background: heroTint(m), color: 'var(--color-ink)', borderColor: heroColor(m).solid } : undefined}
           >
             <Avatar member={m} size={32} /> {m.name}
           </button>
@@ -106,7 +106,7 @@ export function Week() {
                 role="tab"
                 aria-selected={d === day}
                 onClick={() => setDay(d)}
-                className={`relative h-12 flex-1 rounded-xl text-sm font-bold ${d === day ? 'bg-night text-bg' : 'bg-surface'}`}
+                className={`relative h-12 flex-1 rounded-xl text-sm font-bold ${d === day ? 'bg-night text-ivory ring-1 ring-gold-light/40' : 'bg-surface'}`}
               >
                 {WEEKDAY_SHORT[isoWeekday(d)]}
                 {d === today() && <span className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-gold-bright" aria-label="hoje" />}

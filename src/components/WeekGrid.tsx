@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEven
 import type { Completion, Member, RoutineBlock, Task } from '../db/types'
 import { occurrencesFor, ROUTINE_INFO, routineOn, togetherRanges, type Occurrence } from '../domain/schedule'
 import { addDays, formatDayMonth, formatTime, hhmm, isoWeekday, minutes, nowMinutes, today, weekDates, WEEKDAY_SHORT } from '../lib/date'
-import { heroColor } from './hero'
+import { heroColor, heroTint } from './hero'
 import { buzz } from '../lib/haptics'
 import { Icon } from './Icon'
 import { Avatar } from './Avatar'
@@ -189,7 +189,7 @@ export function WeekGrid(p: WeekGridProps) {
             const untimed = occ.filter((o) => !o.task.time)
             const together = lanes.length >= 3 ? togetherRanges(d, lanes, p.routines) : []
             return (
-              <div key={d} className={`min-w-0 flex-1 border-l border-line ${isToday ? 'bg-[#fffdf5]' : ''}`} style={{ minWidth: wide ? 120 : undefined }}>
+              <div key={d} className={`min-w-0 flex-1 border-l border-line ${isToday ? 'bg-raised/60' : ''}`} style={{ minWidth: wide ? 120 : undefined }}>
                 {/* cabeçalho do dia + "dia todo" */}
                 <div className="sticky top-0 z-10 h-[96px] border-b border-line bg-surface px-1 pt-1">
                   {wide && p.onDayTap && !p.focusDay ? (
@@ -220,7 +220,7 @@ export function WeekGrid(p: WeekGridProps) {
                       <button
                         key={o.task.id + o.slot}
                         onClick={() => p.onTaskTap?.(o.task, d)}
-                        className="h-6 rounded-md border bg-white px-1 text-xs leading-none"
+                        className="h-6 rounded-md border bg-raised px-1 text-xs leading-none"
                         style={{ borderColor: o.forIds[0] ? heroColor(p.members.find((m) => m.id === o.forIds[0]) ?? { slot: 0 }).solid : 'var(--color-line)' }}
                         aria-label={`${o.task.title}, sem horário`}
                       >
@@ -246,7 +246,7 @@ export function WeekGrid(p: WeekGridProps) {
                       className="pointer-events-none absolute inset-x-0 z-[1] border-y-2 border-gold-bright/70 bg-gold-bright/15"
                       style={{ top: yOf(r.start), height: yOf(r.end) - yOf(r.start) }}
                     >
-                      <span className="absolute right-0.5 top-0.5 rounded bg-gold-bright px-1 text-[10px] font-bold text-ink">✦ Juntos</span>
+                      <span className="absolute right-0.5 top-0.5 rounded bg-gold-bright px-1 text-[10px] font-bold text-[#1e1a2b]">✦ Juntos</span>
                     </div>
                   ))}
                   {/* rotina */}
@@ -270,8 +270,8 @@ export function WeekGrid(p: WeekGridProps) {
                           top, height: Math.max(14, yOf(s.end) - yOf(s.start) - 1),
                           left: `calc(${i * laneWidth}% + 1.5px)`, width: `calc(${laneWidth}% - 3px)`,
                           background: s.routine.kind === 'sleep'
-                            ? `linear-gradient(180deg, ${heroColor(m).tint}, color-mix(in srgb, ${heroColor(m).tint} 70%, #C9C3DA))`
-                            : `linear-gradient(180deg, color-mix(in srgb, ${heroColor(m).solid} 16%, white), ${heroColor(m).tint})`,
+                            ? `linear-gradient(180deg, ${heroTint(m)}, color-mix(in srgb, ${heroTint(m)} 70%, #8E88A8))`
+                            : `linear-gradient(180deg, color-mix(in srgb, ${heroColor(m).solid} 16%, var(--color-raised)), ${heroTint(m)})`,
                           boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${heroColor(m).solid} 22%, transparent)`,
                         }}
                       >
@@ -303,7 +303,7 @@ export function WeekGrid(p: WeekGridProps) {
                         style={{
                           top, height: h,
                           left: `calc(${lane * laneWidth}% + 2px)`, width: `calc(${span * laneWidth}% - 4px)`,
-                          background: o.task.kind === 'household' ? 'linear-gradient(180deg, #FFF7E0, #FBEBC4)' : '#FFFFFF',
+                          background: o.task.kind === 'household' ? 'linear-gradient(180deg, var(--color-state-wait-a), var(--color-state-wait-b))' : 'var(--color-raised)',
                           boxShadow: `inset 3px 0 0 ${o.task.kind === 'household' ? 'var(--color-gold)' : heroColor(owner).solid}, 0 0 0 1px rgb(30 26 43 / .08), 0 2px 6px rgb(30 26 43 / .1)`,
                           opacity: st === 'validated' ? 0.92 : 1,
                         }}
@@ -325,7 +325,7 @@ export function WeekGrid(p: WeekGridProps) {
                     </div>
                   )}
                   {drag && drag.date === d && (
-                    <div className="pointer-events-none absolute left-0 z-40 rounded bg-ink px-1.5 text-xs font-bold text-bg" style={{ top: yOf(drag.min) - 18 }}>
+                    <div className="pointer-events-none absolute left-0 z-40 rounded bg-night px-1.5 text-xs font-bold text-ivory" style={{ top: yOf(drag.min) - 18 }}>
                       {hhmm(drag.min)}
                     </div>
                   )}
@@ -354,7 +354,7 @@ export function LaneLegend({ members }: { members: Member[] }) {
     <div className="flex flex-wrap gap-3 text-sm" aria-label="Faixas da grade, da esquerda para a direita">
       {members.map((m) => (
         <span key={m.id} className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-5 rounded-sm" style={{ background: heroColor(m).tint, borderLeft: `3px solid ${heroColor(m).solid}` }} />
+          <span className="h-3 w-5 rounded-sm" style={{ background: heroTint(m), borderLeft: `3px solid ${heroColor(m).solid}` }} />
           {m.name}
         </span>
       ))}

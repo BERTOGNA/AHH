@@ -138,5 +138,10 @@ Exceções conscientes: os blocos finos da grade semanal no tablet (ver `docs/PL
 | `RoutineIcon` / `ClassIcon` | grade, Salão, lista do dia, assistente | Ilustração quando existe, ícone de traço nos demais. |
 | `BackupReminder`, `InstallCard`, `FirstTips` | Salão (modo pais), Ajustes, abertura | Avisos gentis, dispensáveis. |
 
-### Tema noite completo: adiado (decisão)
-As tints claras dos heróis estão embutidas em estilos inline (medalhões, blocos da grade, chips) e várias superfícies usam branco fixo. Um tema escuro "por cima" deixaria texto ilegível em pontos críticos. Quando for feito, deve começar por mover as tints para tokens por tema e trocar `bg-white` por `bg-surface`. Até lá, os momentos noturnos (Salão, celebrações, Crônica, boa-noite) já usam a noite encantada.
+### Tema noite (Ajustes › Aparência: Claro / Noite / Automático)
+Implementado com tokens por tema em `:root[data-theme="noite"]` (`src/index.css`):
+- Superfícies (`bg`, `surface`, `raised`), tinta, texto secundário, linhas, `wait`, trilhos e **tints dos heróis** (`--color-tint-0..3`) viram versões escuras; os estados dos cartões (aguardando/validada) usam `--color-state-*`.
+- As joias sólidas não mudam (são fundo de texto branco nos estandartes e botões). Texto sobre ouro usa tinta escura fixa (`#1e1a2b`) nos dois temas.
+- A arte (medalhões, selos, cenas, ilustrações) mantém as próprias cores.
+- "Automático" escurece das 19h às 6h. O quadro impresso força o tema claro.
+- Contrastes no tema noite: tinta 11,2–15,1:1; secundário 6,9–8,0:1; ouro 8,4–10,6:1. A auditoria automática nas telas de fundo sólido deu 0 reprovações nos dois temas.

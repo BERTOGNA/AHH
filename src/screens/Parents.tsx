@@ -72,7 +72,7 @@ export function Parents({ tab }: { tab?: string }) {
               {t.label}
               {badges[t.id] ? (
                 <span
-                  className="ml-1 grid h-6 min-w-6 place-items-center rounded-full bg-gold px-1.5 text-sm font-bold text-ink tabular-nums"
+                  className="tab-badge ml-1 grid h-6 min-w-6 place-items-center rounded-full bg-gold px-1.5 text-sm font-bold text-[#1e1a2b] tabular-nums"
                   aria-label={`${badges[t.id]} pendentes`}
                 >
                   {badges[t.id]}

@@ -156,7 +156,7 @@ function Flames({ me }: { me: Member }) {
       <ol className="mb-2 grid grid-cols-7 gap-1 text-center">
         {flames.map((on, i) => (
           <li key={i} aria-label={`${WEEKDAY_LONG[(i + 1) as 1]}: ${on ? 'chama acesa' : 'lenha pronta'}`}>
-            <span className="mx-auto grid h-14 w-14 place-items-center rounded-full" style={{ background: on ? 'radial-gradient(circle, #FFF1CC, transparent 70%)' : undefined }}><Flame size={44} lit={on} /></span>
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-full" style={{ background: on ? 'radial-gradient(circle, rgb(241 213 138 / .45), transparent 70%)' : undefined }}><Flame size={44} lit={on} /></span>
             <span className="text-xs font-semibold text-muted">{WEEKDAY_SHORT[(i + 1) as 1]}</span>
           </li>
         ))}
@@ -274,7 +274,7 @@ function TaskRow({ o, me, onCheck }: { o: Occurrence; me: Member; onCheck?: () =
         <button
           onClick={onCheck}
           aria-label={`Marcar como feita: ${o.task.title}`}
-          className="group grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[#cdbd9c] bg-white text-transparent shadow-[inset_0_1px_3px_rgba(30,26,43,0.08)] transition hover:border-gold hover:text-gold-deep"
+          className="group grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[#cdbd9c] bg-raised text-transparent shadow-[inset_0_1px_3px_rgba(30,26,43,0.08)] transition hover:border-gold hover:text-gold-deep"
         >
           <Icon name="check" size={22} strokeWidth={2.5} />
         </button>

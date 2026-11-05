@@ -77,8 +77,8 @@ export function KingdomJourney() {
             {/* grade e eixo Y, recessivos */}
             {ticks.map((t) => (
               <g key={t}>
-                <line x1={padL} x2={W - 8} y1={y(t)} y2={y(t)} stroke="#EDE3CF" strokeWidth="1" />
-                <text x={padL - 8} y={y(t) + 4} textAnchor="end" fontSize="11" fill="#5B5468" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                <line x1={padL} x2={W - 8} y1={y(t)} y2={y(t)} stroke="var(--color-line)" strokeWidth="1" />
+                <text x={padL - 8} y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--color-muted)" style={{ fontVariantNumeric: 'tabular-nums' }}>
                   {t.toLocaleString('pt-BR')}
                 </text>
               </g>
@@ -99,11 +99,11 @@ export function KingdomJourney() {
                   )}
                   {d.done && <g transform={`translate(${cx - 9}, ${y(d.xp) - 22})`}><GoldStarSvg /></g>}
                   {d.current && (
-                    <text x={cx} y={y(d.xp) - (d.done ? 26 : 8)} textAnchor="middle" fontSize="12" fontWeight="700" fill="#1E1A2B" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                    <text x={cx} y={y(d.xp) - (d.done ? 26 : 8)} textAnchor="middle" fontSize="12" fontWeight="700" fill="var(--color-ink)" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {d.xp.toLocaleString('pt-BR')}
                     </text>
                   )}
-                  <text x={cx} y={H - 10} textAnchor="middle" fontSize="11" fontWeight={d.current ? 700 : 400} fill={d.current ? '#1E1A2B' : '#5B5468'}>
+                  <text x={cx} y={H - 10} textAnchor="middle" fontSize="11" fontWeight={d.current ? 700 : 400} fill={d.current ? 'var(--color-ink)' : 'var(--color-muted)'}>
                     {d.current ? 'agora' : wide || i % 2 === 0 ? formatDayMonth(d.monday) : ''}
                   </text>
                   {/* alvo de toque/hover maior que a barra */}
@@ -120,7 +120,7 @@ export function KingdomJourney() {
                 </g>
               )
             })}
-            <line x1={padL} x2={W - 8} y1={y(0)} y2={y(0)} stroke="#CDBD9C" strokeWidth="1" />
+            <line x1={padL} x2={W - 8} y1={y(0)} y2={y(0)} stroke="var(--color-line)" strokeWidth="1" />
           </svg>
           {hover !== null && (
             <div

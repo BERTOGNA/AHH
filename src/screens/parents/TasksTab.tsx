@@ -72,7 +72,7 @@ export function TasksTab() {
             {list.map((t) => (
               <li key={t.id}>
                 <button
-                  className="card flex w-full items-center gap-3 p-3 text-left hover:bg-white"
+                  className="card flex w-full items-center gap-3 p-3 text-left hover:bg-raised"
                   onClick={() => setEditing(t)}
                   aria-label={`Editar ${t.title}`}
                 >

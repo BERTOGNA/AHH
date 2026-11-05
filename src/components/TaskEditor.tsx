@@ -71,7 +71,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
       <div className="flex flex-col gap-4">
         <div className="flex gap-3">
           <button
-            className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl border-2 border-line bg-white text-4xl"
+            className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl border-2 border-line bg-raised text-4xl"
             onClick={() => setPickEmoji((v) => !v)}
             aria-label={`Ícone: ${emoji}. Trocar ícone`}
             aria-expanded={pickEmoji}
@@ -85,7 +85,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
           </label>
         </div>
         {pickEmoji && (
-          <div className="grid grid-cols-8 gap-1 rounded-2xl border border-line bg-white p-2" role="listbox" aria-label="Ícones">
+          <div className="grid grid-cols-8 gap-1 rounded-2xl border border-line bg-raised p-2" role="listbox" aria-label="Ícones">
             {EMOJIS.map((e) => (
               <button key={e} role="option" aria-selected={e === emoji} className={`grid h-12 place-items-center rounded-xl ${e === emoji ? 'bg-wait ring-2 ring-gold' : 'hover:bg-bg'}`} onClick={() => { setEmoji(e); setPickEmoji(false) }}>
                 <TaskArt emoji={e} size={34} />

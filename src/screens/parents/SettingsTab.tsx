@@ -76,6 +76,17 @@ function KingdomSettings({ settings }: { settings: Settings }) {
             ))}
           </div>
         </fieldset>
+        <fieldset className="mb-2">
+          <legend className="mb-1 font-semibold">Aparência</legend>
+          <div className="flex flex-wrap gap-2">
+            {([['claro', 'Claro'], ['noite', 'Noite'], ['auto', 'Automático']] as const).map(([v, l]) => (
+              <button key={v} type="button" className="chip" aria-pressed={(settings.theme ?? 'claro') === v} onClick={() => updateSettings({ theme: v })}>
+                {l}
+              </button>
+            ))}
+          </div>
+          <p className="mt-1 text-sm text-muted">Automático escurece as telas das 19h às 6h — bom para o Ritual do Selo à noite.</p>
+        </fieldset>
         <Toggle label="Sons" checked={settings.sounds} onChange={(v) => updateSettings({ sounds: v })} />
         <Toggle label="Vibração" hint="Funciona em alguns celulares." checked={settings.vibration} onChange={(v) => updateSettings({ vibration: v })} />
         <Toggle

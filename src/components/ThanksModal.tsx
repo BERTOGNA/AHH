@@ -68,7 +68,7 @@ export function ThanksModal({ from, to, completionId, about, onClose }: Props) {
                 <button
                   key={q.text}
                   aria-label={msg}
-                  className="grid h-20 place-items-center rounded-2xl border-2 border-line bg-white text-4xl active:bg-wait"
+                  className="grid h-20 place-items-center rounded-2xl border-2 border-line bg-raised text-4xl active:bg-wait"
                   onClick={() => {
                     speak(msg)
                     void send(msg, q.emoji)

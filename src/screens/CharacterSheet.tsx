@@ -133,7 +133,7 @@ export function CharacterSheet({ id }: { id: string }) {
                         aria-pressed={on}
                         aria-label={`${it.name}${ok ? (on ? ', equipado' : '') : `. ${req}`}`}
                         title={ok ? it.name : req}
-                        className={`grid aspect-square w-full place-items-center rounded-2xl border-2 text-3xl ${on ? 'border-gold bg-wait' : 'border-line bg-white'} ${ok ? '' : 'bg-bg'}`}
+                        className={`grid aspect-square w-full place-items-center rounded-2xl border-2 text-3xl ${on ? 'border-gold bg-wait' : 'border-line bg-raised'} ${ok ? '' : 'bg-bg'}`}
                         style={it.color && ok ? { boxShadow: `inset 0 0 0 4px ${it.color}55` } : undefined}
                       >
                         {ok ? (hasItemArt(it.id) ? <ItemArt id={it.id} size={52} /> : <span aria-hidden="true">{it.emoji}</span>) : <Icon name="lock" size={22} className="text-muted" />}

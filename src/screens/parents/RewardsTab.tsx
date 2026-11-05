@@ -36,7 +36,7 @@ export function RewardsTab() {
           {sorted.map((r) => (
             <li key={r.id}>
               <button
-                className={`card flex w-full items-center gap-3 p-3 text-left hover:bg-white ${r.active ? '' : 'opacity-60'}`}
+                className={`card flex w-full items-center gap-3 p-3 text-left hover:bg-raised ${r.active ? '' : 'opacity-60'}`}
                 onClick={() => setEditing(r)}
                 aria-label={`Editar ${r.title}`}
               >
@@ -79,7 +79,7 @@ function RewardEditor({ reward, onClose }: { reward?: Reward; onClose: () => voi
         </label>
         <fieldset>
           <legend className="mb-1 text-sm font-semibold">Ícone</legend>
-          <div className="grid grid-cols-10 gap-1 rounded-2xl border border-line bg-white p-2">
+          <div className="grid grid-cols-10 gap-1 rounded-2xl border border-line bg-raised p-2">
             {REWARD_EMOJIS.map((e) => (
               <button key={e} aria-pressed={e === emoji} aria-label={e} className={`h-12 rounded-xl grid place-items-center ${e === emoji ? 'bg-wait ring-2 ring-gold' : ''}`} onClick={() => setEmoji(e)}>
                 <TaskArt emoji={e} size={32} />

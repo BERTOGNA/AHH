@@ -119,7 +119,7 @@ export function StepReview({ d, onAdjust }: { d: Draft; onAdjust: () => void }) 
               <p className="mb-1 text-sm font-semibold">Tarefas por dia</p>
               <ul className="flex gap-1" aria-label={`Tarefas por dia de ${m.name}`}>
                 {WEEKDAYS.map((day) => (
-                  <li key={day} className="flex w-10 flex-col items-center rounded-lg border border-line bg-white py-1 text-xs">
+                  <li key={day} className="flex w-10 flex-col items-center rounded-lg border border-line bg-raised py-1 text-xs">
                     <span className="text-muted">{WEEKDAY_SHORT[day]}</span>
                     <span className="text-base font-bold tabular-nums">{perDay(day)}</span>
                   </li>

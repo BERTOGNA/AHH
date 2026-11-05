@@ -12,7 +12,7 @@ registerSW({ immediate: true })
 
 function Splash() {
   return (
-    <div className="night-sky grid min-h-dvh place-items-center text-bg">
+    <div className="night-sky grid min-h-dvh place-items-center text-ivory">
       <div className="text-center">
         <div className="text-7xl" aria-hidden="true">🏰</div>
         <p className="title-display mt-3 text-xl text-gold-bright">Abrindo os portões…</p>

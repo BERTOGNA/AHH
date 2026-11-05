@@ -112,7 +112,7 @@ function Key({ children, onClick, label }: { children: string; onClick: () => vo
     <button
       onClick={onClick}
       aria-label={label ?? children}
-      className="h-[72px] w-[72px] justify-self-center rounded-full border border-line bg-gradient-to-b from-white to-[#F7F0E2] text-[26px] font-semibold tabular-nums shadow-[var(--shadow-e1)] transition active:scale-95 active:bg-wait"
+      className="h-[72px] w-[72px] justify-self-center rounded-full border border-line bg-gradient-to-b from-raised to-surface text-[26px] font-semibold tabular-nums shadow-[var(--shadow-e1)] transition active:scale-95 active:bg-wait"
     >
       {children}
     </button>

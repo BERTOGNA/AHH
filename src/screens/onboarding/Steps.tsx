@@ -111,7 +111,7 @@ export function StepHeroes({ d, set }: StepProps) {
               role="radio"
               aria-checked={m.classId === c.id}
               onClick={() => set((x) => updateMember(x, m.key, { classId: c.id }))}
-              className={`flex min-h-14 items-center gap-3 rounded-2xl border-2 px-3 py-2 text-left ${m.classId === c.id ? 'border-gold bg-wait' : 'border-line bg-white'}`}
+              className={`flex min-h-14 items-center gap-3 rounded-2xl border-2 px-3 py-2 text-left ${m.classId === c.id ? 'border-gold bg-wait' : 'border-line bg-raised'}`}
             >
               <ClassIcon classId={c.id} size={40} />
               <span className="flex-1">
@@ -406,7 +406,7 @@ export function StepChest({ d, set }: StepProps) {
           <span className="font-semibold">Adicionar uma recompensa de vocês</span>
           <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Ícone da recompensa">
             {REWARD_EMOJIS.map((e) => (
-              <button key={e} type="button" role="radio" aria-checked={emoji === e} aria-label={`Ícone ${e}`} onClick={() => setEmoji(e)} className={`h-12 w-12 rounded-xl border-2 grid place-items-center ${emoji === e ? 'border-gold bg-wait' : 'border-line bg-white'}`}>
+              <button key={e} type="button" role="radio" aria-checked={emoji === e} aria-label={`Ícone ${e}`} onClick={() => setEmoji(e)} className={`h-12 w-12 rounded-xl border-2 grid place-items-center ${emoji === e ? 'border-gold bg-wait' : 'border-line bg-raised'}`}>
                 <TaskArt emoji={e} size={32} />
               </button>
             ))}
@@ -427,7 +427,7 @@ export function StepChest({ d, set }: StepProps) {
               role="radio"
               aria-checked={d.missionId === m.id}
               onClick={() => set((x) => ({ ...x, missionId: m.id }))}
-              className={`flex min-h-20 items-center gap-3 rounded-2xl border-2 p-3 text-left ${d.missionId === m.id ? 'border-gold bg-wait' : 'border-line bg-white'}`}
+              className={`flex min-h-20 items-center gap-3 rounded-2xl border-2 p-3 text-left ${d.missionId === m.id ? 'border-gold bg-wait' : 'border-line bg-raised'}`}
             >
               <span className="w-28 shrink-0 overflow-hidden rounded-xl ring-1 ring-line" aria-hidden="true">
                 <MissionScene missionId={m.id} stage={4} className="block aspect-[16/10] w-full" />

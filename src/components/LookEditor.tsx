@@ -57,7 +57,7 @@ export function LookEditor({ member, onChange }: Props) {
       aria-label={label}
       title={label}
       onClick={onClick}
-      className={`grid place-items-center rounded-2xl p-1.5 transition ${selected ? 'bg-wait ring-2 ring-gold' : 'bg-white ring-1 ring-line hover:ring-gold/60'}`}
+      className={`grid place-items-center rounded-2xl p-1.5 transition ${selected ? 'bg-wait ring-2 ring-gold' : 'bg-raised ring-1 ring-line hover:ring-gold/60'}`}
     >
       <Avatar member={preview(l)} size={kid ? 72 : 60} />
     </button>
@@ -130,7 +130,7 @@ export function LookEditor({ member, onChange }: Props) {
                 aria-label={e.name}
                 title={e.name}
                 onClick={() => set({ extras: next }, e.name)}
-                className={`grid place-items-center rounded-2xl p-1.5 transition ${on ? 'bg-wait ring-2 ring-gold' : 'bg-white ring-1 ring-line hover:ring-gold/60'}`}
+                className={`grid place-items-center rounded-2xl p-1.5 transition ${on ? 'bg-wait ring-2 ring-gold' : 'bg-raised ring-1 ring-line hover:ring-gold/60'}`}
               >
                 <Avatar member={preview({ ...look, extras: on ? look.extras : [...look.extras, e.id] })} size={kid ? 72 : 60} />
               </button>

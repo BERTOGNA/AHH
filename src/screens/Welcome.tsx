@@ -156,7 +156,7 @@ export function Welcome() {
           </button>
           {draft && (
             <button
-              className="btn h-12 border-2 border-[#e8dcc0]/50 text-bg"
+              className="btn h-12 border-2 border-[#e8dcc0]/50 text-ivory"
               disabled={Boolean(busy)}
               onClick={() => {
                 clearDraft()
@@ -168,7 +168,7 @@ export function Welcome() {
               Recomeçar do início
             </button>
           )}
-          <button className="btn h-14 border-2 border-[#e8dcc0]/50 text-bg hover:bg-white/10" disabled={Boolean(busy)} onClick={useDemo}>
+          <button className="btn h-14 border-2 border-[#e8dcc0]/50 text-ivory hover:bg-white/10" disabled={Boolean(busy)} onClick={useDemo}>
             {busy === 'demo' ? 'Preparando o reino…' : 'Usar família de exemplo'}
           </button>
           <label className="btn h-12 cursor-pointer text-[#e8dcc0] underline-offset-4 hover:underline">

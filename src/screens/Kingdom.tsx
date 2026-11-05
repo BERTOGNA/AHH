@@ -97,7 +97,7 @@ export function Kingdom() {
                   <span className="relative">
                     <Avatar member={m} size={wide ? 124 : 96} />
                     {waiting > 0 && (
-                      <span className="absolute -right-3 -top-1 grid h-9 min-w-9 place-items-center gap-0.5 rounded-full bg-gradient-to-b from-[#F6DD96] to-gold px-2 text-sm font-extrabold text-ink shadow-md ring-2 ring-white/70" aria-hidden="true">
+                      <span className="absolute -right-3 -top-1 grid h-9 min-w-9 place-items-center gap-0.5 rounded-full bg-gradient-to-b from-[#F6DD96] to-gold px-2 text-sm font-extrabold text-[#1e1a2b] shadow-md ring-2 ring-white/70" aria-hidden="true">
                         <span className="flex items-center gap-0.5"><Icon name="hourglass" size={14} strokeWidth={2.25} />{waiting}</span>
                       </span>
                     )}

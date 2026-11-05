@@ -170,15 +170,15 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
       aria-label={label}
       className="relative flex min-h-[320px] flex-col overflow-hidden rounded-[28px] p-4 pt-6 shadow-[var(--shadow-e2)]"
       style={{
-        background: status === 'done' ? 'linear-gradient(180deg, #FFF7E0, #FBEBC4)' : status === 'validated' ? 'linear-gradient(180deg, #FFFBEA, #F8EBC2)' : 'var(--color-surface)',
-        boxShadow: `inset 0 0 0 2px ${status ? '#E8CB7E' : 'var(--hero)'}, var(--shadow-e2)`,
+        background: status === 'done' ? 'linear-gradient(180deg, var(--color-state-wait-a), var(--color-state-wait-b))' : status === 'validated' ? 'linear-gradient(180deg, var(--color-state-done-a), var(--color-state-done-b))' : 'var(--color-surface)',
+        boxShadow: `inset 0 0 0 2px ${status ? 'var(--color-state-ring)' : 'var(--hero)'}, var(--shadow-e2)`,
       }}
     >
       <span className="absolute inset-x-0 top-0 h-2" style={{ background: 'var(--hero)' }} aria-hidden="true" />
       <button className="flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl" onClick={() => speak(say)} aria-label={`Ouvir: ${o.task.title}`}>
         <span
           className="grid h-[148px] w-[148px] place-items-center rounded-full"
-          style={{ background: 'radial-gradient(circle at 50% 40%, #FFFFFF, var(--hero-tint) 70%)', boxShadow: 'inset 0 -6px 14px rgb(30 26 43 / .06), 0 0 0 6px var(--color-surface), 0 0 0 7px var(--color-line)' }}
+          style={{ background: 'radial-gradient(circle at 50% 40%, var(--color-raised), var(--hero-tint) 70%)', boxShadow: 'inset 0 -6px 14px rgb(30 26 43 / .06), 0 0 0 6px var(--color-surface), 0 0 0 7px var(--color-line)' }}
           aria-hidden="true"
         >
           <TaskArt emoji={o.task.emoji} size={118} />
@@ -193,7 +193,7 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
       </button>
       {canSpeak() && (
         <button
-          className="absolute right-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-[var(--hero)] shadow-[var(--shadow-e1)] ring-1 ring-line"
+          className="absolute right-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-raised text-[var(--hero)] hero-ink shadow-[var(--shadow-e1)] ring-1 ring-line"
           onClick={() => speak(say)}
           tabIndex={-1}
           aria-hidden="true"
@@ -203,7 +203,7 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
       )}
       {o.task.steps?.length && canSpeak() ? (
         <button
-          className="absolute left-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-gold-deep shadow-[var(--shadow-e1)] ring-1 ring-line"
+          className="absolute left-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-raised text-gold-deep shadow-[var(--shadow-e1)] ring-1 ring-line"
           onClick={() => speak(`Como fazer: ${o.task.steps!.map((x, i) => `${i + 1}. ${x}.`).join(' ')}`, true)}
           aria-label={`Como fazer: ${o.task.title}`}
         >
@@ -229,14 +229,14 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
                 <Avatar member={h} size={88} />
               </button>
             ))}
-            <button className="grid h-[88px] w-[88px] place-items-center rounded-full bg-white text-muted shadow-[var(--shadow-e1)] ring-1 ring-line" aria-label="Ninguém, pular" onClick={() => setPhase('idle')}>
+            <button className="grid h-[88px] w-[88px] place-items-center rounded-full bg-raised text-muted shadow-[var(--shadow-e1)] ring-1 ring-line" aria-label="Ninguém, pular" onClick={() => setPhase('idle')}>
               <Icon name="close" size={40} strokeWidth={2.25} />
             </button>
           </div>
         ) : phase === 'confirmUndo' ? (
           <div className="flex items-center gap-4" role="group" aria-label="Quer desfazer?">
             <button
-              className="grid h-[88px] w-[88px] place-items-center rounded-full bg-white text-ink shadow-[var(--shadow-e1)] ring-1 ring-line"
+              className="grid h-[88px] w-[88px] place-items-center rounded-full bg-raised text-ink shadow-[var(--shadow-e1)] ring-1 ring-line"
               aria-label="Desfazer"
               onClick={async () => {
                 if (o.completion) await unmark(o.completion.id)
@@ -245,7 +245,7 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
             >
               <Icon name="undo" size={44} strokeWidth={2.25} />
             </button>
-            <button className="btn-primary grid h-[88px] w-[88px] place-items-center rounded-full text-ink" aria-label="Manter feita" onClick={() => setPhase('idle')}>
+            <button className="btn-primary grid h-[88px] w-[88px] place-items-center rounded-full text-[#1e1a2b]" aria-label="Manter feita" onClick={() => setPhase('idle')}>
               <Icon name="check" size={48} strokeWidth={2.5} />
             </button>
           </div>
@@ -253,7 +253,7 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
           <button
             onClick={done}
             aria-label={`Marcar como feita: ${o.task.title}`}
-            className="grid h-[104px] w-[104px] place-items-center rounded-full border-[5px] border-dashed bg-white shadow-[inset_0_2px_8px_rgba(30,26,43,0.08)] transition-transform active:scale-95"
+            className="grid h-[104px] w-[104px] place-items-center rounded-full border-[5px] border-dashed bg-raised shadow-[inset_0_2px_8px_rgba(30,26,43,0.08)] transition-transform active:scale-95"
             style={{ borderColor: 'var(--hero)' }}
           />
         ) : status === 'done' ? (

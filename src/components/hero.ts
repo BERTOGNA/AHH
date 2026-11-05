@@ -4,8 +4,11 @@ import { HERO_COLORS, classById } from '../data/classes'
 
 export const heroColor = (m: Pick<Member, 'slot'>) => HERO_COLORS[m.slot] ?? HERO_COLORS[0]
 
+/** Tint de interface (fundo claro no tema claro, escuro no tema noite). A arte usa `heroColor(m).tint` fixo. */
+export const heroTint = (m: Pick<Member, 'slot'>) => `var(--color-tint-${m.slot ?? 0})`
+
 export const heroStyle = (m: Pick<Member, 'slot'>) =>
-  ({ '--hero': heroColor(m).solid, '--hero-tint': heroColor(m).tint }) as CSSProperties
+  ({ '--hero': heroColor(m).solid, '--hero-tint': heroTint(m) }) as CSSProperties
 
 export const className = (m: Member) => classById(m.classId).name[m.treatment]
 

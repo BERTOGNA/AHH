@@ -21,7 +21,7 @@ export function Progress({ value, max, label, height = 10, color, night }: Props
       className="relative w-full overflow-hidden rounded-full"
       style={{
         height,
-        background: night ? 'rgb(255 255 255 / .08)' : '#EFE6D3',
+        background: night ? 'rgb(255 255 255 / .08)' : 'var(--color-track)',
         boxShadow: night ? 'inset 0 1px 2px rgb(0 0 0 / .4), 0 0 0 1px rgb(241 213 138 / .18)' : 'inset 0 1px 2px rgb(30 26 43 / .12)',
       }}
     >

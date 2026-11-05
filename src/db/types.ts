@@ -155,5 +155,7 @@ export interface Settings {
   lastBackupAt?: number
   stepsBackfilled?: boolean
   tourDone?: boolean
+  /** Aparência: claro, noite ou automático (noite das 19h às 6h). */
+  theme?: 'claro' | 'noite' | 'auto'
   createdAt?: number
 }
