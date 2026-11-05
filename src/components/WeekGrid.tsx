@@ -1,4 +1,6 @@
 // Grade da semana da família: dias × horas, uma faixa fina por pessoa, blocos de rotina e tarefas.
+import { RoutineIcon } from './RoutineIcon'
+import { TaskArt } from './taskart/TaskArt'
 // Tablet/desktop: 7 colunas (rolagem horizontal se faltar espaço). Celular: um dia por vez.
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from 'react'
 import type { Completion, Member, RoutineBlock, Task } from '../db/types'
@@ -201,7 +203,7 @@ export function WeekGrid(p: WeekGridProps) {
                         style={{ borderColor: o.forIds[0] ? heroColor(p.members.find((m) => m.id === o.forIds[0]) ?? { slot: 0 }).solid : 'var(--color-line)' }}
                         aria-label={`${o.task.title}, sem horário`}
                       >
-                        {o.task.emoji}
+                        <TaskArt emoji={o.task.emoji} size={18} />
                       </button>
                     ))}
                   </div>
@@ -253,7 +255,7 @@ export function WeekGrid(p: WeekGridProps) {
                         }}
                       >
                         <span className="block px-0.5 text-[13px] leading-tight">
-                          <span aria-hidden="true">{info.emoji}</span>
+                          <span aria-hidden="true" className="inline-block align-middle"><RoutineIcon kind={s.routine.kind} size={showText ? 14 : 15} /></span>
                           {showText && <span className="ml-1 text-xs font-semibold">{label}</span>}
                         </span>
                       </button>
@@ -285,7 +287,7 @@ export function WeekGrid(p: WeekGridProps) {
                           opacity: st === 'validated' ? 0.92 : 1,
                         }}
                       >
-                        <span aria-hidden="true" className="text-sm leading-tight">{o.task.emoji}</span>
+                        <TaskArt emoji={o.task.emoji} size={showText ? 20 : 22} className="shrink-0" />
                         {showText && <span className="truncate text-xs font-semibold leading-tight">{o.task.title}</span>}
                         {st && (
                           <span aria-hidden="true" className={`absolute -bottom-px right-0.5 ${st === 'validated' ? 'text-gold-deep' : 'text-gold-deep'}`}>

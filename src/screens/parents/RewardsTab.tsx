@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Reward } from '../../db/types'
 import { useFamily, useSession } from '../../state'
 import { saveReward } from '../../db/actions'
@@ -36,7 +37,7 @@ export function RewardsTab() {
                 onClick={() => setEditing(r)}
                 aria-label={`Editar ${r.title}`}
               >
-                <span className="text-4xl" aria-hidden="true">{r.emoji}</span>
+                <TaskArt emoji={r.emoji} size={44} />
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold">{r.title}</span>
                   <span className="block text-sm text-muted">{r.active ? 'No Baú' : 'Guardada (fora do Baú)'}</span>

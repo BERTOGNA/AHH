@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Completion, Member } from '../../db/types'
 import { useFamily, useSession } from '../../state'
 import { notYet, unvalidate, validate } from '../../db/actions'
@@ -98,7 +99,7 @@ export function Pending({ adultId }: { adultId: string }) {
           <ul className="mb-5 flex max-h-[50dvh] flex-col gap-2 overflow-y-auto">
             {confirm.map((c) => (
               <li key={c.id} className="flex items-center gap-3 rounded-xl bg-white/70 px-3 py-2">
-                <span className="text-2xl" aria-hidden="true">{c.emoji}</span>
+                <TaskArt emoji={c.emoji} size={32} />
                 <span className="flex-1 font-semibold">{c.title}</span>
                 <span className="text-sm text-muted">
                   {c.memberIds.map((id) => byId.get(id)?.name).join(' e ')} · {dayLabel(c.date)}

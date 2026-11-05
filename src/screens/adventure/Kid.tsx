@@ -1,4 +1,5 @@
 // Aventura de 6 anos: nada precisa ser lido. Cartões enormes, voz, carimbo e estrelas.
+import { TaskArt } from '../../components/taskart/TaskArt'
 import { useEffect, useRef, useState } from 'react'
 import type { Member } from '../../db/types'
 import { useFamily } from '../../state'
@@ -172,11 +173,11 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
       <span className="absolute inset-x-0 top-0 h-2" style={{ background: 'var(--hero)' }} aria-hidden="true" />
       <button className="flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl" onClick={() => speak(say)} aria-label={`Ouvir: ${o.task.title}`}>
         <span
-          className="grid h-[148px] w-[148px] place-items-center rounded-full text-[96px] leading-none"
+          className="grid h-[148px] w-[148px] place-items-center rounded-full"
           style={{ background: 'radial-gradient(circle at 50% 40%, #FFFFFF, var(--hero-tint) 70%)', boxShadow: 'inset 0 -6px 14px rgb(30 26 43 / .06), 0 0 0 6px var(--color-surface), 0 0 0 7px var(--color-line)' }}
           aria-hidden="true"
         >
-          {o.task.emoji}
+          <TaskArt emoji={o.task.emoji} size={118} />
         </span>
         <span className="title-display mt-1 text-center text-[26px] leading-tight">{o.task.title}</span>
         {helper && (

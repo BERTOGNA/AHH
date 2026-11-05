@@ -265,14 +265,16 @@ interface Props {
   strokeWidth?: number
   /** Preenche o detalhe principal (estrela, coração, brilho) ou dá um véu suave às formas fechadas. */
   filled?: boolean
+  style?: React.CSSProperties
 }
 
-export function Icon({ name, size = 24, className, strokeWidth = 1.75, filled = false }: Props) {
+export function Icon({ name, size = 24, className, strokeWidth = 1.75, filled = false, style }: Props) {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
+      style={style}
       fill="none"
       stroke="currentColor"
       strokeWidth={strokeWidth}

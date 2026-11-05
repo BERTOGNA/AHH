@@ -1,4 +1,5 @@
 // Mural do Reino: o que cada um fez pela casa nesta semana — inclusive o trabalho invisível.
+import { TaskArt } from '../components/taskart/TaskArt'
 // Sem totais por pessoa, sem ordenação por desempenho: a ordem é sempre a da família.
 import { useMemo, useState } from 'react'
 import type { Category, Completion, Member } from '../db/types'
@@ -94,7 +95,7 @@ export function Mural({ chronicle }: { chronicle?: boolean }) {
               if (!from || !to) return null
               return (
                 <li key={t.id} className="card flex items-start gap-3 p-3">
-                  <span className="text-3xl" aria-hidden="true">{t.emoji}</span>
+                  <TaskArt emoji={t.emoji} size={36} />
                   <div className="flex-1">
                     <p className="story text-lg">“{t.message}”</p>
                     <p className="mt-1 flex items-center gap-2 text-sm text-muted">

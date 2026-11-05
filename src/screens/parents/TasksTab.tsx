@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Task } from '../../db/types'
 import { useFamily, useSession } from '../../state'
 import { changeMission, updateMission } from '../../db/actions'
@@ -126,7 +127,7 @@ function MissionSettings() {
     <Section title="Missão da semana">
       <div className="card-gilded p-4">
         <div className="flex flex-wrap items-center gap-4">
-          <span className="text-5xl" aria-hidden="true">{t.emoji}</span>
+          <TaskArt emoji={t.emoji} size={56} />
           <div className="min-w-0 flex-1 basis-48">
             <p className="font-semibold">{t.name}</p>
             <p className="story text-muted">{stage.scene} {stage.text}</p>

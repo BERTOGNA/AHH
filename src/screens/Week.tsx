@@ -1,4 +1,6 @@
 // Semana do Reino: a rotina de todos numa visão única, para ver onde os horários se cruzam.
+import { RoutineIcon } from '../components/RoutineIcon'
+import { TaskArt } from '../components/taskart/TaskArt'
 import { Icon } from '../components/Icon'
 import { useState } from 'react'
 import type { RoutineBlock, RoutineKind, Task, Weekday } from '../db/types'
@@ -190,7 +192,7 @@ function TaskDetail({ task, date, editable, onEdit, onMove, onClose }: {
   return (
     <Modal title={t.title} onClose={onClose}>
       <div className="mb-4 flex items-center gap-3">
-        <span className="text-5xl" aria-hidden="true">{t.emoji}</span>
+        <TaskArt emoji={t.emoji} size={56} />
         <div>
           <p className="font-semibold">{who}</p>
           <p className="text-muted">
@@ -308,7 +310,7 @@ function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock;
     return (
       <Modal title={routine.label || info.label} onClose={onClose}>
         <p className="text-lg">
-          <span aria-hidden="true">{info.emoji}</span> <b>{who?.name}</b> · {formatTime(routine.start)} às {formatTime(routine.end)}
+          <span aria-hidden="true" className="inline-block align-middle"><RoutineIcon kind={routine.kind} size={22} /></span> <b>{who?.name}</b> · {formatTime(routine.start)} às {formatTime(routine.end)}
         </p>
         <p className="text-muted">{routine.weekdays.map((d) => WEEKDAY_SHORT[d]).join(', ')}</p>
       </Modal>
@@ -332,7 +334,7 @@ function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock;
           <div className="flex flex-wrap gap-2">
             {KINDS.map((k) => (
               <button key={k} className="chip" aria-pressed={kind === k} onClick={() => setKind(k)}>
-                {ROUTINE_INFO[k].emoji} {ROUTINE_INFO[k].label}
+                <RoutineIcon kind={k} size={18} /> {ROUTINE_INFO[k].label}
               </button>
             ))}
           </div>
@@ -391,10 +393,10 @@ function DayList({ date, memberIds, onTask }: { date: string; memberIds: string[
         const items = [
           ...f.routines
             .filter((r) => r.memberId === id && r.weekdays.includes(wd) && r.kind !== 'sleep')
-            .map((r) => ({ key: r.id, time: r.start, emoji: ROUTINE_INFO[r.kind].emoji, title: `${r.label || ROUTINE_INFO[r.kind].label} até ${formatTime(r.end)}`, task: undefined as Task | undefined })),
+            .map((r) => ({ key: r.id, time: r.start, emoji: '', kind: r.kind, title: `${r.label || ROUTINE_INFO[r.kind].label} até ${formatTime(r.end)}`, task: undefined as Task | undefined })),
           ...occ
             .filter((o) => o.forIds.includes(id))
-            .map((o) => ({ key: o.task.id, time: o.task.time ?? '99:99', emoji: o.task.emoji, title: o.task.title, task: o.task, st: o.completion?.status })),
+            .map((o) => ({ key: o.task.id, time: o.task.time ?? '99:99', emoji: o.task.emoji, kind: undefined as RoutineKind | undefined, title: o.task.title, task: o.task })),
         ].sort((a, b) => a.time.localeCompare(b.time))
         return (
           <section key={id} className="card p-3" style={{ borderLeft: `6px solid ${heroColor(m).solid}` }}>
@@ -404,7 +406,7 @@ function DayList({ date, memberIds, onTask }: { date: string; memberIds: string[
                 <li key={it.key}>
                   <button disabled={!it.task} onClick={() => it.task && onTask(it.task)} className="flex min-h-12 w-full items-center gap-3 rounded-xl px-2 text-left enabled:hover:bg-wait/60">
                     <span className="w-12 text-sm font-bold tabular-nums text-muted">{it.time === '99:99' ? '—' : formatTime(it.time)}</span>
-                    <span aria-hidden="true" className="text-xl">{it.emoji}</span>
+                    <span aria-hidden="true" className="grid w-8 place-items-center">{it.kind ? <RoutineIcon kind={it.kind} size={22} /> : <TaskArt emoji={it.emoji} size={30} />}</span>
                     <span className={it.task ? 'font-semibold' : 'text-muted'}>{it.title}</span>
                   </button>
                 </li>

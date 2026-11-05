@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { ClassIcon } from '../../components/RoutineIcon'
+import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Weekday } from '../../db/types'
 import type { WizardChore, WizardMember } from '../../domain/week'
 import { Avatar } from '../../components/Avatar'
@@ -110,7 +112,7 @@ export function StepHeroes({ d, set }: StepProps) {
               onClick={() => set((x) => updateMember(x, m.key, { classId: c.id }))}
               className={`flex min-h-14 items-center gap-3 rounded-2xl border-2 px-3 py-2 text-left ${m.classId === c.id ? 'border-gold bg-wait' : 'border-line bg-white'}`}
             >
-              <span className="text-3xl" aria-hidden="true">{c.emoji}</span>
+              <ClassIcon classId={c.id} size={40} />
               <span className="flex-1">
                 <span className="block font-bold">{c.name[m.treatment]}</span>
                 <span className="block text-sm text-muted">{c.role}</span>
@@ -368,7 +370,7 @@ export function StepChest({ d, set }: StepProps) {
             <li key={`${r.title}-${i}`} className={`flex flex-wrap items-center gap-3 rounded-2xl border-2 px-3 py-2 ${r.on ? 'border-gold bg-surface' : 'border-line bg-white/60'}`}>
               <label className="flex min-h-12 flex-1 cursor-pointer items-center gap-3">
                 <input type="checkbox" className="h-6 w-6 shrink-0 accent-[#8a5b00]" checked={r.on} onChange={() => set((x) => ({ ...x, rewards: x.rewards.map((y, j) => (j === i ? { ...y, on: !y.on } : y)) }))} />
-                <span className="text-2xl" aria-hidden="true">{r.emoji}</span>
+                <TaskArt emoji={r.emoji} size={32} />
                 <span className="font-semibold">{r.title}</span>
               </label>
               <Stepper label={`custo de ${r.title}`} value={r.cost} min={5} max={300} step={5} suffix=" 🪙" onChange={(cost) => set((x) => ({ ...x, rewards: x.rewards.map((y, j) => (j === i ? { ...y, cost } : y)) }))} />

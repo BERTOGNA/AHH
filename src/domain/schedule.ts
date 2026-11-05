@@ -97,9 +97,9 @@ export const ROUTINE_INFO: Record<RoutineKind, { emoji: string; label: string }>
 
 export function statusAt(memberId: string, date: ISODate, minute: number, routines: RoutineBlock[]) {
   const r = routineAt(memberId, date, minute, routines)
-  if (!r) return { emoji: '🏠', label: 'Em casa' }
+  if (!r) return { emoji: '🏠', label: 'Em casa', kind: 'home' as const }
   const info = ROUTINE_INFO[r.kind]
-  return { emoji: info.emoji, label: r.label || info.label }
+  return { emoji: info.emoji, label: r.label || info.label, kind: r.kind }
 }
 
 /** Faixas "✦ Juntos": quando ≥3 pessoas estão em casa e acordadas (sem escola/trabalho/sono). */

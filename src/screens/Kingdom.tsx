@@ -1,4 +1,6 @@
 // Salão do Reino: "este é o nosso reino e cada um tem seu papel".
+import { RoutineIcon } from '../components/RoutineIcon'
+import { TaskArt } from '../components/taskart/TaskArt'
 import { useEffect, useMemo } from 'react'
 import { useFamily, useParentGate, useSession } from '../state'
 import type { Member } from '../db/types'
@@ -102,7 +104,7 @@ export function Kingdom() {
                   <span className="mt-1.5 text-sm font-semibold leading-tight text-white">{className(m)}</span>
                   <span className="mt-1 line-clamp-2 text-xs leading-snug text-white">{m.kingdomRole}</span>
                   <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3 py-1.5 text-[13px] font-semibold text-white ring-1 ring-white/20">
-                    <span aria-hidden="true">{st.emoji}</span> {st.label}
+                    <RoutineIcon kind={st.kind} size={16} light /> {st.label}
                   </span>
                 </button>
               </li>
@@ -135,7 +137,7 @@ export function Kingdom() {
                 {upcoming.map((u) => (
                   <li key={u.key} className="flex items-center gap-3">
                     <span className="w-14 shrink-0 text-right font-bold tabular-nums text-gold-light">{u.time}</span>
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/8 text-xl ring-1 ring-white/10" aria-hidden="true">{u.emoji}</span>
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.08] ring-1 ring-white/10" aria-hidden="true"><TaskArt emoji={u.emoji} size={28} /></span>
                     <span className="min-w-0 flex-1 font-semibold">{u.title}</span>
                     <span className="flex -space-x-2">
                       {u.who.map((m) => <Avatar key={m.id} member={m} size={32} />)}
@@ -200,7 +202,7 @@ function useUpcoming(day: string, now: number) {
       const s = minutes(r.start)
       const m = f.byId.get(r.memberId)
       const label = r.label ?? (r.kind === 'school' ? 'Escola' : r.kind === 'work' ? 'Trabalho' : r.kind === 'meal' ? 'Refeição' : 'Compromisso')
-      const emoji = r.kind === 'meal' ? '🍽️' : r.kind === 'school' ? '🏫' : r.kind === 'work' ? '💼' : '📌'
+      const emoji = r.kind === 'meal' ? '🍽️' : r.kind === 'school' ? '🏫' : r.kind === 'work' ? '💼' : '📅'
       if (s >= now) add(s, emoji, label, m)
       else if (routineAt(r.memberId, day, now, f.routines)?.id === r.id) add(s, emoji, `${label} até ${formatTime(r.end)}`, m)
     }

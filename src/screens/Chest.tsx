@@ -1,4 +1,5 @@
 // Baú de Recompensas: trocar moedas por tesouros reais. Trocar nunca reduz XP nem nível.
+import { TaskArt } from '../components/taskart/TaskArt'
 import { useState } from 'react'
 import type { Member, Reward } from '../db/types'
 import { useCurrent, useFamily, useParentGate, useSession } from '../state'
@@ -97,7 +98,7 @@ function GrownChest({ me, rewards }: { me: Member; rewards: Reward[] }) {
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {rewards.map((r) => (
               <li key={r.id} className="card flex items-center gap-4 p-4">
-                <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-bg text-4xl ring-1 ring-line" aria-hidden="true">{r.emoji}</span>
+                <TaskArt emoji={r.emoji} size={44} className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-bg ring-1 ring-line" />
                 <div className="flex-1">
                   <p className="font-semibold">{r.title}</p>
                   <p className="flex items-center gap-1 text-sm font-semibold tabular-nums text-gold-deep"><CoinIcon size={16} /> {r.cost}</p>
@@ -137,7 +138,7 @@ function KidChest({ me, rewards }: { me: Member; rewards: Reward[] }) {
                   if (ready) setConfirm(r)
                 }}
               >
-                <span className="text-[88px] leading-none" aria-hidden="true">{r.emoji}</span>
+                <TaskArt emoji={r.emoji} size={100} />
                 <span className="story text-center text-[22px] font-bold leading-tight">{r.title}</span>
                 {/* Pote de moedas enchendo, sem números */}
                 <span className="flex w-full items-center gap-2">
@@ -174,7 +175,7 @@ function ConfirmTrade({ me, reward, onClose }: { me: Member; reward: Reward; onC
   return (
     <Modal title={kid ? 'Pedir este tesouro?' : 'Trocar por este tesouro?'} onClose={onClose}>
       <div className="relative flex flex-col items-center gap-3 text-center">
-        <span className={`text-[96px] leading-none ${sent ? 'animate-pop' : ''}`} aria-hidden="true">{sent ? '🎁' : reward.emoji}</span>
+        <span className={sent ? 'animate-pop' : ''}><TaskArt emoji={sent ? '🎁' : reward.emoji} size={120} /></span>
         {sent && <Sparks count={12} />}
         <p className="story text-2xl font-bold">{sent ? 'Pedido enviado! Seus pais vão ver.' : reward.title}</p>
         {!sent && !kid && <p className="flex items-center gap-1 text-muted">Você troca <CoinIcon size={18} /> {reward.cost} por este tesouro.</p>}
@@ -204,7 +205,7 @@ function MyRequests({ list, kid }: { list: ReturnType<typeof useWallet>['mine'];
       <ul className="card divide-y divide-line/70 overflow-hidden">
         {list.slice(0, 8).map((r) => (
           <li key={r.id} className="flex min-h-14 items-center gap-3 px-3 py-2">
-            <span className="text-3xl" aria-hidden="true">{r.emoji}</span>
+            <TaskArt emoji={r.emoji} size={36} />
             <span className="flex-1 font-semibold">{r.title}</span>
             <span className="grid w-9 place-items-center" aria-hidden="true">{icon[r.status]}</span>
             <span className={kid ? 'sr-only' : 'text-sm text-muted'}>{label[r.status]}</span>

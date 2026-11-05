@@ -1,4 +1,5 @@
 import { useFamily, useSession } from '../../state'
+import { TaskArt } from '../../components/taskart/TaskArt'
 import { decideRedemption, updateMission } from '../../db/actions'
 import { Avatar } from '../../components/Avatar'
 import { Empty, Section } from '../../components/Screen'
@@ -58,7 +59,7 @@ export function Requests() {
                 return (
                   <li key={r.id} className="card flex flex-wrap items-center gap-3 p-4">
                     {m && <Avatar member={m} size={48} />}
-                    <span className="text-4xl" aria-hidden="true">{r.emoji}</span>
+                    <TaskArt emoji={r.emoji} size={44} />
                     <div className="min-w-0 flex-1 basis-40">
                       <p className="font-semibold">{r.title}</p>
                       <p className="text-sm text-muted">
@@ -104,7 +105,7 @@ export function Requests() {
               return (
                 <li key={r.id} className="card flex flex-wrap items-center gap-3 p-4">
                   {m && <Avatar member={m} size={40} />}
-                  <span className="text-3xl" aria-hidden="true">{r.emoji}</span>
+                  <TaskArt emoji={r.emoji} size={36} />
                   <p className="min-w-0 flex-1 font-semibold">
                     {r.title} <span className="font-normal text-muted">· para {m?.name}</span>
                   </p>

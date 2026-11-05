@@ -6,6 +6,7 @@ import { WEEKDAYS, WEEKDAY_SHORT } from '../lib/date'
 import { deleteTask, saveTask } from '../db/actions'
 import { Modal } from './Modal'
 import { Avatar } from './Avatar'
+import { TaskArt } from './taskart/TaskArt'
 
 const EMOJIS = ['🛏️', '🧸', '🍽️', '🪥', '🧺', '🪴', '🐶', '🗑️', '🧽', '🍳', '🛒', '🧾', '🚗', '🤝', '📚', '📖', '🎒', '👕', '🚿', '🧹', '🍲', '☕', '🗒️', '🗓️', '💼', '🩺', '🏃', '🎹', '⚽', '🎨', '🧠', '🥣', '🌙', '🐱', '🧴', '🪣', '🔧', '💡', '📞', '🎁']
 
@@ -74,7 +75,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
             aria-expanded={pickEmoji}
             disabled={Boolean(lockedForTeen)}
           >
-            {emoji}
+            <TaskArt emoji={emoji} size={48} />
           </button>
           <label className="flex-1">
             <span className="mb-1 block text-sm font-semibold">Nome da tarefa</span>
@@ -84,8 +85,8 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
         {pickEmoji && (
           <div className="grid grid-cols-8 gap-1 rounded-2xl border border-line bg-white p-2" role="listbox" aria-label="Ícones">
             {EMOJIS.map((e) => (
-              <button key={e} role="option" aria-selected={e === emoji} className={`h-11 rounded-xl text-2xl ${e === emoji ? 'bg-wait' : ''}`} onClick={() => { setEmoji(e); setPickEmoji(false) }}>
-                {e}
+              <button key={e} role="option" aria-selected={e === emoji} className={`grid h-12 place-items-center rounded-xl ${e === emoji ? 'bg-wait ring-2 ring-gold' : 'hover:bg-bg'}`} onClick={() => { setEmoji(e); setPickEmoji(false) }}>
+                <TaskArt emoji={e} size={34} />
               </button>
             ))}
           </div>

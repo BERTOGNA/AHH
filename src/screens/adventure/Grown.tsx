@@ -1,4 +1,5 @@
 // Aventura de 12 anos e de adultos: lista densa e elegante, Chamas da Semana, mentoria e feitos invisíveis.
+import { TaskArt } from '../../components/taskart/TaskArt'
 import { useState } from 'react'
 import type { Category, Member, Task } from '../../db/types'
 import { useFamily, useParentGate, useSession } from '../../state'
@@ -176,7 +177,7 @@ function Today({ me }: { me: Member }) {
               const who = c?.memberIds.map((id) => f.byId.get(id)).filter(Boolean) as Member[] | undefined
               return (
                 <li key={o.task.id} className="flex min-h-16 items-center gap-3 px-3 py-2">
-                  <span className="text-[28px]" aria-hidden="true">{o.task.emoji}</span>
+                  <TaskArt emoji={o.task.emoji} size={34} />
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold">{o.task.title}</p>
                     <p className="text-sm text-muted">
@@ -214,7 +215,7 @@ function Today({ me }: { me: Member }) {
             ))}
             {deeds.map((c) => (
               <li key={c.id} className="flex min-h-16 items-center gap-3 px-3 py-2">
-                <span className="text-[28px]" aria-hidden="true">{c.emoji}</span>
+                <TaskArt emoji={c.emoji} size={34} />
                 <p className="flex-1 font-semibold">{c.title}</p>
                 <span className="flex items-center gap-1 text-sm font-bold text-gold-deep"><GoldStar size={22} glow={false} /> +{c.xp} XP</span>
               </li>
@@ -246,7 +247,7 @@ function TaskRow({ o, me, onCheck }: { o: Occurrence; me: Member; onCheck?: () =
           <Icon name="check" size={22} strokeWidth={2.5} />
         </button>
       )}
-      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-bg text-[24px] ring-1 ring-line" aria-hidden="true">{o.task.emoji}</span>
+      <TaskArt emoji={o.task.emoji} size={30} className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-bg ring-1 ring-line" />
       <div className="min-w-0 flex-1">
         <p className="text-[17px] font-semibold">{o.task.title}</p>
         <p className="text-sm text-muted">
@@ -387,7 +388,7 @@ function Mentoring({ me, apprentices }: { me: Member; apprentices: Member[] }) {
                 <ul className="divide-y divide-line/60">
                   {done.map((c) => (
                     <li key={c.id} className="flex min-h-14 items-center gap-3 py-2">
-                      <span className="text-2xl" aria-hidden="true">{c.emoji}</span>
+                      <TaskArt emoji={c.emoji} size={32} />
                       <span className="flex-1 font-semibold">{c.title}</span>
                       {c.helperId === me.id ? (
                         <span className="flex items-center gap-1 text-sm font-semibold text-leaf"><Icon name="users" size={16} /> Você ajudou</span>
