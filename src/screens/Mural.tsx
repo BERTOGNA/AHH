@@ -76,7 +76,7 @@ export function Mural({ chronicle }: { chronicle?: boolean }) {
                 <li key={c.id} className="flex min-h-14 items-center gap-3 px-3 py-2">
                   <Avatar member={h} size={36} />
                   <span className="story flex-1">
-                    <b>{h.name}</b> ajudou <b>{a.name}</b>: {c.emoji} {c.title}
+                    <b>{h.name}</b> ajudou <b>{a.name}</b>: <span className="inline-block align-middle"><TaskArt emoji={c.emoji} size={24} /></span> {c.title}
                   </span>
                   <Icon name="users" size={18} className="text-muted" />
                 </li>
@@ -183,7 +183,7 @@ function HeroColumn({ member, completions, canThank, onThank }: {
       <ul className="flex flex-col gap-1">
         {[...groups.get(cat)!.values()].map((it) => (
           <li key={it.title} className="flex min-h-12 items-center gap-2 rounded-xl bg-bg/60 px-2 ring-1 ring-line/60">
-            <span aria-hidden="true">{it.emoji}</span>
+            <TaskArt emoji={it.emoji} size={28} />
             <span className="flex-1 text-[15px] font-semibold">
               {it.title}
               {it.n > 1 && <span className="font-normal text-muted"> · {it.n} vezes</span>}

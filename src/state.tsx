@@ -201,6 +201,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [dismissToast],
   )
 
+  // Avisos (com "Desfazer") pertencem à tela onde nasceram.
+  useEffect(() => {
+    const clear = () => setToasts([])
+    window.addEventListener('hashchange', clear)
+    return () => window.removeEventListener('hashchange', clear)
+  }, [])
+
   const value: Session = {
     currentId: validCurrent, setCurrent, adultId, unlock, lock,
     pinRequest, askPin: setPinRequest, closePin: () => setPinRequest(null),

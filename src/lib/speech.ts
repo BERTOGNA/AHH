@@ -15,9 +15,10 @@ function ptVoice(): SpeechSynthesisVoice | undefined {
   )
 }
 
-export function speak(text: string) {
+/** Fala o texto. `force` = pedido explícito (ex.: "Narrar"), vale mesmo com a leitura automática desligada. */
+export function speak(text: string, force = false) {
   try {
-    if (!enabled || !('speechSynthesis' in window)) return
+    if ((!enabled && !force) || !('speechSynthesis' in window)) return
     window.speechSynthesis.cancel()
     const u = new SpeechSynthesisUtterance(text)
     u.lang = 'pt-BR'

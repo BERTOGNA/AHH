@@ -193,3 +193,12 @@ describe('exceções só nesta semana', () => {
     expect(occurrencesFor('2026-11-03', [t], [])[0].task.time).toBe('20:00')
   })
 })
+
+describe('mover só nesta semana não duplica', () => {
+  it('se o dia de destino já tem a tarefa, mostra uma só', () => {
+    const t = { id: 'lic', title: 'Lição', emoji: '📚', category: 'estudo' as const, kind: 'individual' as const, assigneeIds: ['leo'], weekdays: [4, 5] as (4 | 5)[], time: '15:00', duration: 30, xp: 20, active: true, createdAt: 0,
+      exceptions: [{ date: '2026-11-06', to: '2026-11-05' }] }
+    expect(occurrencesFor('2026-11-05', [t], [])).toHaveLength(1)
+    expect(occurrencesFor('2026-11-06', [t], [])).toHaveLength(0)
+  })
+})

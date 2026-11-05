@@ -23,6 +23,8 @@ function tone(freq: number, start: number, dur: number, vol = 0.4) {
 export function play(kind: 'done' | 'validated' | 'level' | 'tap') {
   try {
     if (!on) return
+    // Sem gesto do usuário o navegador bloqueia o áudio: não tenta (evita avisos no console).
+    if ((navigator as { userActivation?: { hasBeenActive: boolean } }).userActivation?.hasBeenActive === false) return
     ctx ??= new AudioContext()
     if (ctx.state === 'suspended') void ctx.resume()
     if (kind === 'tap') tone(660, 0, 0.08, 0.2)

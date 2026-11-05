@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '../../components/Icon'
 import { Modal } from '../../components/Modal'
 import { LookEditor } from '../../components/LookEditor'
 import type { Member, Treatment } from '../../db/types'
@@ -40,6 +41,9 @@ function HeroCard({ member }: { member: Member }) {
             {ROLE_LABEL[member.role]} · {member.age} anos · {classById(member.classId).name[member.treatment]}
           </p>
         </div>
+        <button className="btn btn-ghost" onClick={() => setPickBase(true)}>
+          <Icon name="wand" size={18} /> Aparência
+        </button>
       </div>
       {pickBase && (
         <Modal title={`Visual de ${member.name}`} onClose={() => setPickBase(false)} wide>

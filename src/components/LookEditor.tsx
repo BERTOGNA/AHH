@@ -10,12 +10,12 @@ import {
 } from './portrait/look'
 
 type Tab = 'pele' | 'cabelo' | 'cor' | 'rosto' | 'extras'
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'cabelo', label: 'Cabelo' },
-  { id: 'cor', label: 'Cor do cabelo' },
-  { id: 'pele', label: 'Pele' },
-  { id: 'rosto', label: 'Rosto' },
-  { id: 'extras', label: 'Detalhes' },
+const TABS: { id: Tab; label: string; icon: 'feather' | 'sparkle' | 'sun' | 'heart' | 'star' }[] = [
+  { id: 'cabelo', label: 'Cabelo', icon: 'feather' },
+  { id: 'cor', label: 'Cor do cabelo', icon: 'sparkle' },
+  { id: 'pele', label: 'Pele', icon: 'sun' },
+  { id: 'rosto', label: 'Rosto', icon: 'heart' },
+  { id: 'extras', label: 'Detalhes', icon: 'star' },
 ]
 
 interface Props {
@@ -89,8 +89,17 @@ export function LookEditor({ member, onChange }: Props) {
 
       <div className="flex flex-wrap justify-center gap-2" role="tablist" aria-label="O que mudar">
         {TABS.map((t) => (
-          <button key={t.id} role="tab" aria-selected={tab === t.id} className="chip" onClick={() => setTab(t.id)}>
-            {t.label}
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={tab === t.id}
+            className={`chip ${kid ? 'min-h-16 px-5 text-lg' : ''}`}
+            onClick={() => {
+              setTab(t.id)
+              if (kid) speak(t.label)
+            }}
+          >
+            <Icon name={t.icon} size={kid ? 24 : 18} /> {t.label}
           </button>
         ))}
       </div>

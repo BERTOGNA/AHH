@@ -28,7 +28,7 @@ export const TEMPLATES: Record<Role, TaskTemplate[]> = {
     { id: 'c-brinquedos', title: 'Guardar os brinquedos', emoji: '🧸', speak: 'Vamos guardar os brinquedos!', category: 'lar', xp: 10, time: '18:00', weekdays: ALL, on: true },
     { id: 'c-mesa', title: 'Ajudar a pôr a mesa', emoji: '🍽️', speak: 'Ajude a pôr a mesa do jantar!', category: 'comida', xp: 10, time: '19:00', weekdays: ALL, on: true },
     { id: 'c-prato', title: 'Levar o prato para a pia', emoji: '🥣', speak: 'Leve o seu prato para a pia!', category: 'comida', xp: 5, time: '19:40', weekdays: ALL, on: false },
-    { id: 'c-dentes-n', title: 'Escovar os dentes à noite', emoji: '🌙', speak: 'Escove os dentes antes de dormir!', category: 'pessoal', xp: 5, time: '20:00', weekdays: ALL, on: true },
+    { id: 'c-dentes-n', title: 'Escovar os dentes à noite', emoji: '🪥', speak: 'Escove os dentes antes de dormir!', category: 'pessoal', xp: 5, time: '20:00', weekdays: ALL, on: true },
   ],
   teen: [
     { id: 't-quarto', title: 'Arrumar o quarto', emoji: '🛏️', category: 'lar', xp: 10, time: '07:00', weekdays: ALL, on: true },

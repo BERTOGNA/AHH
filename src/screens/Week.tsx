@@ -38,7 +38,7 @@ export function Week() {
     Boolean(adultId) || Boolean(teenId && item.task?.assigneeIds.includes(teenId))
 
   function shiftWeek(n: number) {
-    const a = addDays(weekStart(anchor), 7 * n)
+    const a = n === 0 ? weekStart(today()) : addDays(weekStart(anchor), 7 * n)
     setAnchor(a)
     setDay(n === 0 ? today() : addDays(a, isoWeekday(day) - 1))
   }
@@ -262,14 +262,22 @@ function MoveScope({ move, onClose, onDone }: {
   const time = startMin === null ? undefined : hhmm(startMin)
   const label = `${WEEKDAY_SHORT[isoWeekday(to)]}${time ? ` ${formatTime(time)}` : ''}`
 
+  const toWd = isoWeekday(to)
+  const alreadyThere = to !== origin && task.weekdays.includes(toWd) && !prev.some((e) => e.date === to && (e.skip || e.to))
+
   async function once() {
+    if (alreadyThere) {
+      // O dia de destino já tem esta tarefa: mover só nesta semana = o dia de origem fica livre.
+      await setException(task.id, { date: origin, skip: true })
+      onDone(`${task.title}: ${WEEKDAY_SHORT[toWd]} já tinha; ${WEEKDAY_SHORT[isoWeekday(origin)]} fica livre nesta semana.`, () => void saveTask({ ...task, exceptions: prev }))
+      return
+    }
     await setException(task.id, { date: origin, to: to !== origin ? to : undefined, time })
     onDone(`${task.title}: ${label}, só nesta semana.`, () => void saveTask({ ...task, exceptions: prev }))
   }
   async function always() {
     const fromWd = isoWeekday(origin)
-    const toWd = isoWeekday(to)
-    const days = fromWd === toWd || task.weekdays.includes(toWd) ? task.weekdays : [...task.weekdays.filter((d) => d !== fromWd), toWd].sort()
+    const days = fromWd === toWd ? task.weekdays : [...new Set([...task.weekdays.filter((d) => d !== fromWd), toWd])].sort()
     await saveTask({ ...task, weekdays: days, time: time ?? task.time, exceptions: prev.filter((e) => e.date !== origin) })
     onDone(`${task.title}: ${label}, todas as semanas.`, () => void saveTask(task))
   }
@@ -277,7 +285,8 @@ function MoveScope({ move, onClose, onDone }: {
   return (
     <Modal title="Mudar só nesta semana?" onClose={onClose}>
       <p className="mb-4 text-muted">
-        <b className="text-ink">{task.emoji} {task.title}</b> vai para <b className="text-ink">{label}</b>.
+        <b className="text-ink">{task.title}</b> vai para <b className="text-ink">{label}</b>.
+        {alreadyThere && <> Esse dia já tem esta tarefa: {WEEKDAY_SHORT[isoWeekday(origin)]} fica sem ela.</>}
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <button className="btn btn-secondary h-16 flex-col gap-0" onClick={once}>

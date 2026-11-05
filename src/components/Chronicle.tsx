@@ -1,4 +1,5 @@
 // Crônica da Semana: cartões narrados que contam a semana do reino. Ordem fixa da família, nunca por desempenho.
+import { TaskArt } from './taskart/TaskArt'
 import { useEffect, useMemo, useState } from 'react'
 import type { Category, Member } from '../db/types'
 import { useFamily } from '../state'
@@ -32,7 +33,7 @@ export function Chronicle({ date, onClose, onThank }: { date: string; onClose: (
   const last = i === cards.length - 1
 
   useEffect(() => {
-    if (narrate) speak(`${c.title}. ${c.text}`)
+    if (narrate) speak(`${c.title}. ${c.text}`, true)
   }, [i, narrate]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => stopSpeaking(), [])
   useEffect(() => {
@@ -77,15 +78,17 @@ export function Chronicle({ date, onClose, onThank }: { date: string; onClose: (
           <button className="btn btn-ghost h-14 w-14 rounded-full p-0" disabled={i === 0} onClick={() => setI(i - 1)} aria-label="Cartão anterior">
             <Icon name="chevron-left" size={26} />
           </button>
-          <ol className="flex gap-2">
+          <ol className="flex gap-0.5">
             {cards.map((x, k) => (
               <li key={x.key}>
                 <button
-                  className={`h-3 rounded-full transition-all ${k === i ? 'w-8 bg-gold-light' : 'w-3 bg-white/25'}`}
+                  className="grid h-12 min-w-6 place-items-center px-1"
                   aria-label={`Cartão ${k + 1} de ${cards.length}`}
                   aria-current={k === i ? 'step' : undefined}
                   onClick={() => setI(k)}
-                />
+                >
+                  <span className={`block h-3 rounded-full transition-all ${k === i ? 'w-8 bg-gold-light' : 'w-3 bg-white/25'}`} />
+                </button>
               </li>
             ))}
           </ol>
@@ -111,7 +114,7 @@ function useChronicle(date: string): Card[] {
     const days = new Set(weekDates(date))
     const wk = weekKey(date)
     const week = f.completions.filter((c) => days.has(c.date))
-    const thanks = f.thanks.filter((t) => days.has(t.date))
+    const thanks = f.thanks.filter((t) => days.has(t.date)).sort((a, b) => a.createdAt - b.createdAt)
     const cards: Card[] = []
 
     const m = f.missions.find((x) => x.weekKey === wk)
@@ -136,7 +139,7 @@ function useChronicle(date: string): Card[] {
       const mine = week.filter((c) => c.memberIds.includes(member.id))
       const byCat = new Map<Category, number>()
       for (const c of mine) byCat.set(c.category, (byCat.get(c.category) ?? 0) + 1)
-      const top = [...byCat.entries()].sort((a, b) => b[1] - a[1])[0]
+      const [top, second] = [...byCat.entries()].sort((a, b) => b[1] - a[1])
       const newAch = f.unlocks.filter((u) => u.memberId === member.id && days.has(isoDay(u.unlockedAt))).map((u) => achievementById(u.achievementId)).filter(Boolean)
       const helped = week.filter((c) => c.helperId === member.id).length
       const who = member.treatment === 'a' ? 'ela' : 'ele'
@@ -145,7 +148,7 @@ function useChronicle(date: string): Card[] {
         eyebrow: className(member),
         title: member.name,
         text: mine.length
-          ? `Nesta semana, ${who} ${top ? CATEGORIES[top[0]].mural : 'ajudou o reino'}${mine.length > 1 ? ` e fez ${mine.length} coisas pelo reino` : ''}.${helped ? ` Também ajudou ${helped === 1 ? 'uma vez' : `${helped} vezes`} como mentor${member.treatment === 'a' ? 'a' : ''}.` : ''}`
+          ? `Nesta semana, ${who} ${top ? CATEGORIES[top[0]].mural : 'ajudou o reino'}${second ? ` e ${CATEGORIES[second[0]].mural}` : ''}.${helped ? ` Também foi mentor${member.treatment === 'a' ? 'a' : ''} de quem estava aprendendo.` : ''}`
           : `A próxima aventura de ${member.name} começa já.`,
         art: <HeroArt member={member} />,
         extra: newAch.length ? (
@@ -162,14 +165,14 @@ function useChronicle(date: string): Card[] {
 
     const backstage = week.filter((c) => BACKSTAGE.includes(c.category) && c.memberIds.some((id) => f.byId.get(id)?.role === 'adult'))
     if (backstage.length) {
-      const titles = [...new Set(backstage.map((c) => `${c.emoji} ${c.title}`))].slice(0, 6)
+      const titles = [...new Map(backstage.map((c) => [c.title, c.emoji])).entries()].slice(0, 6)
       cards.push({
         key: 'bastidores', eyebrow: 'Bastidores do Reino', title: 'O trabalho que ninguém vê',
         text: 'Enquanto o reino seguia, os adultos também cuidaram de tudo isto:',
         art: <IconArt name="feather" />,
         extra: (
           <ul className="mt-4 flex flex-wrap justify-center gap-2">
-            {titles.map((t) => <li key={t} className="rounded-full bg-white/[0.07] px-3 py-1.5 text-sm text-ivory ring-1 ring-white/10">{t}</li>)}
+            {titles.map(([t, e]) => <li key={t} className="flex items-center gap-1.5 rounded-full bg-white/[0.07] py-1 pl-1.5 pr-3 text-sm text-ivory ring-1 ring-white/10"><TaskArt emoji={e} size={24} /> {t}</li>)}
           </ul>
         ),
       })

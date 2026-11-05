@@ -33,9 +33,11 @@ export function occurrencesFor(date: ISODate, tasks: Task[], completions: Comple
     const ex = task.exceptions ?? []
     // Ocorrência normal do dia (a menos que tenha sido dispensada ou movida só nesta semana)
     const own = ex.find((e) => e.date === date)
-    if (task.weekdays.includes(wd) && !own?.skip && !own?.to) push(own?.time ? { ...task, time: own.time } : task)
-    // Ocorrências trazidas de outro dia só nesta semana
-    for (const e of ex) if (e.to === date && !e.skip) push(e.time ? { ...task, time: e.time } : task)
+    const hasOwn = task.weekdays.includes(wd) && !own?.skip && !own?.to
+    if (hasOwn) push(own?.time ? { ...task, time: own.time } : task)
+    // Ocorrência trazida de outro dia só nesta semana (no máximo uma por dia; se o dia já tem, não duplica)
+    const moved = ex.find((e) => e.to === date && !e.skip)
+    if (moved && !hasOwn) push(moved.time ? { ...task, time: moved.time } : task)
   }
   return out.sort(byTime)
 }
