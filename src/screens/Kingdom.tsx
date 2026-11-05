@@ -84,8 +84,8 @@ export function Kingdom() {
                     )}
                   </span>
                   <span className="title-display mt-2 text-xl font-bold">{m.name}</span>
-                  <span className="inline-flex items-center justify-center gap-1 text-sm font-semibold leading-tight">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: 'var(--hero)' }} aria-hidden="true" />
+                  <span className="text-sm font-semibold leading-tight">
+                    <span className="mr-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: 'var(--hero)' }} aria-hidden="true" />
                     {className(m)}
                   </span>
                   <span className="mt-0.5 line-clamp-2 text-xs text-muted">{m.kingdomRole}</span>
@@ -141,7 +141,7 @@ export function Kingdom() {
         <section className="plaque mt-5 p-4" aria-labelledby="gratidao">
           <div className="mb-3 flex items-center gap-3">
             <h2 id="gratidao" className="title-display flex-1 text-lg font-bold">Gratidão no reino</h2>
-            <button className="btn btn-ghost h-11 min-h-11 text-sm" onClick={() => go('/mural')}>
+            <button className="btn btn-ghost h-12 min-h-12 text-sm" onClick={() => go('/mural')}>
               {isoWeekday(day) === 7 ? 'Crônica da Semana ›' : 'Ver o Mural ›'}
             </button>
           </div>
@@ -187,10 +187,10 @@ function useUpcoming(day: string, now: number) {
       if (!r.weekdays.includes(wd) || r.kind === 'sleep' || r.kind === 'wake') continue
       const s = minutes(r.start)
       const m = f.byId.get(r.memberId)
-      if (s >= now || routineAt(r.memberId, day, now, f.routines)?.id === r.id) {
-        const label = r.label ?? (r.kind === 'school' ? 'Escola' : r.kind === 'work' ? 'Trabalho' : r.kind === 'meal' ? 'Refeição' : 'Compromisso')
-        if (s >= now) add(s, r.kind === 'meal' ? '🍽️' : r.kind === 'school' ? '🏫' : r.kind === 'work' ? '💼' : '📌', label, m)
-      }
+      const label = r.label ?? (r.kind === 'school' ? 'Escola' : r.kind === 'work' ? 'Trabalho' : r.kind === 'meal' ? 'Refeição' : 'Compromisso')
+      const emoji = r.kind === 'meal' ? '🍽️' : r.kind === 'school' ? '🏫' : r.kind === 'work' ? '💼' : '📌'
+      if (s >= now) add(s, emoji, label, m)
+      else if (routineAt(r.memberId, day, now, f.routines)?.id === r.id) add(s, emoji, `${label} até ${formatTime(r.end)}`, m)
     }
     for (const o of occurrencesFor(day, f.tasks, f.completions)) {
       if (!o.task.time || o.completion) continue

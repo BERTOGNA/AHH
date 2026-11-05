@@ -39,14 +39,15 @@ export function Week() {
     setDay(n === 0 ? today() : addDays(a, isoWeekday(day) - 1))
   }
 
-  async function move(item: { task?: Task; routine?: RoutineBlock }, from: string, to: string, startMin: number) {
+  async function move(item: { task?: Task; routine?: RoutineBlock }, from: string, to: string, startMin: number | null) {
     const fromWd = isoWeekday(from)
     const toWd = isoWeekday(to)
     const swapDay = (days: Weekday[]) => (fromWd === toWd || days.includes(toWd) ? days : [...days.filter((d) => d !== fromWd), toWd].sort())
     if (item.task) {
-      await saveTask({ ...item.task, weekdays: swapDay(item.task.weekdays), time: hhmm(startMin) })
-      toast(`${item.task.title}: ${WEEKDAY_SHORT[toWd]} ${formatTime(hhmm(startMin))} (todas as semanas)`)
-    } else if (item.routine) {
+      const time = startMin === null ? item.task.time : hhmm(startMin)
+      await saveTask({ ...item.task, weekdays: swapDay(item.task.weekdays), time })
+      toast(`${item.task.title}: ${WEEKDAY_SHORT[toWd]}${time ? ` ${formatTime(time)}` : ''} (todas as semanas)`)
+    } else if (item.routine && startMin !== null) {
       const r = item.routine
       const delta = startMin - minutes(r.start)
       await saveRoutine({ ...r, weekdays: swapDay(r.weekdays), start: hhmm(minutes(r.start) + delta), end: hhmm(minutes(r.end) + delta) })
@@ -80,8 +81,8 @@ export function Week() {
         ))}
         {adultId && (
           <span className="ml-auto flex gap-2">
-            <button className="btn btn-gold h-11 min-h-11" onClick={() => setEditTask({})}>✚ Tarefa</button>
-            <button className="btn btn-ghost h-11 min-h-11" onClick={() => setRoutine('new')}>✚ Rotina</button>
+            <button className="btn btn-gold h-12 min-h-12" onClick={() => setEditTask({})}>✚ Tarefa</button>
+            <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}>✚ Rotina</button>
           </span>
         )}
       </div>
@@ -157,7 +158,7 @@ export function Week() {
 
 /** Detalhe de uma tarefa na grade, com a alternativa a arrastar (±15 min, mover de dia). */
 function TaskDetail({ task, date, editable, onEdit, onMove, onClose }: {
-  task: Task; date: string; editable: boolean; onEdit: () => void; onMove: (toWd: Weekday, startMin: number) => void; onClose: () => void
+  task: Task; date: string; editable: boolean; onEdit: () => void; onMove: (toWd: Weekday, startMin: number | null) => void; onClose: () => void
 }) {
   const f = useFamily()
   // A tarefa pode ter mudado (live query): usa a versão atual.
@@ -193,7 +194,7 @@ function TaskDetail({ task, date, editable, onEdit, onMove, onClose }: {
             <p className="mb-1 text-sm font-semibold">Mover {WEEKDAY_LONG[wd].toLowerCase()} para…</p>
             <div className="flex flex-wrap gap-2">
               {WEEKDAYS.filter((d) => d !== wd).map((d) => (
-                <button key={d} className="chip" disabled={t.weekdays.includes(d)} style={{ opacity: t.weekdays.includes(d) ? 0.45 : 1 }} onClick={() => { onMove(d, start ?? 18 * 60); onClose() }}>
+                <button key={d} className="chip" disabled={t.weekdays.includes(d)} style={{ opacity: t.weekdays.includes(d) ? 0.45 : 1 }} onClick={() => { onMove(d, start); onClose() }}>
                   {WEEKDAY_SHORT[d]}
                 </button>
               ))}

@@ -57,7 +57,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
     await saveTask({
       ...task, title: title.trim(), emoji, speak: speakText.trim() || undefined, category, kind,
       assigneeIds: kind === 'household' ? [] : assignees, weekdays: [...days].sort(), time: hasTime ? time : undefined,
-      duration, xp: teenMode && !task ? 10 : xp, proposedBy: task?.proposedBy ?? (teenMode ? teenId : undefined),
+      duration, xp: teenMode && !task ? 10 : xp, proposedBy: task ? task.proposedBy : teenMode ? teenId : undefined,
     })
     toast(task ? 'Tarefa atualizada.' : teenMode ? 'Tarefa adicionada à sua semana.' : 'Tarefa criada.')
     onClose()
@@ -155,7 +155,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
                 <span className="text-sm">Duração</span>
                 <select className="field w-28" value={duration} onChange={(e) => setDuration(Number(e.target.value))}>
                   {[15, 30, 45, 60, 90, 120, 180, 240, 480, 540].map((n) => (
-                    <option key={n} value={n}>{n < 60 ? `${n} min` : `${n / 60} h`.replace('.5', 'h30')}</option>
+                    <option key={n} value={n}>{n < 60 ? `${n} min` : n % 60 ? `${Math.floor(n / 60)}h30` : `${n / 60}h`}</option>
                   ))}
                 </select>
               </label>

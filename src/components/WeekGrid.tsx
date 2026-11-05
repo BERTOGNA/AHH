@@ -287,8 +287,8 @@ export function WeekGrid(p: WeekGridProps) {
                   })}
                   {/* linha do agora */}
                   {isToday && nowMinutes() > FROM && nowMinutes() < TO && (
-                    <div className="pointer-events-none absolute inset-x-0 z-[4] h-0.5 bg-[#b8410e]" style={{ top: yOf(nowMinutes()) }}>
-                      <span className="absolute -left-1 -top-[5px] h-3 w-3 rounded-full bg-[#b8410e]" />
+                    <div className="pointer-events-none absolute inset-x-0 z-[4] h-0.5 bg-gold" style={{ top: yOf(nowMinutes()) }}>
+                      <span className="absolute -left-1 -top-[5px] h-3 w-3 rounded-full bg-gold" />
                     </div>
                   )}
                   {drag && drag.date === d && (

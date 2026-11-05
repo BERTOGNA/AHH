@@ -21,7 +21,7 @@ export const TEMPLATES: Record<Role, TaskTemplate[]> = {
   child: [
     { id: 'c-cama', title: 'Arrumar a cama', emoji: '🛏️', speak: 'Hora de arrumar a sua cama!', category: 'lar', xp: 5, time: '07:00', weekdays: ALL, on: true },
     { id: 'c-dentes-m', title: 'Escovar os dentes', emoji: '🪥', speak: 'Vamos escovar os dentes!', category: 'pessoal', xp: 5, time: '07:15', weekdays: ALL, on: false },
-    { id: 'c-vestir', title: 'Vestir-se sozinho', emoji: '👕', speak: 'Vista a sua roupa sozinho!', category: 'pessoal', xp: 5, time: '07:20', weekdays: WEEK, on: false },
+    { id: 'c-vestir', title: 'Vestir-se sem ajuda', emoji: '👕', speak: 'Hora de vestir a sua roupa!', category: 'pessoal', xp: 5, time: '07:20', weekdays: WEEK, on: false },
     { id: 'c-pet', title: 'Dar comida ao bichinho', emoji: '🐶', speak: 'O bichinho está com fome!', category: 'cuidado', xp: 10, time: '08:00', weekdays: ALL, on: false },
     { id: 'c-mochila', title: 'Guardar a mochila e o tênis', emoji: '🎒', speak: 'Guarde a mochila e o tênis no lugar!', category: 'lar', xp: 5, time: '12:30', weekdays: WEEK, on: false },
     { id: 'c-leitura', title: 'Leitura com alguém', emoji: '📖', speak: 'Hora de ler uma história com alguém!', category: 'estudo', xp: 10, time: '16:00', weekdays: WEEK, on: true },

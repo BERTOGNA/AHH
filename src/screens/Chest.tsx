@@ -178,7 +178,7 @@ function ConfirmTrade({ me, reward, onClose }: { me: Member; reward: Reward; onC
         {!sent && (
           <div className="mt-2 flex gap-3">
             <button className="btn btn-gold h-16 min-w-40 text-xl" onClick={trade}>{kid ? '🎁 Pedir!' : 'Trocar por este tesouro'}</button>
-            <button className="btn btn-ghost h-16" onClick={onClose} aria-label="Agora não">{kid ? '↩️' : 'Agora não'}</button>
+            <button className="btn btn-ghost h-16 min-w-16" onClick={onClose} aria-label="Agora não">{kid ? '↩️' : 'Agora não'}</button>
           </div>
         )}
       </div>

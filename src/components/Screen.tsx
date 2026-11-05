@@ -9,16 +9,17 @@ interface Props {
   children: ReactNode
   actions?: ReactNode
   hideTitle?: boolean
+  hideMe?: boolean
 }
 
 /** Moldura padrão das telas: cabeçalho com título e avatar do perfil ativo (→ Ficha). */
-export function Screen({ title, subtitle, children, actions, hideTitle }: Props) {
+export function Screen({ title, subtitle, children, actions, hideTitle, hideMe }: Props) {
   const me = useCurrent()
   const { adultId, lock } = useSession()
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-[calc(104px+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:pb-10 lg:pl-32">
       <header className="mb-5 flex flex-wrap items-center gap-3">
-        <div className="min-w-0 flex-1">
+        <div className="min-w-[13rem] flex-1">
           <h1 className={`title-display text-2xl font-bold sm:text-3xl ${hideTitle ? 'sr-only' : ''}`}>{title}</h1>
           {subtitle && <div className="text-muted">{subtitle}</div>}
         </div>
@@ -28,7 +29,7 @@ export function Screen({ title, subtitle, children, actions, hideTitle }: Props)
             🔓 <span className="hidden sm:inline">Sair do modo pais</span>
           </button>
         )}
-        {me && (
+        {me && !hideMe && (
           <button onClick={() => go(`/ficha/${me.id}`)} aria-label={`Ficha de ${me.name}`} className="rounded-full">
             <Avatar member={me} size={56} />
           </button>

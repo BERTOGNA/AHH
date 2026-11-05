@@ -62,3 +62,22 @@ deste plano, vale este plano.
 8. PWA e backup (service worker offline, persistência, exportar/importar JSON)
 
 Cada fatia termina com `npm run build` e `npm test` verdes e verificação no navegador (Playwright).
+
+## 6. Verificação (Fase 3) — resultado do QA independente
+
+O QA rodou o app de verdade (Chromium, 1180×820 e 390×844), sem ter escrito o código. Nenhum bloqueador.
+Corrigido e reconferido no navegador:
+
+- 12 anos que movia uma tarefa atribuída virava "dono" dela (podia renomear e excluir) → corrigido: mover mantém o dono.
+- Rolagem horizontal na tela de 6 anos no celular (botão 🔊 cortado) → corrigido.
+- O círculo "a fazer" da criança mostrava um ✔️ cinza (parecia feito) → agora é vazio e tracejado.
+- "Mover para…" dava 18h a tarefas sem horário → mantém sem horário.
+- Não havia como restaurar backup num aparelho novo → "Restaurar um backup" na tela de boas-vindas.
+- Chips e botões secundários com 44px → 48px; cabeçalho da Semana no celular; duração "1h30 h"; "Vestir-se sozinho" → "Vestir-se sem ajuda" (neutro);
+  "Acontecendo agora" passa a incluir escola/trabalho em andamento; barra completa no Salão; avatar duplicado e parada de Tab duplicada removidos;
+  linha "agora" da grade em dourado (não parece alerta).
+
+Exceções conscientes:
+- Na grade semanal do **tablet**, cada pessoa tem uma faixa fina (≈30px), então os blocos ficam abaixo de 48px de largura. É o desenho escolhido para ver
+  os quatro lado a lado. Alternativas de toque grande: filtrar uma pessoa (a faixa ocupa o dia todo), a visão de celular (um dia) e a **Lista**.
+- O passo do assistente não tem botão "Pular — usar sugestão": todos os campos já vêm preenchidos, então "Próximo" faz o mesmo papel.

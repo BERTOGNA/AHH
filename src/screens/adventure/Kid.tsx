@@ -49,18 +49,18 @@ export function KidAdventure({ me }: { me: Member }) {
     <main style={heroStyle(me)} className="mx-auto w-full max-w-5xl px-4 pb-[calc(124px+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:pb-10 lg:pl-32">
       <header className="mb-5 flex items-center gap-4">
         <button onClick={() => go(`/ficha/${me.id}`)} aria-label={`Ficha de ${me.name}`} className="rounded-full">
-          <Avatar member={me} size={96} />
+          <Avatar member={me} size={80} />
         </button>
-        <div className="flex-1">
-          <h1 className="story text-[32px] font-bold leading-tight">{me.name}</h1>
-          <div className="mt-1 flex gap-1 text-4xl" role="img" aria-label={`${stars} de 5 estrelas até o próximo nível`}>
+        <div className="min-w-0 flex-1">
+          <h1 className="story truncate text-[32px] font-bold leading-tight">{me.name}</h1>
+          <div className="mt-1 flex gap-0.5 text-[28px] sm:gap-1 sm:text-4xl" role="img" aria-label={`${stars} de 5 estrelas até o próximo nível`}>
             {[0, 1, 2, 3, 4].map((i) => (
               <span key={i} className={i < stars ? '' : 'opacity-25 grayscale'} aria-hidden="true">⭐</span>
             ))}
           </div>
         </div>
         <button
-          className="grid h-[72px] w-[72px] place-items-center rounded-full border-4 border-[var(--hero)] bg-surface text-4xl"
+          className="grid h-[72px] w-[72px] shrink-0 place-items-center rounded-full border-4 border-[var(--hero)] bg-surface text-4xl"
           aria-label="Ouvir de novo"
           onClick={() => speak(`Você tem ${occ.length} missões hoje.`)}
         >
@@ -174,7 +174,8 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
       <button
         className="absolute right-3 top-3 grid h-[72px] w-[72px] place-items-center rounded-full border-2 border-line bg-white text-4xl"
         onClick={() => speak(say)}
-        aria-label={`Ouvir: ${o.task.title}`}
+        tabIndex={-1}
+        aria-hidden="true"
       >
         🔊
       </button>
@@ -224,7 +225,6 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
             className="grid h-[104px] w-[104px] place-items-center rounded-full border-[5px] border-dashed bg-white text-5xl text-line active:scale-95"
             style={{ borderColor: 'var(--hero)' }}
           >
-            <span aria-hidden="true" className="opacity-60">✔️</span>
           </button>
         ) : status === 'done' ? (
           <button

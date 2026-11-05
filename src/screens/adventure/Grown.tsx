@@ -43,7 +43,7 @@ export function GrownAdventure({ me }: { me: Member }) {
   ]
 
   return (
-    <Screen title={`Aventura de ${me.name}`} hideTitle>
+    <Screen title={`Aventura de ${me.name}`} hideTitle hideMe>
       <section className="plaque mb-4 flex flex-wrap items-center gap-4 p-4">
         <button onClick={() => go(`/ficha/${me.id}`)} aria-label="Abrir ficha do personagem" className="rounded-full">
           <Avatar member={me} size={80} />
@@ -257,7 +257,7 @@ function TaskRow({ o, me, onCheck }: { o: Occurrence; me: Member; onCheck?: () =
       </div>
       <span className="shrink-0 text-sm font-bold text-gold">+{o.task.xp} XP</span>
       {c?.status === 'done' && (
-        <button className="btn btn-ghost h-11 min-h-11 px-3 text-sm" onClick={() => unmark(c.id)} aria-label={`Desfazer: ${o.task.title}`}>
+        <button className="btn btn-ghost h-12 min-h-12 px-3 text-sm" onClick={() => unmark(c.id)} aria-label={`Desfazer: ${o.task.title}`}>
           Desfazer
         </button>
       )}
@@ -318,7 +318,7 @@ function MyWeek({ me }: { me: Member }) {
   const [edit, setEdit] = useState<{ task?: Task; day?: number } | null>(null)
   const dates = weekDates(today())
   return (
-    <Section title="Minha semana" aside={<button className="btn btn-gold h-11 min-h-11" onClick={() => setEdit({})}>＋ Nova tarefa</button>}>
+    <Section title="Minha semana" aside={<button className="btn btn-gold h-12 min-h-12" onClick={() => setEdit({})}>＋ Nova tarefa</button>}>
       <p className="mb-3 text-sm text-muted">Toque numa tarefa para mudar o dia ou o horário. As que você cria valem 10 XP.</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {dates.map((d) => {
@@ -328,7 +328,7 @@ function MyWeek({ me }: { me: Member }) {
             <section key={d} className={`plaque p-3 ${d === today() ? 'ring-2 ring-gold' : ''}`} aria-label={WEEKDAY_LONG[wd]}>
               <h3 className="mb-2 flex items-center font-bold">
                 <span className="flex-1">{WEEKDAY_LONG[wd]}</span>
-                <button className="h-11 w-11 rounded-full text-xl hover:bg-wait" aria-label={`Nova tarefa na ${WEEKDAY_LONG[wd]}`} onClick={() => setEdit({ day: wd })}>＋</button>
+                <button className="h-12 w-12 rounded-full text-xl hover:bg-wait" aria-label={`Nova tarefa na ${WEEKDAY_LONG[wd]}`} onClick={() => setEdit({ day: wd })}>＋</button>
               </h3>
               {list.length ? (
                 <ul className="flex flex-col gap-1">

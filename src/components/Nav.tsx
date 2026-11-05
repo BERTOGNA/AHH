@@ -13,7 +13,8 @@ interface Item {
 export function Nav() {
   const route = useRoute()
   const me = useCurrent()
-  const kid = me?.role === 'child'
+  // No Salão (espaço da família) a barra é a completa; nas telas da criança, a versão de 3 botões.
+  const kid = me?.role === 'child' && route.name !== 'salao'
   const items: Item[] = [
     ...(me ? [{ icon: '🗺️', label: 'Aventura', path: `/heroi/${me.id}`, active: route.name === 'heroi' }] : []),
     { icon: '🏰', label: 'Salão', path: '/', active: route.name === 'salao' },

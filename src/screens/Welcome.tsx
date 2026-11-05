@@ -3,6 +3,7 @@ import { useFamily, useSession } from '../state'
 import { go } from '../router'
 import { createFamily, seedDemo } from '../db/seed'
 import { requestPersistence } from '../lib/persist'
+import { importBackup, parseBackup, summarize } from '../db/backup'
 import { defaultChores } from '../domain/week'
 import { clearDraft, initialDraft, loadDraft, saveDraft, signature, toAnswers, type Draft } from './onboarding/draft'
 import { StepChest, StepChores, StepHeroes, StepOccupation, StepPeople, StepTimes } from './onboarding/Steps'
@@ -57,6 +58,25 @@ export function Welcome() {
       setFinishing(true)
     } catch {
       toast('Não foi possível criar a família de exemplo. Tente de novo.')
+      setBusy(false)
+    }
+  }
+
+  /** Aparelho novo: restaura a família a partir de um backup exportado antes. */
+  async function restore(file: File | undefined) {
+    if (!file) return
+    try {
+      const b = parseBackup(await file.text())
+      const sum = summarize(b)
+      if (!window.confirm(`Restaurar ${sum.heroes} heróis e ${sum.tasks} tarefas (backup de ${sum.exportedAt})? Isto substitui o que houver neste aparelho.`)) return
+      setBusy('demo')
+      await importBackup(b)
+      clearDraft()
+      setCurrent(null)
+      await requestPersistence()
+      setFinishing(true)
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Não foi possível ler o backup.')
       setBusy(false)
     }
   }
@@ -127,6 +147,10 @@ export function Welcome() {
           <button className="btn h-14 border-2 border-[#e8dcc0]/50 text-bg hover:bg-white/10" disabled={Boolean(busy)} onClick={useDemo}>
             {busy === 'demo' ? 'Preparando o reino…' : 'Usar família de exemplo'}
           </button>
+          <label className="btn h-12 cursor-pointer text-[#e8dcc0] underline-offset-4 hover:underline">
+            Restaurar um backup
+            <input type="file" accept="application/json,.json" className="sr-only" disabled={Boolean(busy)} onChange={(e) => restore(e.target.files?.[0])} />
+          </label>
         </div>
         <p className="max-w-sm text-sm text-[#cdbfa3]">Tudo fica guardado só neste aparelho. Nada é enviado para a internet.</p>
       </main>
