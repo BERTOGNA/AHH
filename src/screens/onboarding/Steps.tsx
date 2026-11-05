@@ -241,6 +241,27 @@ export function StepChores({ d, set }: StepProps) {
     })
   const patch = (chore: WizardChore, p: Partial<WizardChore>) =>
     set((x) => ({ ...x, chores: x.chores.map((c) => (c === chore ? { ...c, ...p } : c)) }))
+  // Uma seção aberta por vez: o passo fica curto e cada um vê o resumo das escolhas.
+  const [open, setOpen] = useState<string | null>(null)
+  const allTpl = [...TEMPLATES.child, ...TEMPLATES.teen, ...TEMPLATES.adult]
+  const summary = (list: WizardChore[]) => (
+    <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-hidden="true">
+      {list.slice(0, 14).map((c, k) => {
+        const t = allTpl.find((x) => x.id === c.templateId)
+        return t ? <TaskArt key={k} emoji={t.emoji} size={28} /> : null
+      })}
+    </div>
+  )
+  const header = (key: string, title: React.ReactNode, sub: string, count: number, avatar?: React.ReactNode) => (
+    <button type="button" className="flex w-full items-center gap-3 text-left" aria-expanded={open === key} onClick={() => setOpen(open === key ? null : key)}>
+      {avatar}
+      <span className="min-w-0 flex-1">
+        <span className="block text-lg font-bold">{title}</span>
+        <span className="block text-sm text-muted">{count === 1 ? '1 tarefa escolhida' : `${count} tarefas escolhidas`} · {sub}</span>
+      </span>
+      <span className="btn btn-ghost h-12 min-h-12 shrink-0 px-3 text-sm">{open === key ? 'Fechar' : 'Ajustar'}</span>
+    </button>
+  )
 
   return (
     <div className="flex flex-col gap-4">
@@ -251,24 +272,19 @@ export function StepChores({ d, set }: StepProps) {
         const overloaded = m.role === 'child' && ([1, 2, 3, 4, 5, 6, 7] as Weekday[]).some((day) => mine.filter((c) => c.weekdays.includes(day)).length > 5)
         return (
           <Card key={m.key}>
-            <div className="mb-3 flex items-center gap-3">
-              <Avatar member={previewMember(m, i)} size={48} />
-              <div>
-                <h3 className="text-lg font-bold">{displayName(m, i)}</h3>
-                <p className="text-sm text-muted">{m.role === 'child' ? 'Para os pequenos, 3 a 5 tarefas por dia é o ideal.' : 'Tarefas de mais valor e mais autonomia.'}</p>
-              </div>
-            </div>
-            <ul className="flex flex-col gap-2">
+            {header(m.key, displayName(m, i), m.role === 'child' ? 'para os pequenos, 3 a 5 por dia é o ideal' : 'mais valor e mais autonomia', mine.length, <Avatar member={previewMember(m, i)} size={48} />)}
+            {open !== m.key && summary(mine)}
+            {open === m.key && <ul className="mt-3 flex flex-col gap-2">
               {templates.map((t) => {
                 const c = findChore(d.chores, t.id, (x) => x.assignee === m.key)
                 return (
                   <ChoreRow key={t.id} emoji={t.emoji} title={t.title} xp={t.xp} category={t.category} on={Boolean(c)} onToggle={() => toggleKid(t.id, m.key, t.weekdays)}>
                     {c && <DaysEditor label={`Dias de ${t.title}`} days={c.weekdays} onToggle={(day) => patch(c, { weekdays: toggleDay(c.weekdays, day) })} />}
-                    {c && t.sharedWithAdult && <p className="text-sm text-muted">👥 Feita junto com um adulto.</p>}
+                    {c && t.sharedWithAdult && <p className="text-sm text-muted">Feita junto com um adulto.</p>}
                   </ChoreRow>
                 )
               })}
-            </ul>
+            </ul>}
             {overloaded && (
               <p className="mt-3 rounded-xl bg-wait px-3 py-2 text-sm font-semibold" role="status">
                 Algum dia passou de 5 tarefas. Dá para seguir assim, mas para os pequenos menos costuma funcionar melhor.
@@ -279,9 +295,9 @@ export function StepChores({ d, set }: StepProps) {
       })}
       {adults.length > 0 && (
         <Card>
-          <h3 className="mb-1 text-lg font-bold">Adultos</h3>
-          <p className="mb-3 text-sm text-muted">O que vocês fazem pela casa também entra no jogo. As crianças vão ver.</p>
-          <ul className="flex flex-col gap-2">
+          {header('adultos', 'Adultos', 'o que vocês fazem também entra no jogo', d.chores.filter(isAdultChore).length)}
+          {open !== 'adultos' && summary(d.chores.filter(isAdultChore))}
+          {open === 'adultos' && <><ul className="mt-3 flex flex-col gap-2">
             {TEMPLATES.adult.map((t) => {
               const c = findChore(d.chores, t.id, isAdultChore)
               return (
@@ -306,7 +322,7 @@ export function StepChores({ d, set }: StepProps) {
               )
             })}
           </ul>
-          <p className="mt-3 text-sm text-muted">🏠 <b>Lar</b> = qualquer um da família pode pegar ("Eu faço!").</p>
+          <p className="mt-3 text-sm text-muted"><b>Lar</b> = qualquer um da família pode pegar ("Eu faço!").</p></>}
         </Card>
       )}
     </div>
