@@ -10,6 +10,8 @@ import { addDays, formatDayMonth, isoWeekday, today, weekDates, weekKey } from '
 import { Screen, Section, Empty } from '../components/Screen'
 import { Avatar } from '../components/Avatar'
 import { Progress } from '../components/Progress'
+import { MissionScene } from '../components/MissionScene'
+import { Icon } from '../components/Icon'
 import { ThanksModal } from '../components/ThanksModal'
 import { className, heroStyle } from '../components/hero'
 
@@ -59,7 +61,7 @@ export function Mural() {
 
       {mentorships.length > 0 && (
         <Section title="Mentorias da semana">
-          <ul className="plaque divide-y divide-line/60">
+          <ul className="card divide-y divide-line/60">
             {mentorships.map((c) => {
               const h = f.byId.get(c.helperId!)
               const a = f.byId.get(c.memberIds[0])
@@ -70,7 +72,7 @@ export function Mural() {
                   <span className="story flex-1">
                     <b>{h.name}</b> ajudou <b>{a.name}</b>: {c.emoji} {c.title}
                   </span>
-                  <span aria-hidden="true">🤝</span>
+                  <Icon name="users" size={18} className="text-muted" />
                 </li>
               )
             })}
@@ -86,7 +88,7 @@ export function Mural() {
               const to = f.byId.get(t.toId)
               if (!from || !to) return null
               return (
-                <li key={t.id} className="plaque flex items-start gap-3 p-3">
+                <li key={t.id} className="card flex items-start gap-3 p-3">
                   <span className="text-3xl" aria-hidden="true">{t.emoji}</span>
                   <div className="flex-1">
                     <p className="story text-lg">“{t.message}”</p>
@@ -119,18 +121,16 @@ function MissionSummary({ goal, templateId, date, current }: { goal: number; tem
   const pct = Math.min(100, Math.round((progress / goal) * 100))
   const stage = stageOf(progress, goal)
   return (
-    <section className="plaque plaque-star mb-6 grid gap-4 p-4 sm:grid-cols-[auto_1fr] sm:items-center">
-      <div className="grid h-28 place-items-center rounded-2xl bg-gradient-to-b from-[#dbe9d4] to-[#f2e6c6] px-6 text-5xl tracking-widest" aria-hidden="true">
-        {t.stages[stage].scene}
-      </div>
-      <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-gold">Missão da família</p>
-        <h2 className="title-display text-xl font-bold">{t.name}</h2>
-        <p className="story my-1 text-lg">
+    <section className="night-sky on-night mb-7 overflow-hidden rounded-[24px] shadow-[var(--shadow-e3)] md:grid md:grid-cols-[1.1fr_1fr]">
+      <MissionScene missionId={t.id} stage={stage as 0} night className="block aspect-[16/9] w-full md:aspect-auto md:h-full" />
+      <div className="p-5 md:p-6">
+        <p className="eyebrow">Missão da família</p>
+        <h2 className="title-display text-2xl text-ivory">{t.name}</h2>
+        <p className="story my-2 text-lg text-moon">
           {pct >= 100 ? `Missão cumprida! ${t.stages[4].text}` : current ? t.stages[stage].text : `Restauramos ${pct}% do ${t.place}. ${t.stages[stage].text}`}
         </p>
-        <Progress value={progress} max={goal} label={`Restaurado: ${pct}%`} height={14} />
-        <p className="mt-1 text-sm text-muted">Todos contribuem para a mesma barra: {pct}% restaurado juntos.</p>
+        <Progress value={progress} max={goal} label={`Restaurado: ${pct}%`} height={12} night />
+        <p className="mt-2 text-sm text-moon">Todos contribuem para a mesma barra: <b className="text-gold-light">{pct}% restaurado juntos</b>.</p>
       </div>
     </section>
   )
@@ -165,17 +165,17 @@ function HeroColumn({ member, completions, canThank, onThank }: {
       </p>
       <ul className="flex flex-col gap-1">
         {[...groups.get(cat)!.values()].map((it) => (
-          <li key={it.title} className="flex min-h-11 items-center gap-2 rounded-xl bg-white/70 px-2">
+          <li key={it.title} className="flex min-h-12 items-center gap-2 rounded-xl bg-bg/60 px-2 ring-1 ring-line/60">
             <span aria-hidden="true">{it.emoji}</span>
             <span className="flex-1 text-[15px] font-semibold">
               {it.title}
               {it.n > 1 && <span className="font-normal text-muted"> · {it.n} vezes</span>}
               {it.pending && <span className="sr-only"> (aguardando o selo)</span>}
             </span>
-            {it.pending && <span aria-hidden="true" title="aguardando o selo">⏳</span>}
+            {it.pending && <span className="text-gold-deep" aria-hidden="true" title="aguardando o selo"><Icon name="hourglass" size={18} /></span>}
             {canThank && (
-              <button className="grid h-11 w-11 place-items-center rounded-full text-xl hover:bg-wait" aria-label={`Agradecer ${member.name} por ${it.title}`} onClick={() => onThank(it.title, it.lastId)}>
-                💛
+              <button className="grid h-12 w-12 place-items-center rounded-full text-gold-deep transition hover:bg-wait" aria-label={`Agradecer ${member.name} por ${it.title}`} onClick={() => onThank(it.title, it.lastId)}>
+                <Icon name="heart" size={22} />
               </button>
             )}
           </li>
@@ -185,19 +185,19 @@ function HeroColumn({ member, completions, canThank, onThank }: {
   )
 
   return (
-    <article style={heroStyle(member)} className="plaque overflow-hidden" aria-label={`${member.name}: o que fez pelo reino`}>
-      <header className="flex items-center gap-3 border-b-4 p-3" style={{ borderColor: 'var(--hero)', background: 'var(--hero-tint)' }}>
-        <Avatar member={member} size={52} />
+    <article style={heroStyle(member)} className="card overflow-hidden" aria-label={`${member.name}: o que fez pelo reino`}>
+      <header className="relative flex items-center gap-3 p-4 text-white" style={{ background: 'linear-gradient(135deg, var(--hero), color-mix(in srgb, var(--hero) 70%, #0F1230))' }}>
+        <Avatar member={member} size={56} />
         <div>
-          <h3 className="title-display text-lg font-bold">{member.name}</h3>
-          <p className="text-sm">{className(member)}</p>
+          <h3 className="insignia text-xl leading-none text-gold-light">{member.name}</h3>
+          <p className="mt-1 text-sm text-white/90">{className(member)}</p>
         </div>
       </header>
       <div className="p-3">
         {front.map(renderCat)}
         {back.length > 0 && (
-          <div className="mt-2 rounded-2xl border-2 border-dashed border-gold/50 bg-wait/40 p-2">
-            <p className="title-display mb-1 text-sm font-bold text-gold">✦ Bastidores do Reino</p>
+          <div className="mt-3 rounded-2xl bg-[linear-gradient(180deg,#FFF7E3,#FBEFD2)] p-3 ring-1 ring-gold/40">
+            <p className="eyebrow mb-2 flex items-center gap-1.5"><Icon name="sparkle" size={14} /> Bastidores do Reino</p>
             {back.map(renderCat)}
           </div>
         )}
@@ -223,10 +223,14 @@ function KingdomMap() {
         {MISSIONS.map((t) => {
           const s = best.get(t.id)
           return (
-            <li key={t.id} className={`plaque p-3 text-center ${s === undefined ? 'opacity-60' : ''}`}>
-              <div className="text-3xl tracking-wider" aria-hidden="true">{s === undefined ? '🌫️' : t.stages[s].scene}</div>
-              <p className="mt-1 text-sm font-semibold">{t.place}</p>
-              <p className="text-xs text-muted">{s === undefined ? 'Ainda sob a névoa' : s === 4 ? 'Restaurado!' : `Restaurado até ${s * 25}%`}</p>
+            <li key={t.id} className="card overflow-hidden">
+              <div className={s === undefined ? 'opacity-50 saturate-0' : ''}>
+                <MissionScene missionId={t.id} stage={(s ?? 0) as 0} className="block aspect-[16/10] w-full" />
+              </div>
+              <div className="p-3">
+                <p className="text-sm font-bold leading-tight">{t.place}</p>
+                <p className="text-xs text-muted">{s === undefined ? 'Ainda sob a névoa' : s === 4 ? 'Restaurado!' : `Restaurado até ${s * 25}%`}</p>
+              </div>
             </li>
           )
         })}

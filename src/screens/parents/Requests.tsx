@@ -23,7 +23,7 @@ export function Requests() {
     <div>
       {missionDone && mission && (
         <Section title="Tesouro da Família">
-          <div className="plaque plaque-star flex flex-wrap items-center gap-4 p-4">
+          <div className="card-gilded flex flex-wrap items-center gap-4 p-4">
             <span className="text-5xl" aria-hidden="true">{missionById(mission.templateId).emoji}</span>
             <div className="min-w-0 flex-1">
               <p className="font-semibold">Missão cumprida: {missionById(mission.templateId).name}</p>
@@ -33,7 +33,7 @@ export function Requests() {
               <span className="font-semibold text-leaf">✓ Entregue</span>
             ) : (
               <button
-                className="btn btn-gold h-14"
+                className="btn btn-primary h-14"
                 onClick={async () => {
                   await updateMission(wk, { delivered: true })
                   toast('Tesouro da Família entregue. Aproveitem juntos!')
@@ -56,7 +56,7 @@ export function Requests() {
               {requested.map((r) => {
                 const m = byId.get(r.memberId)
                 return (
-                  <li key={r.id} className="plaque flex flex-wrap items-center gap-3 p-4">
+                  <li key={r.id} className="card flex flex-wrap items-center gap-3 p-4">
                     {m && <Avatar member={m} size={48} />}
                     <span className="text-4xl" aria-hidden="true">{r.emoji}</span>
                     <div className="min-w-0 flex-1 basis-40">
@@ -76,7 +76,7 @@ export function Requests() {
                         Agora não
                       </button>
                       <button
-                        className="btn btn-gold h-14 min-w-[120px]"
+                        className="btn btn-primary h-14 min-w-[120px]"
                         onClick={async () => {
                           await decideRedemption(r.id, 'approved')
                           play('validated')
@@ -102,7 +102,7 @@ export function Requests() {
             {approved.map((r) => {
               const m = byId.get(r.memberId)
               return (
-                <li key={r.id} className="plaque flex flex-wrap items-center gap-3 p-4">
+                <li key={r.id} className="card flex flex-wrap items-center gap-3 p-4">
                   {m && <Avatar member={m} size={40} />}
                   <span className="text-3xl" aria-hidden="true">{r.emoji}</span>
                   <p className="min-w-0 flex-1 font-semibold">

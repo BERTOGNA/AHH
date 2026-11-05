@@ -30,7 +30,7 @@ export function Adventure({ id }: { id: string }) {
         <p className="text-5xl" aria-hidden="true">🔒</p>
         <h1 className="title-display mt-3 text-2xl font-bold">Aventura de {me.name}</h1>
         <p className="mt-2 text-muted">A tela dos adultos pede o PIN.</p>
-        <button className="btn btn-gold mt-5" onClick={() => gate(() => {}, me.id)}>Digitar PIN</button>
+        <button className="btn btn-primary mt-5" onClick={() => gate(() => {}, me.id)}>Digitar PIN</button>
       </main>
     )
   }

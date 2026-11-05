@@ -48,7 +48,7 @@ function KingdomSettings({ settings }: { settings: Settings }) {
   const [name, setName] = useState(settings.kingdomName)
   return (
     <Section title="O reino">
-      <div className="plaque flex flex-col gap-4 p-4">
+      <div className="card flex flex-col gap-4 p-4">
         <form
           className="flex items-end gap-2"
           onSubmit={async (e) => {
@@ -96,7 +96,7 @@ function PinSettings() {
   return (
     <Section title="PIN dos pais">
       <form
-        className="plaque flex flex-col gap-3 p-4"
+        className="card flex flex-col gap-3 p-4"
         onSubmit={async (e) => {
           e.preventDefault()
           if (!ok) return
@@ -118,7 +118,7 @@ function PinSettings() {
           </label>
         </div>
         {b.length === 4 && a !== b && <p className="text-sm font-semibold">Os dois PINs precisam ser iguais.</p>}
-        <button className="btn btn-gold disabled:opacity-50" disabled={!ok} style={{ opacity: ok ? 1 : 0.5 }}>
+        <button className="btn btn-primary disabled:opacity-50" disabled={!ok} style={{ opacity: ok ? 1 : 0.5 }}>
           Salvar novo PIN
         </button>
       </form>
@@ -152,10 +152,10 @@ function BackupSettings() {
   const s = pending && summarize(pending)
   return (
     <Section title="Backup">
-      <div className="plaque flex flex-col gap-3 p-4">
+      <div className="card flex flex-col gap-3 p-4">
         <p className="text-sm text-muted">Os dados ficam só neste aparelho. Guarde o arquivo em um lugar seguro.</p>
         <button
-          className="btn btn-gold"
+          className="btn btn-primary"
           onClick={async () => {
             downloadBackup(await exportBackup())
             toast('Backup exportado.')
@@ -188,7 +188,7 @@ function BackupSettings() {
           ) : (
             <span className="flex flex-wrap items-center gap-3">
               <span className="flex-1">O navegador pode apagar os dados se faltar espaço. Façam backups com frequência.</span>
-              <button className="btn btn-ghost h-11 min-h-11" onClick={async () => setPersisted(await requestPersistence())}>
+              <button className="btn btn-ghost h-12 min-h-12" onClick={async () => setPersisted(await requestPersistence())}>
                 Pedir para preservar
               </button>
             </span>
@@ -206,7 +206,7 @@ function BackupSettings() {
               Cancelar
             </button>
             <button
-              className="btn btn-gold flex-1"
+              className="btn btn-primary flex-1"
               onClick={async () => {
                 await importBackup(pending)
                 setPending(null)
@@ -227,7 +227,7 @@ function ResetSettings({ demo }: { demo: boolean }) {
   const { lock } = useSession()
   return (
     <Section title="Começar do zero">
-      <div className="plaque flex flex-col gap-3 p-4">
+      <div className="card flex flex-col gap-3 p-4">
         {demo && (
           <p className="rounded-xl bg-wait px-4 py-3 font-semibold">
             Vocês estão usando a família de exemplo. Quando quiserem, comecem a família de vocês.
@@ -246,7 +246,7 @@ function ResetSettings({ demo }: { demo: boolean }) {
               Cancelar
             </button>
             <button
-              className="btn btn-night flex-1"
+              className="btn btn-secondary flex-1"
               onClick={async () => {
                 await resetAll()
                 lock()

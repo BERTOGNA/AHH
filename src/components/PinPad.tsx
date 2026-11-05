@@ -49,7 +49,7 @@ export function PinPad() {
                 role="radio"
                 aria-checked={who === a.id}
                 onClick={() => setWho(a.id)}
-                className={`flex flex-col items-center gap-1 rounded-2xl p-2 ${who === a.id ? 'bg-wait ring-2 ring-gold' : ''}`}
+                className={`flex flex-col items-center gap-1 rounded-2xl p-2 transition ${who === a.id ? 'bg-wait ring-2 ring-gold' : 'opacity-70'}`}
               >
                 <Avatar member={a} size={56} />
                 <span className="font-semibold">{a.name}</span>
@@ -67,7 +67,7 @@ export function PinPad() {
       <p className="text-center text-muted">Digite o PIN de 4 dígitos.</p>
       <div className={`my-4 flex justify-center gap-4 ${error ? 'animate-shake' : ''}`} aria-live="polite">
         {[0, 1, 2, 3].map((i) => (
-          <span key={i} className={`h-5 w-5 rounded-full border-2 border-ink ${i < pin.length ? 'bg-ink' : ''}`} />
+          <span key={i} className={`h-4 w-4 rounded-full transition ${i < pin.length ? 'bg-gradient-to-b from-[#F6DD96] to-gold shadow-[0_0_10px_rgba(212,162,63,0.6)]' : 'bg-line'}`} />
         ))}
         <span className="sr-only">{error ? 'PIN incorreto. Tente de novo.' : `${pin.length} de 4 dígitos`}</span>
       </div>
@@ -90,7 +90,7 @@ function Key({ children, onClick, label }: { children: string; onClick: () => vo
     <button
       onClick={onClick}
       aria-label={label ?? children}
-      className="h-[72px] w-[72px] justify-self-center rounded-full border-2 border-line bg-surface text-2xl font-bold tabular-nums active:bg-wait"
+      className="h-[72px] w-[72px] justify-self-center rounded-full border border-line bg-gradient-to-b from-white to-[#F7F0E2] text-[26px] font-semibold tabular-nums shadow-[var(--shadow-e1)] transition active:scale-95 active:bg-wait"
     >
       {children}
     </button>

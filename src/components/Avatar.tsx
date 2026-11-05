@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import type { Member } from '../db/types'
 import { itemById } from '../data/items'
 import { heroColor } from './hero'
@@ -9,47 +10,71 @@ interface Props {
   glow?: boolean
 }
 
-/** Avatar composto: base + moldura na cor do herói + capa (halo) + chapéu, ferramenta e companheiro. */
+/**
+ * Medalhão do herói: bezel dourado em SVG, interior em gradiente da joia, rosto no centro.
+ * Itens equipados aparecem como pingentes dourados (chapéu no topo, ferramenta à direita, companheiro à esquerda).
+ * O chapéu inicial (gorro de aprendiz) não é desenhado: só chapéus conquistados aparecem.
+ */
 export function Avatar({ member, size = 96, className = '', glow }: Props) {
   const c = heroColor(member)
+  const id = useId().replace(/:/g, '')
   const eq = member.avatar.equipped
-  const hat = itemById(eq.chapeu)
+  const hat = eq.chapeu && eq.chapeu !== 'gorro_aprendiz' ? itemById(eq.chapeu) : undefined
   const tool = itemById(eq.ferramenta)
   const pet = itemById(eq.companheiro)
   const cape = itemById(eq.capa)
-  const border = size >= 96 ? 6 : 3
+  const charms = size >= 56
   return (
     <span
       aria-hidden="true"
       className={`relative inline-grid shrink-0 place-items-center rounded-full ${glow ? 'glow' : ''} ${className}`}
-      style={{
-        width: size, height: size,
-        background: `radial-gradient(circle at 50% 35%, var(--color-surface), ${c.tint} 70%)`,
-        border: `${border}px solid ${c.solid}`,
-        boxShadow: `inset 0 0 0 2px #d9a62e${cape?.color ? `, 0 0 0 ${Math.max(3, size / 22)}px ${cape.color}55` : ''}`,
-      }}
+      style={{ width: size, height: size }}
     >
-      <span style={{ fontSize: size * 0.52, lineHeight: 1 }}>{member.avatar.base}</span>
-      {hat && (
-        <span className="absolute" style={{ top: -size * 0.16, fontSize: size * 0.3, lineHeight: 1, transform: 'rotate(-10deg)' }}>
-          {hat.emoji}
-        </span>
-      )}
-      {tool && size >= 48 && (
-        <Medal emoji={tool.emoji} size={size * 0.34} style={{ right: -size * 0.06, bottom: -size * 0.04 }} />
-      )}
-      {pet && size >= 48 && (
-        <Medal emoji={pet.emoji} size={size * 0.3} style={{ left: -size * 0.06, bottom: -size * 0.04 }} />
-      )}
+      <svg viewBox="0 0 100 100" width={size} height={size} className="absolute inset-0" style={{ filter: size >= 48 ? 'drop-shadow(0 3px 6px rgb(15 18 48 / .28))' : undefined }}>
+        <defs>
+          <linearGradient id={`b${id}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#F8E3A3" />
+            <stop offset=".35" stopColor="#D4A23F" />
+            <stop offset=".6" stopColor="#F3DDA0" />
+            <stop offset="1" stopColor="#9C6B1C" />
+          </linearGradient>
+          <radialGradient id={`i${id}`} cx=".5" cy=".38" r=".7">
+            <stop offset="0" stopColor="#FFFCF6" />
+            <stop offset=".55" stopColor={c.tint} />
+            <stop offset="1" stopColor={c.solid} stopOpacity=".55" />
+          </radialGradient>
+        </defs>
+        {/* halo da capa equipada */}
+        {cape?.color && <circle cx="50" cy="50" r="49" fill={cape.color} opacity=".35" />}
+        <circle cx="50" cy="50" r="47" fill={`url(#b${id})`} />
+        <circle cx="50" cy="50" r="42.5" fill={c.solid} />
+        <circle cx="50" cy="50" r="39.5" fill={`url(#i${id})`} />
+        <circle cx="50" cy="50" r="39.5" fill="none" stroke="#fff" strokeOpacity=".35" strokeWidth="1" />
+        {size >= 72 &&
+          [0, 90, 180, 270].map((a) => (
+            <circle key={a} cx={50 + 44.75 * Math.cos((a * Math.PI) / 180)} cy={50 + 44.75 * Math.sin((a * Math.PI) / 180)} r="1.6" fill="#FFF6D8" />
+          ))}
+      </svg>
+      <span className="relative" style={{ fontSize: size * 0.46, lineHeight: 1, transform: `translateY(${size * 0.02}px)` }}>
+        {member.avatar.base}
+      </span>
+      {hat && charms && <Charm emoji={hat.emoji} size={size * 0.3} style={{ top: -size * 0.1, left: '50%', transform: 'translateX(-50%)' }} />}
+      {tool && charms && <Charm emoji={tool.emoji} size={size * 0.32} style={{ right: -size * 0.05, bottom: -size * 0.02 }} />}
+      {pet && charms && <Charm emoji={pet.emoji} size={size * 0.3} style={{ left: -size * 0.05, bottom: -size * 0.02 }} />}
     </span>
   )
 }
 
-function Medal({ emoji, size, style }: { emoji: string; size: number; style: React.CSSProperties }) {
+function Charm({ emoji, size, style }: { emoji: string; size: number; style: React.CSSProperties }) {
   return (
     <span
-      className="absolute grid place-items-center rounded-full border-2 border-gold bg-surface"
-      style={{ width: size, height: size, fontSize: size * 0.6, lineHeight: 1, ...style }}
+      className="absolute grid place-items-center rounded-full"
+      style={{
+        width: size, height: size, fontSize: size * 0.56, lineHeight: 1,
+        background: 'radial-gradient(circle at 50% 35%, #FFFCF6, #F6EBCF)',
+        boxShadow: '0 0 0 2px #D4A23F, 0 0 0 3px #FFF3CF, 0 2px 6px rgb(15 18 48 / .3)',
+        ...style,
+      }}
     >
       {emoji}
     </span>

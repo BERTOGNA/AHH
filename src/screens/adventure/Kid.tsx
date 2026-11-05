@@ -12,15 +12,19 @@ import { play } from '../../lib/sound'
 import { buzz } from '../../lib/haptics'
 import { Avatar } from '../../components/Avatar'
 import { Sparks } from '../../components/Sparks'
+import { Icon } from '../../components/Icon'
+import { GoldStar, WaxSeal } from '../../components/Seal'
 import { ThanksModal } from '../../components/ThanksModal'
 import { heroColor, heroStyle, parentsLabel } from '../../components/hero'
 import { go } from '../../router'
 import { useArrival } from './arrival'
+import { useWide } from '../../components/WeekGrid'
 
 const MAX_KID_TASKS = 5
 
 export function KidAdventure({ me }: { me: Member }) {
   const f = useFamily()
+  const wide = useWide('(min-width: 640px)')
   const day = today()
   const occ = memberDay(me.id, occurrencesFor(day, f.tasks, f.completions)).slice(0, MAX_KID_TASKS)
   const celebrating = useArrival(me)
@@ -47,30 +51,31 @@ export function KidAdventure({ me }: { me: Member }) {
 
   return (
     <main style={heroStyle(me)} className="mx-auto w-full max-w-5xl px-4 pb-[calc(124px+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:pb-10 lg:pl-32">
-      <header className="mb-5 flex items-center gap-4">
+      <header className="card mb-6 flex items-center gap-3 p-3 sm:gap-4 sm:p-4" style={{ background: 'linear-gradient(120deg, var(--hero-tint), var(--color-surface) 70%)' }}>
         <button onClick={() => go(`/ficha/${me.id}`)} aria-label={`Ficha de ${me.name}`} className="rounded-full">
-          <Avatar member={me} size={80} />
+          <Avatar member={me} size={wide ? 80 : 64} />
         </button>
         <div className="min-w-0 flex-1">
-          <h1 className="story truncate text-[32px] font-bold leading-tight">{me.name}</h1>
-          <div className="mt-1 flex gap-0.5 text-[28px] sm:gap-1 sm:text-4xl" role="img" aria-label={`${stars} de 5 estrelas até o próximo nível`}>
+          <h1 className="title-display truncate text-[28px] leading-tight sm:text-[32px]">{me.name}</h1>
+          <div className="mt-1 flex gap-0.5 sm:gap-1" role="img" aria-label={`${stars} de 5 estrelas até o próximo nível`}>
             {[0, 1, 2, 3, 4].map((i) => (
-              <span key={i} className={i < stars ? '' : 'opacity-25 grayscale'} aria-hidden="true">⭐</span>
+              <span key={i} className={i < stars ? '' : 'opacity-25 grayscale'}><GoldStar size={wide ? 40 : 24} glow={false} /></span>
             ))}
           </div>
         </div>
         <button
-          className="grid h-[72px] w-[72px] shrink-0 place-items-center rounded-full border-4 border-[var(--hero)] bg-surface text-4xl"
+          className="grid h-[72px] w-[72px] shrink-0 place-items-center rounded-full text-white shadow-[var(--shadow-e2)]"
+          style={{ background: 'var(--hero)' }}
           aria-label="Ouvir de novo"
           onClick={() => speak(`Você tem ${occ.length} missões hoje.`)}
         >
-          🔊
+          <Icon name="speaker" size={36} strokeWidth={2} />
         </button>
       </header>
 
       {letters.length > 0 && (
         <button
-          className="plaque animate-rise mb-5 flex w-full items-center gap-4 p-4 text-left"
+          className="card-gilded animate-rise mb-5 flex w-full items-center gap-4 rounded-[28px] p-4 text-left"
           onClick={() => {
             const t = letters[0]
             const from = f.byId.get(t.fromId)
@@ -81,27 +86,27 @@ export function KidAdventure({ me }: { me: Member }) {
         >
           <span className="text-6xl" aria-hidden="true">💌</span>
           {f.byId.get(letters[0].fromId) && <Avatar member={f.byId.get(letters[0].fromId)!} size={72} />}
-          <span className="story text-[26px] font-bold">Uma carta chegou!</span>
-          <span className="ml-auto text-4xl" aria-hidden="true">🔊</span>
+          <span className="title-display text-[26px]">Uma carta chegou!</span>
+          <span className="ml-auto grid h-16 w-16 place-items-center rounded-full bg-gold/20 text-gold-deep"><Icon name="speaker" size={32} strokeWidth={2} /></span>
         </button>
       )}
 
       {allDone && (
-        <div className="plaque plaque-star relative mb-5 flex items-center justify-center gap-3 p-5 text-center" role="status">
-          <span className="text-5xl" aria-hidden="true">🏆</span>
-          <span className="story text-[26px] font-bold">Todas as missões de hoje!</span>
-          <span className="text-5xl" aria-hidden="true">🎉</span>
+        <div className="night-sky relative mb-6 flex items-center justify-center gap-4 overflow-hidden rounded-[28px] p-5 text-center shadow-[var(--shadow-e2)]" role="status">
+          <GoldStar size={64} />
+          <span className="title-display text-[26px] text-gold-light">Todas as missões de hoje!</span>
+          <GoldStar size={64} />
           <Sparks count={12} color={heroColor(me).solid} />
         </div>
       )}
 
       {occ.length === 0 ? (
-        <div className="plaque grid place-items-center gap-2 p-10 text-center">
+        <div className="card grid place-items-center gap-2 rounded-[28px] p-10 text-center">
           <span className="text-8xl" aria-hidden="true">🌈</span>
-          <p className="story text-[26px] font-bold">Dia livre!</p>
+          <p className="title-display text-[28px]">Dia livre!</p>
         </div>
       ) : (
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {occ.map((o) => (
             <li key={o.task.id + o.slot}>
               <QuestCard o={o} me={me} parents={parents} />
@@ -111,13 +116,13 @@ export function KidAdventure({ me }: { me: Member }) {
       )}
 
       <button
-        className="btn mt-6 h-[88px] w-full rounded-3xl border-4 border-[var(--hero)] bg-surface text-[26px]"
+        className="btn btn-secondary mt-7 h-[88px] w-full rounded-[28px] text-[26px]"
         onClick={() => {
           speak('Para quem você quer agradecer?')
           setThanksOpen(true)
         }}
       >
-        <span className="text-4xl" aria-hidden="true">💖</span> Agradecer
+        <Icon name="heart" size={36} strokeWidth={2} className="text-gold-light" /> Agradecer
       </button>
       {thanksOpen && <ThanksModal from={me} onClose={() => setThanksOpen(false)} />}
     </main>
@@ -158,32 +163,42 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
   return (
     <article
       aria-label={label}
-      className={`relative flex min-h-[300px] flex-col overflow-hidden rounded-3xl border-4 p-4 ${status === 'done' ? 'bg-wait' : status === 'validated' ? 'bg-[#fff3c9]' : 'bg-surface'}`}
-      style={{ borderColor: 'var(--hero)' }}
+      className="relative flex min-h-[320px] flex-col overflow-hidden rounded-[28px] p-4 pt-6 shadow-[var(--shadow-e2)]"
+      style={{
+        background: status === 'done' ? 'linear-gradient(180deg, #FFF7E0, #FBEBC4)' : status === 'validated' ? 'linear-gradient(180deg, #FFFBEA, #F8EBC2)' : 'var(--color-surface)',
+        boxShadow: `inset 0 0 0 2px ${status ? '#E8CB7E' : 'var(--hero)'}, var(--shadow-e2)`,
+      }}
     >
+      <span className="absolute inset-x-0 top-0 h-2" style={{ background: 'var(--hero)' }} aria-hidden="true" />
       <button className="flex flex-1 flex-col items-center justify-center gap-2 rounded-2xl" onClick={() => speak(say)} aria-label={`Ouvir: ${o.task.title}`}>
-        <span className="text-[112px] leading-none" aria-hidden="true">{o.task.emoji}</span>
-        <span className="story text-center text-[26px] font-bold leading-tight">{o.task.title}</span>
+        <span
+          className="grid h-[148px] w-[148px] place-items-center rounded-full text-[96px] leading-none"
+          style={{ background: 'radial-gradient(circle at 50% 40%, #FFFFFF, var(--hero-tint) 70%)', boxShadow: 'inset 0 -6px 14px rgb(30 26 43 / .06), 0 0 0 6px var(--color-surface), 0 0 0 7px var(--color-line)' }}
+          aria-hidden="true"
+        >
+          {o.task.emoji}
+        </span>
+        <span className="title-display mt-1 text-center text-[26px] leading-tight">{o.task.title}</span>
         {helper && (
           <span className="flex items-center gap-2 text-lg">
-            <span aria-hidden="true">🤝</span>
+            <Icon name="users" size={24} className="text-muted" />
             <Avatar member={helper} size={40} />
           </span>
         )}
       </button>
       <button
-        className="absolute right-3 top-3 grid h-[72px] w-[72px] place-items-center rounded-full border-2 border-line bg-white text-4xl"
+        className="absolute right-3 top-5 grid h-[72px] w-[72px] place-items-center rounded-full bg-white text-[var(--hero)] shadow-[var(--shadow-e1)] ring-1 ring-line"
         onClick={() => speak(say)}
         tabIndex={-1}
         aria-hidden="true"
       >
-        🔊
+        <Icon name="speaker" size={34} strokeWidth={2} />
       </button>
 
       <div className="relative mt-2 flex min-h-[112px] items-center justify-center">
         {phase === 'askHelp' ? (
           <div className="flex flex-wrap items-center justify-center gap-3" role="group" aria-label="Alguém te ajudou?">
-            <span className="text-5xl" aria-hidden="true">🤝❓</span>
+            <span className="grid h-[72px] w-[72px] place-items-center rounded-full bg-wait text-gold-deep" aria-hidden="true"><Icon name="users" size={40} strokeWidth={2} /></span>
             {helpers.map((h) => (
               <button
                 key={h.id}
@@ -198,34 +213,33 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
                 <Avatar member={h} size={88} />
               </button>
             ))}
-            <button className="grid h-[88px] w-[88px] place-items-center rounded-full border-2 border-line bg-white text-4xl" aria-label="Ninguém, pular" onClick={() => setPhase('idle')}>
-              ✖️
+            <button className="grid h-[88px] w-[88px] place-items-center rounded-full bg-white text-muted shadow-[var(--shadow-e1)] ring-1 ring-line" aria-label="Ninguém, pular" onClick={() => setPhase('idle')}>
+              <Icon name="close" size={40} strokeWidth={2.25} />
             </button>
           </div>
         ) : phase === 'confirmUndo' ? (
           <div className="flex items-center gap-4" role="group" aria-label="Quer desfazer?">
             <button
-              className="grid h-[88px] w-[88px] place-items-center rounded-full border-2 border-line bg-white text-5xl"
+              className="grid h-[88px] w-[88px] place-items-center rounded-full bg-white text-ink shadow-[var(--shadow-e1)] ring-1 ring-line"
               aria-label="Desfazer"
               onClick={async () => {
                 if (o.completion) await unmark(o.completion.id)
                 setPhase('idle')
               }}
             >
-              ↩️
+              <Icon name="undo" size={44} strokeWidth={2.25} />
             </button>
-            <button className="grid h-[88px] w-[88px] place-items-center rounded-full border-2 border-line bg-white text-5xl" aria-label="Manter feita" onClick={() => setPhase('idle')}>
-              ✅
+            <button className="btn-primary grid h-[88px] w-[88px] place-items-center rounded-full text-ink" aria-label="Manter feita" onClick={() => setPhase('idle')}>
+              <Icon name="check" size={48} strokeWidth={2.5} />
             </button>
           </div>
         ) : !status ? (
           <button
             onClick={done}
             aria-label={`Marcar como feita: ${o.task.title}`}
-            className="grid h-[104px] w-[104px] place-items-center rounded-full border-[5px] border-dashed bg-white text-5xl text-line active:scale-95"
+            className="grid h-[104px] w-[104px] place-items-center rounded-full border-[5px] border-dashed bg-white shadow-[inset_0_2px_8px_rgba(30,26,43,0.08)] transition-transform active:scale-95"
             style={{ borderColor: 'var(--hero)' }}
-          >
-          </button>
+          />
         ) : status === 'done' ? (
           <button
             aria-label="Esperando o selo. Toque para desfazer."
@@ -237,15 +251,11 @@ function QuestCard({ o, me, parents }: { o: Occurrence; me: Member; parents: str
             }}
             className="relative grid h-[104px] w-[104px] place-items-center"
           >
-            <span className="animate-stamp grid h-[104px] w-[104px] place-items-center rounded-full border-4 border-gold bg-[radial-gradient(circle_at_35%_30%,#f7d77a,#d9a62e_60%,#a26c00)] text-5xl shadow-lg">
-              ⏳
-            </span>
+            <span className="animate-stamp block"><WaxSeal size={108} /></span>
             {phase === 'stamped' && <Sparks color={heroColor(me).solid} />}
           </button>
         ) : (
-          <span className="animate-pop grid h-[104px] w-[104px] place-items-center rounded-full bg-[radial-gradient(circle,#fff3c9,#f7d77a)] text-7xl" aria-hidden="true">
-            ⭐
-          </span>
+          <span className="animate-pop block"><GoldStar size={112} /></span>
         )}
       </div>
     </article>

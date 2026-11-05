@@ -118,6 +118,8 @@ Nomes de exemplo: **Pai** (Guardião), **Mãe** (Alquimista), **Lia, 12** (Patru
 
 ## 6. Sistema visual
 
+> **Substituído pela v2 em `docs/design/design-system.md` (premium híbrido).** O texto abaixo é o histórico da v1.
+
 **Conceito:** "Livro de crônicas da casa" — pergaminho quente, tinta sépia, ouro envelhecido, estandartes de tecido por herói. Nada de roxo-neon genérico, nada de gradiente de app.
 
 **Tokens (tema claro "Pergaminho", padrão).** Contrastes medidos (WCAG):

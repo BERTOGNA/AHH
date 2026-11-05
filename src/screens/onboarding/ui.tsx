@@ -49,5 +49,5 @@ export function TimeField({ label, value, onChange }: { label: string; value: st
 }
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`plaque p-4 sm:p-5 ${className}`}>{children}</div>
+  return <div className={`card p-4 sm:p-5 ${className}`}>{children}</div>
 }

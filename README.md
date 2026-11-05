@@ -42,7 +42,8 @@ Painel dos Pais → **Ajustes** → **Exportar backup (JSON)**. Para restaurar: 
 
 - [`docs/PLANO.md`](docs/PLANO.md) — plano consolidado: decisões, conflitos resolvidos e simplificações do MVP (**este manda**).
 - [`docs/design/game-design.md`](docs/design/game-design.md) — design do jogo: universo, classes, economia de XP e moedas, missões, conquistas, itens, mentoria e checklist anti-punição.
-- [`docs/design/ux-design.md`](docs/design/ux-design.md) — fluxos por perfil, sistema visual, acessibilidade e textos.
+- [`docs/design/design-system.md`](docs/design/design-system.md) — design system v2 (premium híbrido): tokens, tipografia, componentes e auditoria de acessibilidade.
+- [`docs/design/ux-design.md`](docs/design/ux-design.md) — fluxos por perfil, acessibilidade e textos.
 - [`docs/design/architecture.md`](docs/design/architecture.md) — stack, modelo de dados, offline e backup.
 
 ## Estrutura

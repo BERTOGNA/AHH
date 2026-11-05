@@ -90,8 +90,8 @@ export function StepReview({ d, onAdjust }: { d: Draft; onAdjust: () => void }) 
 
   return (
     <div className="flex flex-col gap-4">
-      <Card className="plaque-star text-center">
-        <p className="title-display text-2xl font-bold text-gold">{answers.kingdomName}</p>
+      <Card className="card-gilded text-center">
+        <p className="title-display text-2xl font-bold text-gold-deep">{answers.kingdomName}</p>
         <p className="mt-1 font-semibold tabular-nums">
           {week.tasks.length} tarefas · {rewards} {rewards === 1 ? 'recompensa' : 'recompensas'} · Missão: {mission.emoji} {mission.name}
         </p>
@@ -129,7 +129,7 @@ export function StepReview({ d, onAdjust }: { d: Draft; onAdjust: () => void }) 
           )
         })}
       </div>
-      <div className="plaque overflow-x-auto p-2">
+      <div className="card overflow-x-auto p-2">
         <WeekGrid members={week.members} routines={week.routines} tasks={week.tasks} date={today()} />
       </div>
       <p className="text-center text-sm text-muted">Tudo isso pode ser ajustado depois, na Semana e no Painel dos Pais.</p>

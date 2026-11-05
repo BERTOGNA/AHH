@@ -14,7 +14,7 @@ export const SLOT_NAMES: Record<ItemSlot, string> = {
 }
 
 export const ITEMS: Item[] = [
-  { id: 'gorro_aprendiz', name: 'Gorro de Aprendiz', slot: 'chapeu', emoji: '🧢', unlock: 'start' },
+  { id: 'gorro_aprendiz', name: 'Pena de Aprendiz', slot: 'chapeu', emoji: '🪶', unlock: 'start' },
   { id: 'capa_viagem', name: 'Capa de Viagem', slot: 'capa', emoji: '🧥', color: '#8B6B4A', unlock: 'start' },
   { id: 'escudo_madeira', name: 'Escudo de Madeira', slot: 'ferramenta', emoji: '🛡️', unlock: { level: 3 } },
   { id: 'gatinho', name: 'Gatinho Companheiro', slot: 'companheiro', emoji: '🐱', unlock: { level: 5 } },

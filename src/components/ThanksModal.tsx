@@ -91,7 +91,7 @@ export function ThanksModal({ from, to, completionId, about, onClose }: Props) {
               }}
             >
               <input className="field" maxLength={140} value={text} onChange={(e) => setText(e.target.value)} placeholder="Ou escreva com suas palavras…" aria-label="Mensagem livre" />
-              <button className="btn btn-gold" disabled={!text.trim()}>Enviar</button>
+              <button className="btn btn-primary" disabled={!text.trim()}>Enviar</button>
             </form>
           )}
         </>

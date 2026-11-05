@@ -92,7 +92,7 @@ export function StepHeroes({ d, set }: StepProps) {
           </button>
         ))}
       </div>
-      <Card className="plaque-star">
+      <Card className="card-gilded">
         <div className="flex flex-col items-center gap-2 pb-2">
           <Avatar member={previewMember(m, sel)} size={120} />
           <p className="title-display text-xl font-bold">{displayName(m, sel)}</p>
@@ -128,7 +128,7 @@ export function StepHeroes({ d, set }: StepProps) {
                 <span className="block font-bold">{c.name[m.treatment]}</span>
                 <span className="block text-sm text-muted">{c.role}</span>
               </span>
-              {m.role !== 'adult' && c.suggestedFor.includes(m.role) && <span className="text-xs font-semibold text-gold">sugerida</span>}
+              {m.role !== 'adult' && c.suggestedFor.includes(m.role) && <span className="text-xs font-semibold text-gold-deep">sugerida</span>}
             </button>
           ))}
         </div>
@@ -355,7 +355,7 @@ function ChoreRow({ emoji, title, xp, category, on, onToggle, children }: {
         <span className="text-2xl" aria-hidden="true">{emoji}</span>
         <span className="flex-1 font-semibold">{title}</span>
         <span className="hidden text-sm text-muted sm:inline">{CATEGORIES[category].name}</span>
-        <span className="text-sm font-bold text-gold tabular-nums">{xp} XP</span>
+        <span className="text-sm font-bold text-gold-deep tabular-nums">{xp} XP</span>
       </label>
       {on && children && <div className="mt-2 flex flex-col gap-2 pb-1 pl-9">{children}</div>}
     </li>

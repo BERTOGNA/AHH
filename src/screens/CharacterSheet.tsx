@@ -11,6 +11,9 @@ import { AVATAR_BASES } from '../data/classes'
 import { updateMember } from '../db/actions'
 import { Screen, Section } from '../components/Screen'
 import { Avatar } from '../components/Avatar'
+import { Icon } from '../components/Icon'
+import { CoinIcon, Flame, GoldStar } from '../components/Seal'
+import { heroStyle } from '../components/hero'
 import { Progress } from '../components/Progress'
 import { Modal } from '../components/Modal'
 import { className } from '../components/hero'
@@ -28,7 +31,7 @@ export function CharacterSheet({ id }: { id: string }) {
   if (!m) {
     return (
       <Screen title="Ficha">
-        <button className="btn btn-gold" onClick={() => go('/')}>Voltar ao Salão</button>
+        <button className="btn btn-primary" onClick={() => go('/')}>Voltar ao Salão</button>
       </Screen>
     )
   }
@@ -56,48 +59,56 @@ export function CharacterSheet({ id }: { id: string }) {
 
   return (
     <Screen title={`Ficha de ${m.name}`} hideTitle>
-      <section className="plaque plaque-star mb-6 flex flex-col items-center gap-3 p-6 text-center sm:flex-row sm:text-left">
-        <Avatar member={m} size={180} />
-        <div className="flex-1">
-          <h1 className="title-display text-3xl font-bold">{m.name}</h1>
-          <p className="text-lg font-semibold">{className(m)}</p>
-          <p className="text-muted">{m.kingdomRole}</p>
-          {mentor && <p className="mt-1 inline-block rounded-full bg-wait px-3 py-1 text-sm font-bold">🦉 Mentor{m.treatment === 'a' ? 'a' : ''} do Reino</p>}
+      <section style={heroStyle(m)} className="night-sky on-night relative mb-7 flex flex-col items-center gap-5 overflow-hidden rounded-[28px] p-6 text-center shadow-[var(--shadow-e3)] sm:flex-row sm:p-8 sm:text-left">
+        <span className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full opacity-40 blur-3xl" style={{ background: 'var(--hero)' }} aria-hidden="true" />
+        <Avatar member={m} size={176} className="relative" />
+        <div className="relative flex-1">
+          <h1 className="insignia text-4xl leading-tight text-gold-light">{m.name}</h1>
+          <p className="mt-1 text-lg font-semibold text-ivory">{className(m)}</p>
+          <p className="text-moon">{m.kingdomRole}</p>
+          {mentor && <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-gold/20 px-3 py-1 text-sm font-bold text-gold-light ring-1 ring-gold-light/40"><Icon name="feather" size={16} /> Mentor{m.treatment === 'a' ? 'a' : ''} do Reino</p>}
           <div className="mt-3 max-w-md">
             {kid ? (
-              <div className="flex gap-1 text-4xl" role="img" aria-label="Estrelas até o próximo nível">
+              <div className="flex justify-center gap-1 sm:justify-start" role="img" aria-label="Estrelas até o próximo nível">
                 {[0, 1, 2, 3, 4].map((i) => (
-                  <span key={i} className={i < Math.floor((lv.into / lv.span) * 5) ? '' : 'opacity-25 grayscale'} aria-hidden="true">⭐</span>
+                  <span key={i} className={i < Math.floor((lv.into / lv.span) * 5) ? '' : 'opacity-25 grayscale'}><GoldStar size={44} glow={false} /></span>
                 ))}
               </div>
             ) : (
               <>
-                <p className="font-semibold">Nível {lv.level} · {titleOf(lv.level, m.treatment)}{lv.legendStars ? ` · ${lv.legendStars} ⭐ de Lenda` : ''}</p>
-                <Progress value={lv.into} max={lv.span} label={`${lv.into} de ${lv.span} XP neste nível`} />
-                <p className="mt-1 text-sm text-muted">{xp} XP no total · {lv.into}/{lv.span} neste nível</p>
+                <p className="mb-2 font-semibold text-ivory">Nível {lv.level} · {titleOf(lv.level, m.treatment)}{lv.legendStars ? ` · ${lv.legendStars} Estrelas de Lenda` : ''}</p>
+                <Progress value={lv.into} max={lv.span} label={`${lv.into} de ${lv.span} XP neste nível`} height={12} night />
+                <p className="mt-1.5 text-sm text-moon">{xp} XP no total · {lv.into}/{lv.span} neste nível</p>
               </>
             )}
           </div>
           {canEdit && (
-            <button className="btn btn-ghost mt-3" onClick={() => setCustom(true)}>🎨 Personalizar</button>
+            <button className="btn btn-ghost mt-4" onClick={() => setCustom(true)}><Icon name="wand" size={18} /> Personalizar</button>
           )}
         </div>
         {(own || adultId) && (m.role !== 'adult' || f.settings.adultChest) && (
-          <div className="plaque p-4 text-center">
-            <p className="text-sm text-muted">Moedas ganhas desde sempre</p>
-            <p className="title-display text-3xl font-bold tabular-nums">🪙 {coinsEarned(m.id, f.events)}</p>
-            <p className="text-sm text-muted">Na bolsa: {coinBalance(m.id, f.events, f.redemptions)}</p>
+          <div className="panel-night relative p-5 text-center">
+            <p className="text-sm text-moon">Moedas ganhas desde sempre</p>
+            <p className="title-display mt-1 flex items-center justify-center gap-2 text-4xl tabular-nums text-gold-light"><CoinIcon size={34} /> {coinsEarned(m.id, f.events)}</p>
+            <p className="mt-1 text-sm text-moon">Na bolsa: {coinBalance(m.id, f.events, f.redemptions)}</p>
           </div>
         )}
       </section>
 
       {!kid && (
         <Section title="Fogueira do Reino">
-          <div className="plaque flex flex-wrap gap-6 p-4">
-            <p><span className="title-display text-2xl font-bold">🔥 {flameDays}</span> <span className="text-muted">dias de chama</span></p>
-            <p><span className="title-display text-2xl font-bold">🏕️ {s.litWeeks}</span> <span className="text-muted">semanas acesas ({RULES.litWeekFlames}+ chamas)</span></p>
-            <p><span className="title-display text-2xl font-bold">🤝 {s.mentorships}</span> <span className="text-muted">mentorias</span></p>
-            <p><span className="title-display text-2xl font-bold">💌 {s.thanksSent}</span> <span className="text-muted">agradecimentos enviados</span></p>
+          <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
+            {[
+              { art: <Flame size={40} lit />, n: flameDays, label: 'dias de chama' },
+              { art: <Icon name="trophy" size={32} className="text-gold-deep" />, n: s.litWeeks, label: `semanas acesas (${RULES.litWeekFlames}+ chamas)` },
+              { art: <Icon name="users" size={32} className="text-gold-deep" />, n: s.mentorships, label: 'mentorias' },
+              { art: <Icon name="heart" size={32} className="text-gold-deep" />, n: s.thanksSent, label: 'agradecimentos enviados' },
+            ].map((x) => (
+              <div key={x.label} className="card flex items-center gap-3 p-4">
+                <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-wait/60">{x.art}</span>
+                <span className="min-w-0"><span className="title-display block text-3xl leading-none tabular-nums">{x.n}</span> <span className="text-sm text-muted">{x.label}</span></span>
+              </div>
+            ))}
           </div>
         </Section>
       )}
@@ -105,7 +116,7 @@ export function CharacterSheet({ id }: { id: string }) {
       <Section title="Itens">
         <div className="grid gap-4 sm:grid-cols-2">
           {SLOTS.map((slot) => (
-            <div key={slot} className="plaque p-3">
+            <div key={slot} className="card p-3">
               <h3 className="mb-2 font-bold">{SLOT_NAMES[slot]}</h3>
               <ul className="grid grid-cols-4 gap-2">
                 {ITEMS.filter((i) => i.slot === slot).map((it) => {
@@ -120,10 +131,10 @@ export function CharacterSheet({ id }: { id: string }) {
                         aria-pressed={on}
                         aria-label={`${it.name}${ok ? (on ? ', equipado' : '') : `. ${req}`}`}
                         title={ok ? it.name : req}
-                        className={`grid aspect-square w-full place-items-center rounded-2xl border-2 text-3xl ${on ? 'border-gold bg-wait' : 'border-line bg-white'} ${ok ? '' : 'opacity-40 grayscale'}`}
+                        className={`grid aspect-square w-full place-items-center rounded-2xl border-2 text-3xl ${on ? 'border-gold bg-wait' : 'border-line bg-white'} ${ok ? '' : 'bg-bg'}`}
                         style={it.color && ok ? { boxShadow: `inset 0 0 0 4px ${it.color}55` } : undefined}
                       >
-                        <span aria-hidden="true">{ok ? it.emoji : '❔'}</span>
+                        {ok ? <span aria-hidden="true">{it.emoji}</span> : <Icon name="lock" size={22} className="text-muted" />}
                       </button>
                     </li>
                   )
@@ -141,10 +152,16 @@ export function CharacterSheet({ id }: { id: string }) {
             return (
               <li
                 key={a.id}
-                className={`plaque flex flex-col items-center gap-1 p-3 text-center ${ok ? '' : 'opacity-55'}`}
+                className={`card flex flex-col items-center gap-1.5 p-3 text-center ${ok ? '' : 'bg-bg/70 shadow-none'}`}
                 aria-label={`${a.name}${ok ? ', conquistada' : `. Como conseguir: ${a.hint}`}`}
               >
-                <span className={`text-4xl ${ok ? '' : 'grayscale'}`} aria-hidden="true">{ok ? a.emoji : '🔒'}</span>
+                <span
+                  className={`grid h-16 w-16 place-items-center rounded-full text-3xl ${ok ? '' : 'text-muted'}`}
+                  style={{ background: ok ? 'radial-gradient(circle at 50% 35%, #FFF7DE, #F1D58A)' : '#EFE6D3', boxShadow: ok ? '0 0 0 2px #D4A23F, 0 0 0 4px #FFF3CF, 0 4px 12px rgb(138 90 18 / .25)' : 'inset 0 1px 3px rgb(30 26 43 / .12)' }}
+                  aria-hidden="true"
+                >
+                  {ok ? a.emoji : <Icon name="lock" size={24} />}
+                </span>
                 <span className="text-sm font-bold">{a.name}</span>
                 <span className="text-xs text-muted">{a.hint}</span>
               </li>

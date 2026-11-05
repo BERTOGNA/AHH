@@ -5,6 +5,9 @@ import type { Member } from '../db/types'
 import { go } from '../router'
 import { Avatar } from '../components/Avatar'
 import { Progress } from '../components/Progress'
+import { Icon } from '../components/Icon'
+import { WaxSeal } from '../components/Seal'
+import { MissionScene } from '../components/MissionScene'
 import { capitalize, className, heroStyle } from '../components/hero'
 import { useWide } from '../components/WeekGrid'
 import { occurrencesFor, routineAt, statusAt } from '../domain/schedule'
@@ -37,59 +40,57 @@ export function Kingdom() {
   const lastThanks = [...f.thanks].sort((a, b) => b.createdAt - a.createdAt).slice(0, 3)
 
   return (
-    <main className="pb-[calc(104px+env(safe-area-inset-bottom))] lg:pb-10 lg:pl-24">
+    <main className="night-sky on-night min-h-dvh pb-[calc(112px+env(safe-area-inset-bottom))] lg:pb-12 lg:pl-24">
       {/* Faixa-título */}
-      <header className="night-sky relative overflow-hidden px-4 pb-16 pt-6 text-bg sm:px-8">
+      <header className="relative px-4 pb-6 pt-7 sm:px-8">
         <div className="mx-auto flex max-w-5xl items-start gap-3">
           <div className="flex-1">
-            <p className="text-sm opacity-85">{capitalize(formatLong(day))}</p>
-            <h1 className="title-display text-3xl font-bold text-gold-bright sm:text-4xl">{f.settings.kingdomName}</h1>
-            <p className="story mt-1 text-lg opacity-90">A casa funciona porque cada um faz a sua parte.</p>
+            <p className="eyebrow">{capitalize(formatLong(day))}</p>
+            <h1 className="insignia mt-1 bg-gradient-to-b from-[#FFF1C4] via-gold-light to-gold bg-clip-text text-[34px] leading-tight text-transparent sm:text-5xl">
+              {f.settings.kingdomName}
+            </h1>
+            <p className="story mt-2 text-lg text-moon">A casa funciona porque cada um faz a sua parte.</p>
           </div>
           {adultId ? (
-            <button className="btn h-12 border-2 border-gold-bright/60 px-3 text-bg" onClick={lock}>
-              🔓 <span className="hidden sm:inline">Sair do modo pais</span>
+            <button className="btn btn-ghost h-12 px-4" onClick={lock}>
+              <Icon name="unlock" size={20} /> <span className="hidden sm:inline">Sair do modo pais</span>
               <span className="sr-only sm:hidden">Sair do modo pais</span>
             </button>
           ) : (
-            <button className="btn h-12 border-2 border-gold-bright/60 px-3 text-bg" onClick={() => gate(() => go('/pais'))}>
-              🔒 Pais
+            <button className="btn btn-ghost h-12 px-4" onClick={() => gate(() => go('/pais'))}>
+              <Icon name="lock" size={20} /> Pais
             </button>
           )}
         </div>
-        <Skyline />
       </header>
 
-      <div className="mx-auto -mt-12 max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <h2 className="sr-only">Quem vai jogar?</h2>
         {/* Estandartes dos heróis — todos do mesmo tamanho, na ordem fixa da família */}
-        <ul className="relative z-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <ul className="relative z-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {f.members.map((m) => {
             const st = statusAt(m.id, day, now, f.routines)
             const waiting = pending.filter((c) => c.memberIds.includes(m.id)).length
             return (
-              <li key={m.id}>
+              <li key={m.id} className="drop-shadow-[0_14px_24px_rgba(0,0,0,0.35)]">
                 <button
                   onClick={() => enter(m)}
                   style={heroStyle(m)}
                   aria-label={`${m.name}, ${className(m)}. Agora: ${st.label}.${waiting ? ` ${waiting} aguardando o selo.` : ''}${m.role === 'adult' ? ' Pede PIN.' : ''}`}
-                  className="banner group flex w-full flex-col items-center px-2 pb-8 pt-5 text-center transition-transform active:scale-[0.98]"
+                  className="banner group flex w-full flex-col items-center px-3 pb-10 pt-6 text-center transition-transform duration-200 hover:-translate-y-1 active:scale-[0.98]"
                 >
                   <span className="relative">
-                    <Avatar member={m} size={wide ? 128 : 100} />
+                    <Avatar member={m} size={wide ? 124 : 96} />
                     {waiting > 0 && (
-                      <span className="absolute -right-2 top-0 grid h-9 min-w-9 place-items-center rounded-full border-2 border-gold bg-wait px-1 text-sm font-bold" aria-hidden="true">
-                        ⏳{waiting}
+                      <span className="absolute -right-3 -top-1 grid h-9 min-w-9 place-items-center gap-0.5 rounded-full bg-gradient-to-b from-[#F6DD96] to-gold px-2 text-sm font-extrabold text-ink shadow-md ring-2 ring-white/70" aria-hidden="true">
+                        <span className="flex items-center gap-0.5"><Icon name="hourglass" size={14} strokeWidth={2.25} />{waiting}</span>
                       </span>
                     )}
                   </span>
-                  <span className="title-display mt-2 text-xl font-bold">{m.name}</span>
-                  <span className="text-sm font-semibold leading-tight">
-                    <span className="mr-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: 'var(--hero)' }} aria-hidden="true" />
-                    {className(m)}
-                  </span>
-                  <span className="mt-0.5 line-clamp-2 text-xs text-muted">{m.kingdomRole}</span>
-                  <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-surface/90 px-3 py-1 text-sm font-semibold">
+                  <span className="insignia mt-3 text-[22px] leading-none text-gold-light sm:text-2xl">{m.name}</span>
+                  <span className="mt-1.5 text-sm font-semibold leading-tight text-white">{className(m)}</span>
+                  <span className="mt-1 line-clamp-2 text-xs leading-snug text-white">{m.kingdomRole}</span>
+                  <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3 py-1.5 text-[13px] font-semibold text-white ring-1 ring-white/20">
                     <span aria-hidden="true">{st.emoji}</span> {st.label}
                   </span>
                 </button>
@@ -99,32 +100,31 @@ export function Kingdom() {
         </ul>
 
         {pending.length > 0 && (
-          <button
-            onClick={() => gate(() => go('/pais'))}
-            className="plaque mt-5 flex w-full items-center gap-4 p-4 text-left"
-          >
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-wait text-3xl" aria-hidden="true">🔏</span>
+          <button onClick={() => gate(() => go('/pais'))} className="panel-night mt-6 flex w-full items-center gap-4 p-4 text-left transition hover:border-gold-light/50">
+            <span className="grid h-14 w-14 shrink-0 place-items-center"><WaxSeal size={56} /></span>
             <span className="flex-1">
-              <span className="title-display block text-lg font-bold">Ritual do Selo</span>
-              <span className="text-muted">
+              <span className="title-display block text-xl text-gold-light">Ritual do Selo</span>
+              <span className="text-moon">
                 {pending.length === 1 ? '1 tarefa espera' : `${pending.length} tarefas esperam`} o selo dos pais. Que tal validar com todos juntos?
               </span>
             </span>
-            <span aria-hidden="true" className="text-2xl">›</span>
+            <Icon name="chevron-right" size={24} className="text-gold-light" />
           </button>
         )}
 
-        <div className="mt-6 grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1.5fr_1fr]">
           {mission && <MissionCard goal={mission.goalXp} templateId={mission.templateId} reward={mission.reward} />}
 
-          <section className="plaque p-4" aria-labelledby="agora">
-            <h2 id="agora" className="title-display mb-3 text-lg font-bold">Acontecendo agora</h2>
+          <section className="panel-night p-5" aria-labelledby="agora">
+            <h2 id="agora" className="title-display mb-4 flex items-center gap-2 text-xl text-gold-light">
+              <Icon name="clock" size={20} /> Acontecendo agora
+            </h2>
             {upcoming.length ? (
-              <ul className="flex flex-col gap-2">
+              <ul className="flex flex-col gap-3">
                 {upcoming.map((u) => (
                   <li key={u.key} className="flex items-center gap-3">
-                    <span className="w-14 shrink-0 text-right font-bold tabular-nums">{u.time}</span>
-                    <span className="text-2xl" aria-hidden="true">{u.emoji}</span>
+                    <span className="w-14 shrink-0 text-right font-bold tabular-nums text-gold-light">{u.time}</span>
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/8 text-xl ring-1 ring-white/10" aria-hidden="true">{u.emoji}</span>
                     <span className="min-w-0 flex-1 font-semibold">{u.title}</span>
                     <span className="flex -space-x-2">
                       {u.who.map((m) => <Avatar key={m.id} member={m} size={32} />)}
@@ -133,37 +133,38 @@ export function Kingdom() {
                 ))}
               </ul>
             ) : (
-              <p className="story text-muted">O dia está tranquilo no reino.</p>
+              <p className="story text-moon">O dia está tranquilo no reino.</p>
             )}
           </section>
         </div>
 
-        <section className="plaque mt-5 p-4" aria-labelledby="gratidao">
-          <div className="mb-3 flex items-center gap-3">
-            <h2 id="gratidao" className="title-display flex-1 text-lg font-bold">Gratidão no reino</h2>
-            <button className="btn btn-ghost h-12 min-h-12 text-sm" onClick={() => go('/mural')}>
-              {isoWeekday(day) === 7 ? 'Crônica da Semana ›' : 'Ver o Mural ›'}
+        <section className="panel-night mt-5 p-5" aria-labelledby="gratidao">
+          <div className="mb-4 flex items-center gap-3">
+            <h2 id="gratidao" className="title-display flex flex-1 items-center gap-2 text-xl text-gold-light">
+              <Icon name="heart" size={20} /> Gratidão no reino
+            </h2>
+            <button className="btn btn-ghost h-12 min-h-12 px-4 text-sm" onClick={() => go('/mural')}>
+              {isoWeekday(day) === 7 ? 'Crônica da Semana' : 'Ver o Mural'} <Icon name="chevron-right" size={16} />
             </button>
           </div>
           {lastThanks.length ? (
-            <ul className="flex flex-col gap-2">
+            <ul className="grid gap-3 md:grid-cols-3">
               {lastThanks.map((t) => {
                 const from = f.byId.get(t.fromId)
                 const to = f.byId.get(t.toId)
                 if (!from || !to) return null
                 return (
-                  <li key={t.id} className="flex items-center gap-3">
-                    <Avatar member={from} size={36} />
-                    <span className="story min-w-0 flex-1">
-                      <b>{from.name}</b> para <b>{to.name}</b>: “{t.message}”
-                    </span>
-                    <span aria-hidden="true" className="text-xl">{t.emoji}</span>
+                  <li key={t.id} className="rounded-2xl bg-white/[0.05] p-4 ring-1 ring-white/10">
+                    <p className="story text-[17px] leading-snug">“{t.message}”</p>
+                    <p className="mt-3 flex items-center gap-2 text-sm text-moon">
+                      <Avatar member={from} size={28} /> <b className="text-ivory">{from.name}</b> para <b className="text-ivory">{to.name}</b>
+                    </p>
                   </li>
                 )
               })}
             </ul>
           ) : (
-            <p className="story text-muted">Quando alguém agradecer, a mensagem aparece aqui.</p>
+            <p className="story text-moon">Quando alguém agradecer, a mensagem aparece aqui.</p>
           )}
         </section>
       </div>
@@ -212,32 +213,22 @@ function MissionCard({ goal, templateId, reward }: { goal: number; templateId: s
   const stage = stageOf(progress, goal)
   const pct = Math.min(100, Math.round((progress / goal) * 100))
   return (
-    <section className="plaque plaque-star overflow-hidden" aria-labelledby="missao">
-      <button className="block w-full p-4 text-left" onClick={() => go('/mural')}>
-        <p className="text-xs font-bold uppercase tracking-widest text-gold">Missão da família</p>
-        <h2 id="missao" className="title-display text-xl font-bold">{t.name}</h2>
-        <div className="my-3 grid h-28 place-items-center rounded-2xl bg-gradient-to-b from-[#dbe9d4] to-[#f2e6c6] text-5xl tracking-widest sm:text-6xl" aria-hidden="true">
-          {t.stages[stage].scene}
+    <section className="panel-night overflow-hidden" aria-labelledby="missao">
+      <button className="block w-full text-left" onClick={() => go('/mural')}>
+        <div className="px-5 pb-4 pt-5">
+          <p className="eyebrow">Missão da família</p>
+          <h2 id="missao" className="title-display text-2xl text-ivory">{t.name}</h2>
         </div>
-        <p className="story mb-2 text-lg">{t.stages[stage].text}</p>
-        <Progress value={progress} max={goal} label={`Missão: ${pct}% restaurado`} height={16} />
-        <p className="mt-2 flex justify-between text-sm text-muted">
-          <span>{pct >= 100 ? 'Missão cumprida! ✨' : `${pct}% restaurado juntos`}</span>
-          <span>🎁 {reward}</span>
-        </p>
+        <MissionScene missionId={t.id} stage={stage as 0} night className="block aspect-[16/9] w-full border-y border-gold-light/15" />
+        <div className="px-5 pb-5 pt-4">
+          <p className="story mb-3 text-lg text-moon">{t.stages[stage].text}</p>
+          <Progress value={progress} max={goal} label={`Missão: ${pct}% restaurado`} height={12} night />
+          <p className="mt-2 flex flex-wrap justify-between gap-2 text-sm">
+            <span className="font-semibold text-gold-light">{pct >= 100 ? 'Missão cumprida!' : `${pct}% restaurado juntos`}</span>
+            <span className="flex items-center gap-1.5 text-moon"><Icon name="gift" size={16} /> {reward}</span>
+          </p>
+        </div>
       </button>
     </section>
-  )
-}
-
-function Skyline() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 1200 120" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 h-16 w-full text-bg sm:h-20">
-      <path
-        fill="#2f3361"
-        d="M0 120V70h60V50h20v20h40V40h16V22l12-14 12 14v18h16v30h70V58h24v12h50V36h18v-12h12v12h18v34h120V48h20v22h40V30l16-18 16 18v40h60V52h30v18h120V40h16V26l10-10 10 10v14h16v30h90V56h24v14h120v50z"
-      />
-      <path fill="currentColor" d="M0 120V96c120-16 240-16 360-4s240 16 360 4 300-20 480-6v30z" />
-    </svg>
   )
 }

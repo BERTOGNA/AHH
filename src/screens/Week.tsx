@@ -81,7 +81,7 @@ export function Week() {
         ))}
         {adultId && (
           <span className="ml-auto flex gap-2">
-            <button className="btn btn-gold h-12 min-h-12" onClick={() => setEditTask({})}>✚ Tarefa</button>
+            <button className="btn btn-primary h-12 min-h-12" onClick={() => setEditTask({})}>✚ Tarefa</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}>✚ Rotina</button>
           </span>
         )}
@@ -201,7 +201,7 @@ function TaskDetail({ task, date, editable, onEdit, onMove, onClose }: {
             </div>
             <p className="mt-1 text-xs text-muted">As mudanças valem para todas as semanas.</p>
           </div>
-          <button className="btn btn-gold" onClick={onEdit}>Editar tarefa</button>
+          <button className="btn btn-primary" onClick={onEdit}>Editar tarefa</button>
         </div>
       )}
     </Modal>
@@ -275,7 +275,7 @@ function RoutineEditor({ routine, readOnly, onClose }: { routine?: RoutineBlock;
         {minutes(end) <= minutes(start) && <p className="text-sm text-muted">O fim é antes do início: o bloco atravessa a meia-noite (como o sono).</p>}
         <div className="flex gap-3">
           <button
-            className="btn btn-gold flex-1"
+            className="btn btn-primary flex-1"
             disabled={!days.length || !memberId}
             onClick={async () => {
               await saveRoutine({ ...routine, memberId, kind, label: label.trim() || undefined, weekdays: [...days].sort(), start, end })
@@ -314,7 +314,7 @@ function DayList({ date, memberIds, onTask }: { date: string; memberIds: string[
             .map((o) => ({ key: o.task.id, time: o.task.time ?? '99:99', emoji: o.task.emoji, title: o.task.title, task: o.task, st: o.completion?.status })),
         ].sort((a, b) => a.time.localeCompare(b.time))
         return (
-          <section key={id} className="plaque p-3" style={{ borderLeft: `6px solid ${heroColor(m).solid}` }}>
+          <section key={id} className="card p-3" style={{ borderLeft: `6px solid ${heroColor(m).solid}` }}>
             <h3 className="mb-2 flex items-center gap-2 font-bold"><Avatar member={m} size={36} /> {m.name}</h3>
             <ul className="flex flex-col">
               {items.map((it) => (

@@ -33,7 +33,7 @@ export function TasksTab() {
       <Section
         title="Tarefas da semana"
         aside={
-          <button className="btn btn-gold" onClick={() => setEditing('new')}>
+          <button className="btn btn-primary" onClick={() => setEditing('new')}>
             ✚ Nova tarefa
           </button>
         }
@@ -67,7 +67,7 @@ export function TasksTab() {
             {list.map((t) => (
               <li key={t.id}>
                 <button
-                  className="plaque flex w-full items-center gap-3 p-3 text-left hover:bg-white"
+                  className="card flex w-full items-center gap-3 p-3 text-left hover:bg-white"
                   onClick={() => setEditing(t)}
                   aria-label={`Editar ${t.title}`}
                 >
@@ -90,7 +90,7 @@ export function TasksTab() {
                       </span>
                     )}
                   </span>
-                  <span className="shrink-0 font-bold text-gold tabular-nums">{t.xp} XP</span>
+                  <span className="shrink-0 font-bold text-gold-deep tabular-nums">{t.xp} XP</span>
                 </button>
               </li>
             ))}
@@ -124,7 +124,7 @@ function MissionSettings() {
 
   return (
     <Section title="Missão da semana">
-      <div className="plaque plaque-star p-4">
+      <div className="card-gilded p-4">
         <div className="flex flex-wrap items-center gap-4">
           <span className="text-5xl" aria-hidden="true">{t.emoji}</span>
           <div className="min-w-0 flex-1 basis-48">
@@ -182,7 +182,7 @@ function MissionSettings() {
             <label className="mb-1 block text-sm font-semibold" htmlFor="reward-coletiva">Recompensa coletiva (ao chegar em 100%)</label>
             <div className="flex gap-2">
               <input id="reward-coletiva" className="field" maxLength={60} value={reward} onChange={(e) => setReward(e.target.value)} />
-              <button className="btn btn-gold disabled:opacity-50" disabled={!reward.trim() || reward.trim() === mission.reward}>
+              <button className="btn btn-primary disabled:opacity-50" disabled={!reward.trim() || reward.trim() === mission.reward}>
                 Salvar
               </button>
             </div>

@@ -17,7 +17,7 @@ export function RewardsTab() {
     <Section
       title="Recompensas do Baú"
       aside={
-        <button className="btn btn-gold" onClick={() => setEditing('new')}>
+        <button className="btn btn-primary" onClick={() => setEditing('new')}>
           ✚ Nova recompensa
         </button>
       }
@@ -32,7 +32,7 @@ export function RewardsTab() {
           {sorted.map((r) => (
             <li key={r.id}>
               <button
-                className={`plaque flex w-full items-center gap-3 p-3 text-left hover:bg-white ${r.active ? '' : 'opacity-60'}`}
+                className={`card flex w-full items-center gap-3 p-3 text-left hover:bg-white ${r.active ? '' : 'opacity-60'}`}
                 onClick={() => setEditing(r)}
                 aria-label={`Editar ${r.title}`}
               >
@@ -41,7 +41,7 @@ export function RewardsTab() {
                   <span className="block font-semibold">{r.title}</span>
                   <span className="block text-sm text-muted">{r.active ? 'No Baú' : 'Guardada (fora do Baú)'}</span>
                 </span>
-                <span className="shrink-0 font-bold text-gold tabular-nums">{r.cost} 🪙</span>
+                <span className="shrink-0 font-bold text-gold-deep tabular-nums">{r.cost} 🪙</span>
               </button>
             </li>
           ))}
@@ -90,7 +90,7 @@ function RewardEditor({ reward, onClose }: { reward?: Reward; onClose: () => voi
           <span className="font-semibold">Disponível no Baú</span>
         </label>
         <button
-          className="btn btn-gold h-14"
+          className="btn btn-primary h-14"
           disabled={!title.trim()}
           style={{ opacity: title.trim() ? 1 : 0.5 }}
           onClick={async () => {

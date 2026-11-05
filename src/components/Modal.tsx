@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react'
+import { Icon } from './Icon'
 
 interface Props {
   title: string
@@ -31,19 +32,19 @@ export function Modal({ title, onClose, children, wide, hideTitle }: Props) {
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-night/55 sm:items-center sm:p-6" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-night/60 backdrop-blur-[2px] sm:items-center sm:p-6" onClick={onClose}>
       <div
         ref={ref}
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
-        className={`plaque animate-rise max-h-[92dvh] w-full overflow-y-auto rounded-b-none p-5 pb-[max(20px,env(safe-area-inset-bottom))] sm:rounded-2xl ${wide ? 'sm:max-w-3xl' : 'sm:max-w-[560px]'}`}
+        className={`animate-rise max-h-[92dvh] w-full overflow-y-auto rounded-t-[28px] border border-line bg-surface p-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-[var(--shadow-e3)] sm:rounded-[28px] ${wide ? 'sm:max-w-3xl' : 'sm:max-w-[560px]'}`}
       >
         <div className="mb-4 flex items-start justify-between gap-3">
-          <h2 className={`title-display text-xl font-bold ${hideTitle ? 'sr-only' : ''}`}>{title}</h2>
-          <button className="btn btn-ghost ml-auto h-12 w-12 shrink-0 p-0 text-xl" onClick={onClose} aria-label="Fechar">
-            ✕
+          <h2 className={`title-display text-2xl ${hideTitle ? 'sr-only' : ''}`}>{title}</h2>
+          <button className="btn btn-ghost ml-auto h-12 w-12 shrink-0 rounded-full p-0" onClick={onClose} aria-label="Fechar">
+            <Icon name="close" size={22} />
           </button>
         </div>
         {children}

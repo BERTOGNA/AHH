@@ -24,10 +24,10 @@ export const classById = (id: string) => CLASSES.find((c) => c.id === id) ?? CLA
 
 export const AVATAR_BASES = ['🧙‍♀️', '🧙‍♂️', '🧝‍♀️', '🧝‍♂️', '🦸‍♀️', '🦸‍♂️', '🧚', '🤴', '👸', '🦊', '🦁', '🐻', '🐼', '🦄', '🐸', '🐲']
 
-/** Cor do herói pelo slot do perfil (contraste AA verificado sobre o pergaminho). */
+/** Joias dos heróis por slot (texto branco sobre a joia ≥ 5,2:1; joia sobre o marfim ≥ 4,6:1). */
 export const HERO_COLORS = [
-  { solid: '#1E5AA8', tint: '#DCE6F4' },
-  { solid: '#8A3B9E', tint: '#EEDDF1' },
-  { solid: '#23744A', tint: '#D7ECDD' },
-  { solid: '#B8410E', tint: '#F8DFCF' },
+  { solid: '#2550B8', tint: '#E3EAFA', name: 'safira' },
+  { solid: '#7A3BA6', tint: '#F1E7F8', name: 'ametista' },
+  { solid: '#1D7350', tint: '#DDF0E6', name: 'esmeralda' },
+  { solid: '#B0501A', tint: '#FBE6D6', name: 'topázio' },
 ] as const

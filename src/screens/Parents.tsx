@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { Icon } from '../components/Icon'
 import { useFamily, useParentGate, useSession } from '../state'
 import { go } from '../router'
 import { Screen } from '../components/Screen'
@@ -10,12 +11,12 @@ import { HeroesTab } from './parents/HeroesTab'
 import { SettingsTab } from './parents/SettingsTab'
 
 const TABS = [
-  { id: 'pendentes', label: 'Pendentes', icon: '🔏' },
-  { id: 'bau', label: 'Pedidos do Baú', icon: '🎁' },
-  { id: 'tarefas', label: 'Tarefas', icon: '📋' },
-  { id: 'recompensas', label: 'Recompensas', icon: '💎' },
-  { id: 'herois', label: 'Heróis', icon: '🛡️' },
-  { id: 'ajustes', label: 'Ajustes', icon: '⚙️' },
+  { id: 'pendentes', label: 'Pendentes', icon: 'seal' },
+  { id: 'bau', label: 'Pedidos do Baú', icon: 'chest' },
+  { id: 'tarefas', label: 'Tarefas', icon: 'list' },
+  { id: 'recompensas', label: 'Recompensas', icon: 'gift' },
+  { id: 'herois', label: 'Heróis', icon: 'shield' },
+  { id: 'ajustes', label: 'Ajustes', icon: 'gear' },
 ] as const
 
 /** Painel dos Pais: validar, aprovar resgates e cuidar da configuração do reino. Exige PIN. */
@@ -36,11 +37,11 @@ export function Parents({ tab }: { tab?: string }) {
   if (!adultId) {
     return (
       <Screen title="Painel dos Pais">
-        <div className="plaque plaque-star mx-auto max-w-md p-8 text-center">
+        <div className="card-gilded mx-auto max-w-md p-8 text-center">
           <div className="text-6xl" aria-hidden="true">🔒</div>
           <h2 className="title-display mt-3 text-xl font-bold">Esta área é dos adultos</h2>
           <p className="mt-2 text-muted">Aqui os pais validam tarefas, aprovam pedidos do Baú e ajustam a semana.</p>
-          <button className="btn btn-gold mt-5 h-14 w-full text-lg" onClick={() => gate(() => {})}>
+          <button className="btn btn-primary mt-5 h-14 w-full text-lg" onClick={() => gate(() => {})}>
             Entrar com PIN
           </button>
         </div>
@@ -65,11 +66,11 @@ export function Parents({ tab }: { tab?: string }) {
               aria-pressed={current === t.id}
               onClick={() => go(`/pais/${t.id}`)}
             >
-              <span aria-hidden="true">{t.icon}</span>
+              <Icon name={t.icon} size={18} />
               {t.label}
               {badges[t.id] ? (
                 <span
-                  className="ml-1 grid h-6 min-w-6 place-items-center rounded-full bg-gold px-1.5 text-sm font-bold text-white tabular-nums"
+                  className="ml-1 grid h-6 min-w-6 place-items-center rounded-full bg-gold px-1.5 text-sm font-bold text-ink tabular-nums"
                   aria-label={`${badges[t.id]} pendentes`}
                 >
                   {badges[t.id]}

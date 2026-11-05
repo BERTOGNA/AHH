@@ -6,6 +6,7 @@ import { occurrencesFor, ROUTINE_INFO, togetherRanges, type Occurrence } from '.
 import { addDays, formatDayMonth, formatTime, hhmm, isoWeekday, minutes, nowMinutes, today, weekDates, WEEKDAY_SHORT } from '../lib/date'
 import { heroColor } from './hero'
 import { buzz } from '../lib/haptics'
+import { Icon } from './Icon'
 
 export interface WeekGridProps {
   members: Member[]
@@ -154,7 +155,7 @@ export function WeekGrid(p: WeekGridProps) {
 
   return (
     <div
-      className="plaque overflow-hidden"
+      className="card overflow-hidden"
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={() => {
@@ -187,7 +188,7 @@ export function WeekGrid(p: WeekGridProps) {
               <div key={d} className={`min-w-0 flex-1 border-l border-line ${isToday ? 'bg-[#fffdf5]' : ''}`} style={{ minWidth: wide ? 120 : undefined }}>
                 {/* cabeçalho do dia + "dia todo" */}
                 <div className="sticky top-0 z-10 h-[76px] border-b border-line bg-surface px-1 pt-1">
-                  <div className={`text-center text-sm font-bold ${isToday ? 'text-gold' : ''}`}>
+                  <div className={`text-center text-sm font-bold ${isToday ? 'text-gold-deep' : ''}`}>
                     {WEEKDAY_SHORT[isoWeekday(d)]} <span className="font-normal text-muted">{formatDayMonth(d)}</span>
                     {isToday && <span className="sr-only"> (hoje)</span>}
                   </div>
@@ -241,11 +242,14 @@ export function WeekGrid(p: WeekGridProps) {
                         onPointerDown={(e) => s.routine.kind !== 'sleep' && startPress(e, { routine: s.routine }, d, s.start)}
                         onPointerLeave={cancelPress}
                         aria-label={`${m.name}: ${label}, ${formatTime(s.routine.start)} às ${formatTime(s.routine.end)}`}
-                        className={`absolute z-[2] overflow-hidden rounded-md text-left ${s.routine.kind === 'sleep' ? 'sleep-stripes' : ''} ${dragging ? 'z-30 shadow-xl ring-2 ring-ink' : ''}`}
+                        className={`absolute z-[2] overflow-hidden rounded-lg text-left ${s.routine.kind === 'sleep' ? 'sleep-stripes' : ''} ${dragging ? 'z-30 shadow-xl ring-2 ring-ink' : ''}`}
                         style={{
                           top, height: Math.max(14, yOf(s.end) - yOf(s.start) - 1),
-                          left: `calc(${i * laneWidth}% + 1px)`, width: `calc(${laneWidth}% - 2px)`,
-                          background: heroColor(m).tint, borderLeft: `3px solid ${heroColor(m).solid}`,
+                          left: `calc(${i * laneWidth}% + 1.5px)`, width: `calc(${laneWidth}% - 3px)`,
+                          background: s.routine.kind === 'sleep'
+                            ? `linear-gradient(180deg, ${heroColor(m).tint}, color-mix(in srgb, ${heroColor(m).tint} 70%, #C9C3DA))`
+                            : `linear-gradient(180deg, color-mix(in srgb, ${heroColor(m).solid} 16%, white), ${heroColor(m).tint})`,
+                          boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${heroColor(m).solid} 22%, transparent)`,
                         }}
                       >
                         <span className="block px-0.5 text-[13px] leading-tight">
@@ -272,16 +276,22 @@ export function WeekGrid(p: WeekGridProps) {
                         onPointerDown={(e) => startPress(e, { task: o.task }, d, start)}
                         onPointerLeave={cancelPress}
                         aria-label={`${o.task.title}, ${formatTime(o.task.time!)}${st === 'validated' ? ', validada' : st === 'done' ? ', feita, aguardando validação' : ''}`}
-                        className={`absolute z-[3] flex items-start gap-0.5 overflow-hidden rounded-md border border-line bg-white px-0.5 text-left shadow-sm ${dragging ? 'z-30 scale-[1.03] shadow-xl ring-2 ring-ink' : ''}`}
+                        className={`absolute z-[3] flex items-center gap-1 overflow-hidden rounded-lg px-1 text-left ${dragging ? 'z-30 scale-[1.03] shadow-xl ring-2 ring-ink' : ''}`}
                         style={{
                           top, height: h,
                           left: `calc(${lane * laneWidth}% + 2px)`, width: `calc(${span * laneWidth}% - 4px)`,
-                          borderLeft: `4px solid ${o.task.kind === 'household' ? 'var(--color-gold-bright)' : heroColor(owner).solid}`,
+                          background: o.task.kind === 'household' ? 'linear-gradient(180deg, #FFF7E0, #FBEBC4)' : '#FFFFFF',
+                          boxShadow: `inset 3px 0 0 ${o.task.kind === 'household' ? 'var(--color-gold)' : heroColor(owner).solid}, 0 0 0 1px rgb(30 26 43 / .08), 0 2px 6px rgb(30 26 43 / .1)`,
+                          opacity: st === 'validated' ? 0.92 : 1,
                         }}
                       >
                         <span aria-hidden="true" className="text-sm leading-tight">{o.task.emoji}</span>
                         {showText && <span className="truncate text-xs font-semibold leading-tight">{o.task.title}</span>}
-                        {st && <span aria-hidden="true" className="absolute bottom-0 right-0.5 text-[10px]">{st === 'validated' ? '⭐' : '⏳'}</span>}
+                        {st && (
+                          <span aria-hidden="true" className={`absolute -bottom-px right-0.5 ${st === 'validated' ? 'text-gold-deep' : 'text-gold-deep'}`}>
+                            <Icon name={st === 'validated' ? 'star' : 'hourglass'} size={11} strokeWidth={2.25} filled={st === 'validated'} />
+                          </span>
+                        )}
                       </button>
                     )
                   })}

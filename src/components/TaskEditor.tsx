@@ -178,7 +178,7 @@ export function TaskEditor({ task, presetAssignee, presetDay, presetTime, teenId
         {teenMode && !task && <p className="text-sm text-muted">Tarefas que você propõe valem 10 XP. Seus pais podem ajustar depois.</p>}
 
         <div className="mt-2 flex flex-wrap gap-3">
-          <button className="btn btn-gold flex-1" disabled={!valid} onClick={save} style={{ opacity: valid ? 1 : 0.5 }}>
+          <button className="btn btn-primary flex-1" disabled={!valid} onClick={save} style={{ opacity: valid ? 1 : 0.5 }}>
             Salvar
           </button>
           {canDelete && (

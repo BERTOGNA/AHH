@@ -27,7 +27,7 @@ function HeroCard({ member }: { member: Member }) {
   const save = (patch: Partial<Member>) => updateMember(member.id, patch)
 
   return (
-    <section className="plaque p-4" aria-label={`Herói ${member.name}`}>
+    <section className="card p-4" aria-label={`Herói ${member.name}`}>
       <div className="mb-4 flex items-center gap-4">
         <button onClick={() => setPickBase((v) => !v)} aria-label={`Trocar avatar de ${member.name}`} aria-expanded={pickBase} className="rounded-full">
           <Avatar member={member} size={72} />

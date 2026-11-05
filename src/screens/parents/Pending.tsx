@@ -53,14 +53,14 @@ export function Pending({ adultId }: { adultId: string }) {
         <p className="flex-1 text-muted">
           {pending.length === 1 ? '1 tarefa esperando o selo.' : `${pending.length} tarefas esperando o selo.`} Validem juntos, diante da família.
         </p>
-        <button className="btn btn-gold h-14" onClick={() => setConfirm(pending)}>
+        <button className="btn btn-primary h-14" onClick={() => setConfirm(pending)}>
           ✓ Validar todas ({pending.length})
         </button>
       </div>
 
       <div className="flex flex-col gap-5">
         {groups.map(({ member, items }) => (
-          <section key={member.id} className="plaque p-4" aria-label={`Tarefas de ${member.name}`}>
+          <section key={member.id} className="card p-4" aria-label={`Tarefas de ${member.name}`}>
             <div className="mb-3 flex items-center gap-3">
               <Avatar member={member} size={48} />
               <h3 className="title-display flex-1 text-lg font-bold">{member.name}</h3>
@@ -106,7 +106,7 @@ export function Pending({ adultId }: { adultId: string }) {
               </li>
             ))}
           </ul>
-          <button autoFocus className="btn btn-gold h-14 w-full text-lg" onClick={() => validateMany(confirm)}>
+          <button autoFocus className="btn btn-primary h-14 w-full text-lg" onClick={() => validateMany(confirm)}>
             ✓ Validar {confirm.length} {confirm.length === 1 ? 'tarefa' : 'tarefas'}
           </button>
         </Modal>
@@ -157,7 +157,7 @@ function PendingRow({ c, byId, onValidate, onThank, onNotYet }: RowProps) {
         >
           💛
         </button>
-        <button className="btn btn-gold h-14 min-w-[120px] text-lg" onClick={onValidate} aria-label={`Validar: ${c.title}`}>
+        <button className="btn btn-primary h-14 min-w-[120px] text-lg" onClick={onValidate} aria-label={`Validar: ${c.title}`}>
           ✓ Validar
         </button>
       </div>

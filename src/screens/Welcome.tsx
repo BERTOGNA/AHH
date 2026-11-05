@@ -121,7 +121,7 @@ export function Welcome() {
         </p>
         <div className="flex w-full max-w-sm flex-col gap-3">
           <button
-            className="btn btn-gold h-16 text-xl"
+            className="btn btn-primary h-16 text-xl"
             disabled={Boolean(busy)}
             onClick={() => {
               if (!draft) setDraft(initialDraft())
@@ -166,7 +166,7 @@ export function Welcome() {
       <div className="mb-4 flex items-center gap-2" aria-hidden="true">
         {STEPS.map((_, i) => (
           <span key={i} className="flex flex-1 items-center gap-2">
-            <span className={`text-lg leading-none ${i < step ? 'text-gold' : 'text-line'}`}>✦</span>
+            <span className={`text-lg leading-none ${i < step ? 'text-gold-deep' : 'text-line'}`}>✦</span>
             {i < STEPS.length - 1 && <span className={`h-0.5 flex-1 rounded ${i < step - 1 ? 'bg-gold' : 'bg-line'}`} />}
           </span>
         ))}
@@ -194,11 +194,11 @@ export function Welcome() {
             ← Voltar
           </button>
           {step < 8 ? (
-            <button className="btn btn-gold h-14 flex-1 text-lg" disabled={!canNext} style={{ opacity: canNext ? 1 : 0.5 }} onClick={() => goStep(step + 1)}>
+            <button className="btn btn-primary h-14 flex-1 text-lg" disabled={!canNext} style={{ opacity: canNext ? 1 : 0.5 }} onClick={() => goStep(step + 1)}>
               {step === 7 && !pin ? 'Defina o PIN para seguir' : 'Próximo →'}
             </button>
           ) : (
-            <button className="btn btn-gold h-14 flex-1 text-lg" disabled={!pin || Boolean(busy)} onClick={() => (pin ? finish() : goStep(7))}>
+            <button className="btn btn-primary h-14 flex-1 text-lg" disabled={!pin || Boolean(busy)} onClick={() => (pin ? finish() : goStep(7))}>
               {busy === 'wizard' ? 'Erguendo o reino…' : pin ? 'Começar a aventura ✦' : 'Falta o PIN (passo 7)'}
             </button>
           )}
