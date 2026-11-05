@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Testes (lógica do jogo e banco)
+        run: npm test
+      - name: Build de produção (com service worker)
+        run: npm run build
+      - name: Passeio de ponta a ponta no navegador
+        run: |
+          npm i --no-save playwright@1.63.0
+          npx playwright install --with-deps chromium
+          (npx vite preview --port 4173 --strictPort &) && sleep 3
+          npm run e2e
