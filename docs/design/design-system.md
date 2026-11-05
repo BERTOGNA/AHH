@@ -124,3 +124,19 @@ Feita no app rodando (Chromium, 1180×820, 390×844 e zoom de 200%), varrendo o 
 Resultado depois das correções: 0 textos reprovados nas telas de fundo sólido; nenhuma rolagem horizontal em 390px nem com zoom de 200%; foco visível em todos os passos de Tab; nenhum botão sem nome.
 Os fundos com gradiente (noite, estandartes) foram verificados pela tabela de contraste acima, no pior ponto do gradiente.
 Exceções conscientes: os blocos finos da grade semanal no tablet (ver `docs/PLANO.md`) e as caixas de seleção de Ajustes, cujo alvo é a linha inteira do rótulo (48px).
+
+## Componentes adicionados depois da v2
+
+| Componente | Onde | Notas |
+|---|---|---|
+| `TaskArt` (`components/taskart/`) | cartões da criança, listas, grade, Mural, Baú, Painel, seletores | 50 ilustrações por emoji cadastrado; sem arte, mostra o emoji (fallback). Abaixo de 40px simplifica. |
+| `AchievementBadge` e `ItemArt` (`components/badges/`) | Ficha, celebrações, Crônica, pingentes do medalhão | Família de cor por tipo de conquista; as maiores ganham louros; bloqueada = pergaminho neutro com cadeado, nunca "falha". |
+| `HeroPortrait` + `LookEditor` (`components/portrait/`) | todos os medalhões; Ficha, assistente, Painel › Heróis | Opções como miniaturas do próprio herói; para a criança, abas de 64px com voz. |
+| `MissionScene` (`components/MissionScene.tsx`) | Salão, Mural, Crônica, celebração de estágio, assistente | 6 missões × 5 estágios, dia e noite; a névoa se dissipa. |
+| `Chronicle` | Mural → Crônica; Salão aos domingos | Cartões narrados; um por herói, ordem fixa, sem contagens. |
+| `KingdomJourney` | Mural | Uma série só (família); barras `#A8741E` (3:1, validado com a skill de dataviz); tabela acessível; estrela = missão cumprida. |
+| `RoutineIcon` / `ClassIcon` | grade, Salão, lista do dia, assistente | Ilustração quando existe, ícone de traço nos demais. |
+| `BackupReminder`, `InstallCard`, `FirstTips` | Salão (modo pais), Ajustes, abertura | Avisos gentis, dispensáveis. |
+
+### Tema noite completo: adiado (decisão)
+As tints claras dos heróis estão embutidas em estilos inline (medalhões, blocos da grade, chips) e várias superfícies usam branco fixo. Um tema escuro "por cima" deixaria texto ilegível em pontos críticos. Quando for feito, deve começar por mover as tints para tokens por tema e trocar `bg-white` por `bg-surface`. Até lá, os momentos noturnos (Salão, celebrações, Crônica, boa-noite) já usam a noite encantada.
