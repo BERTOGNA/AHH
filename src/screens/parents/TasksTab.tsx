@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { TaskArt } from '../../components/taskart/TaskArt'
+import { MissionScene } from '../../components/MissionScene'
 import type { Task } from '../../db/types'
 import { useFamily, useSession } from '../../state'
-import { changeMission, updateMission } from '../../db/actions'
+import { changeMission, saveTask, updateMission } from '../../db/actions'
+import { growthIdeas } from '../../domain/growth'
 import { Avatar } from '../../components/Avatar'
 import { Empty, Section } from '../../components/Screen'
 import { TaskEditor } from '../../components/TaskEditor'
@@ -31,6 +33,7 @@ export function TasksTab() {
   return (
     <div>
       <MissionSettings key={missionKey} />
+      <Growth />
 
       <Section
         title="Tarefas da semana"
@@ -128,10 +131,12 @@ function MissionSettings() {
     <Section title="Missão da semana">
       <div className="card-gilded p-4">
         <div className="flex flex-wrap items-center gap-4">
-          <TaskArt emoji={t.emoji} size={56} />
+          <span className="w-32 shrink-0 overflow-hidden rounded-xl ring-1 ring-line" aria-hidden="true">
+            <MissionScene missionId={t.id} stage={stageOf(weekXp(today(), events), mission.goalXp) as 0} className="block aspect-[16/10] w-full" />
+          </span>
           <div className="min-w-0 flex-1 basis-48">
             <p className="font-semibold">{t.name}</p>
-            <p className="story text-muted">{stage.scene} {stage.text}</p>
+            <p className="story text-muted">{stage.text}</p>
           </div>
         </div>
         <div className="mt-3">
@@ -191,6 +196,42 @@ function MissionSettings() {
           </form>
         </div>
       </div>
+    </Section>
+  )
+}
+
+/** Prontos para o próximo passo: reconhecer o que a criança já domina e oferecer um desafio novo. */
+function Growth() {
+  const { members, tasks, completions } = useFamily()
+  const { toast } = useSession()
+  const ideas = growthIdeas(members, tasks, completions, today())
+  if (!ideas.length) return null
+  return (
+    <Section title="Prontos para o próximo passo">
+      <ul className="grid gap-3 lg:grid-cols-2">
+        {ideas.map((g) => (
+          <li key={g.member.id} className="card-gilded flex flex-wrap items-center gap-4 p-4">
+            <Avatar member={g.member} size={52} />
+            <div className="min-w-[200px] flex-1">
+              <p className="font-semibold">{g.member.name} já domina “{g.mastered}”.</p>
+              <p className="text-sm text-muted">Foram {g.times} vezes nas últimas duas semanas. Que tal um desafio novo?</p>
+              <p className="mt-2 flex items-center gap-2 font-semibold"><TaskArt emoji={g.next.emoji} size={30} /> {g.next.title}</p>
+            </div>
+            <button
+              className="btn btn-primary"
+              onClick={async () => {
+                await saveTask({
+                  title: g.next.title, emoji: g.next.emoji, speak: g.next.speak, steps: g.next.steps, category: g.next.category,
+                  kind: 'individual', assigneeIds: [g.member.id], weekdays: g.next.weekdays, time: g.next.time, xp: g.next.xp,
+                })
+                toast(`${g.next.title}: na semana de ${g.member.name}.`)
+              }}
+            >
+              <Icon name="plus" size={18} strokeWidth={2.25} /> Adicionar
+            </button>
+          </li>
+        ))}
+      </ul>
     </Section>
   )
 }

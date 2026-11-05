@@ -202,3 +202,17 @@ describe('mover só nesta semana não duplica', () => {
     expect(occurrencesFor('2026-11-06', [t], [])).toHaveLength(0)
   })
 })
+
+import { growthIdeas } from './growth'
+
+describe('prontos para o próximo passo', () => {
+  it('sugere um desafio novo quando a criança domina uma tarefa', () => {
+    const bia = { id: 'bia', role: 'child', name: 'Bia' } as never
+    const cama = { id: 'cama', title: 'Arrumar a cama', assigneeIds: ['bia'], active: true } as never
+    const many = Array.from({ length: 9 }, (_, i) => comp({ id: `x${i}`, date: `2026-11-0${1 + (i % 5)}`, memberIds: ['bia'], title: 'Arrumar a cama' }))
+    const ideas = growthIdeas([bia], [cama], many, '2026-11-05')
+    expect(ideas).toHaveLength(1)
+    expect(ideas[0].next.title).not.toBe('Arrumar a cama')
+    expect(growthIdeas([bia], [cama], many.slice(0, 5), '2026-11-05')).toHaveLength(0)
+  })
+})
