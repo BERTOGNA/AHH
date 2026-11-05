@@ -78,6 +78,13 @@ async function pin(page) {
   }
   ok(cards >= 6, `Crônica da Semana com ${cards} cartões`)
   await page.getByRole('button', { name: 'Fim' }).click()
+  ok(!page.url().includes('cronica'), 'Crônica fecha e volta para #/mural')
+  await page.getByRole('button', { name: /Crônica/ }).click()
+  await page.getByRole('dialog', { name: 'Crônica da Semana' }).waitFor()
+  ok(page.url().endsWith('#/mural/cronica'), 'Crônica tem endereço próprio')
+  await page.goBack()
+  await page.getByRole('dialog', { name: 'Crônica da Semana' }).waitFor({ state: 'detached' })
+  ok(true, 'Voltar do navegador fecha a Crônica')
 
   // Semana: "neste dia não precisa" tira só aquela ocorrência e "Desfazer" devolve
   await page.goto(BASE + '#/semana')

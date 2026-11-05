@@ -16,13 +16,16 @@ import { Chronicle } from '../components/Chronicle'
 import { KingdomJourney } from '../components/KingdomJourney'
 import { Icon } from '../components/Icon'
 import { ThanksModal } from '../components/ThanksModal'
+import { go } from '../router'
 import { className, heroStyle } from '../components/hero'
 
 export function Mural({ chronicle }: { chronicle?: boolean }) {
   const f = useFamily()
   const me = useCurrent()
   const [offset, setOffset] = useState(0)
-  const [showChronicle, setShowChronicle] = useState(Boolean(chronicle))
+  // A Crônica segue o endereço (#/mural/cronica): o voltar do navegador fecha.
+  const showChronicle = Boolean(chronicle)
+  const setShowChronicle = (open: boolean) => go(open ? '/mural/cronica' : '/mural')
   const [thanks, setThanks] = useState<{ to: string; about: string; completionId?: string } | null>(null)
   const anchor = addDays(today(), -7 * offset)
   const dates = weekDates(anchor)
@@ -121,10 +124,7 @@ export function Mural({ chronicle }: { chronicle?: boolean }) {
       {showChronicle && (
         <Chronicle
           date={anchor}
-          onClose={() => {
-            setShowChronicle(false)
-            if (chronicle) history.replaceState(null, '', '#/mural')
-          }}
+          onClose={() => setShowChronicle(false)}
           onThank={me ? () => { setShowChronicle(false); setThanks({ to: f.members.find((m) => m.id !== me.id)!.id, about: 'pela semana' }) } : undefined}
         />
       )}
@@ -246,7 +246,7 @@ function KingdomMap() {
           const s = best.get(t.id)
           return (
             <li key={t.id} className="card overflow-hidden">
-              <div className={s === undefined ? 'opacity-50 saturate-0' : ''}>
+              <div className={s === undefined ? 'locked-art opacity-50 saturate-0' : ''}>
                 <MissionScene missionId={t.id} stage={(s ?? 0) as 0} className="block aspect-[16/10] w-full" />
               </div>
               <div className="p-3">

@@ -306,14 +306,14 @@ export function StepChores({ d, set }: StepProps) {
                     <>
                       <div className="flex flex-wrap gap-1.5" role="group" aria-label={`Quem faz ${t.title}`}>
                         {adults.map((a) => (
-                          <button key={a.key} type="button" className="chip min-h-11 text-sm" aria-pressed={c.assignee === a.key} onClick={() => patch(c, { assignee: a.key })}>
+                          <button key={a.key} type="button" className="chip min-h-12 text-sm" aria-pressed={c.assignee === a.key} onClick={() => patch(c, { assignee: a.key })}>
                             {displayName(a, d.members.indexOf(a))}
                           </button>
                         ))}
                         {adults.length > 1 && (
-                          <button type="button" className="chip min-h-11 text-sm" aria-pressed={c.assignee === 'both'} onClick={() => patch(c, { assignee: 'both' })}>👥 Os dois</button>
+                          <button type="button" className="chip min-h-12 text-sm" aria-pressed={c.assignee === 'both'} onClick={() => patch(c, { assignee: 'both' })}>👥 Os dois</button>
                         )}
-                        <button type="button" className="chip min-h-11 text-sm" aria-pressed={c.assignee === 'lar'} onClick={() => patch(c, { assignee: 'lar' })}>🏠 Lar</button>
+                        <button type="button" className="chip min-h-12 text-sm" aria-pressed={c.assignee === 'lar'} onClick={() => patch(c, { assignee: 'lar' })}>🏠 Lar</button>
                       </div>
                       <DaysEditor label={`Dias de ${t.title}`} days={c.weekdays} onToggle={(day) => patch(c, { weekdays: toggleDay(c.weekdays, day) })} />
                     </>

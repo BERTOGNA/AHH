@@ -20,9 +20,9 @@ export async function updateSettings(patch: Partial<Settings>) {
   await db.settings.put({ ...s, ...patch, id: 'app' })
 }
 
-export async function setPin(pin: string) {
+export async function setPin(pin: string, reset = false) {
   const salt = newSalt()
-  await updateSettings({ pinSalt: salt, pinHash: await hashPin(pin, salt) })
+  await updateSettings({ pinSalt: salt, pinHash: await hashPin(pin, salt), pinChangedAt: Date.now(), ...(reset ? { pinResetAt: Date.now() } : {}) })
 }
 
 export async function checkPin(pin: string): Promise<boolean> {
@@ -251,19 +251,24 @@ export async function backfillSteps() {
 export async function setTimeOff(memberIds: string[], from: string, to: string, kinds: ('school' | 'work')[]) {
   const dates: string[] = []
   for (let d = from; d <= to && dates.length < 120; d = addDays(d, 1)) dates.push(d)
-  const [routines, tasks] = await Promise.all([db.routines.toArray(), db.tasks.toArray()])
+  const [routines, tasks, members] = await Promise.all([db.routines.toArray(), db.tasks.toArray(), db.members.toArray()])
+  const kids = members.filter((m) => m.role !== 'adult').map((m) => m.id)
   await db.transaction('rw', db.routines, db.tasks, async () => {
     for (const r of routines) {
       if (!memberIds.includes(r.memberId) || !kinds.includes(r.kind as 'school' | 'work')) continue
       await db.routines.update(r.id, { skipDates: [...new Set([...(r.skipDates ?? []), ...dates])] })
     }
+    const allKidsOff = kids.length > 0 && kids.every((id) => memberIds.includes(id))
     for (const t of tasks) {
       const mine = t.assigneeIds.some((id) => memberIds.includes(id))
-      const schoolDay = t.category === 'estudo' && t.weekdays.every((w) => w <= 5) && kinds.includes('school')
-      const work = t.category === 'trabalho' && kinds.includes('work')
-      if (!mine || !(schoolDay || work)) continue
-      const ex = (t.exceptions ?? []).filter((e) => !dates.includes(e.date))
-      await db.tasks.update(t.id, { exceptions: [...ex, ...dates.map((date) => ({ date, skip: true }))] })
+      // Tarefa de dia de aula: sai para quem está de folga; a de adulto (levar à escola) sai quando todas as crianças estão de folga.
+      const school = kinds.includes('school') && t.schoolDay && (mine || allKidsOff)
+      const work = kinds.includes('work') && t.category === 'trabalho' && mine
+      if (!(school || work)) continue
+      const ex = t.exceptions ?? []
+      const taken = new Set(ex.map((e) => e.date)) // ajustes feitos à mão ficam como estão
+      const add = dates.filter((d) => !taken.has(d)).map((date) => ({ date, skip: true, timeOff: true }))
+      if (add.length) await db.tasks.update(t.id, { exceptions: [...ex, ...add] })
     }
   })
   // Semana com folga: a meta da missão acompanha o que ficou planejado (nunca sobe por causa disso).
@@ -282,7 +287,19 @@ export async function clearTimeOff(memberIds: string[], from: string, to: string
   const [routines, tasks] = await Promise.all([db.routines.toArray(), db.tasks.toArray()])
   await db.transaction('rw', db.routines, db.tasks, async () => {
     for (const r of routines) if (memberIds.includes(r.memberId) && r.skipDates?.length) await db.routines.update(r.id, { skipDates: r.skipDates.filter((d) => !inRange(d)) })
-    for (const t of tasks) if (t.assigneeIds.some((id) => memberIds.includes(id)) && t.exceptions?.length) await db.tasks.update(t.id, { exceptions: t.exceptions.filter((e) => !(e.skip && inRange(e.date))) })
+    for (const t of tasks) if (t.exceptions?.some((e) => e.timeOff && inRange(e.date))) await db.tasks.update(t.id, { exceptions: t.exceptions.filter((e) => !(e.timeOff && inRange(e.date))) })
+  })
+}
+
+/** Migração: marca as tarefas de dia de aula das famílias antigas (pelo nome da sugestão). */
+export async function backfillSchoolDay() {
+  const s = await getSettings()
+  if (s.schoolDayBackfilled) return
+  await updateSettings({ schoolDayBackfilled: true })
+  const titles = new Set(Object.values(TEMPLATES).flat().filter((t) => t.schoolDay).map((t) => t.title))
+  const tasks = await db.tasks.toArray()
+  await db.transaction('rw', db.tasks, async () => {
+    for (const t of tasks) if (t.schoolDay === undefined && titles.has(t.title)) await db.tasks.update(t.id, { schoolDay: true })
   })
 }
 

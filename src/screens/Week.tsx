@@ -351,6 +351,7 @@ function TimeOff({ onClose }: { onClose: () => void }) {
           <label className="flex items-center gap-2">De <input type="date" className="field w-44" value={from} onChange={(e) => e.target.value && setFrom(e.target.value)} /></label>
           <label className="flex items-center gap-2">Até <input type="date" className="field w-44" value={to} onChange={(e) => e.target.value && setTo(e.target.value)} /></label>
         </div>
+        {from > to && <p className="text-sm font-semibold" role="status">A data “Até” precisa ser igual ou depois de “De”.</p>}
         <fieldset>
           <legend className="mb-1 text-sm font-semibold">Quem está de folga</legend>
           <div className="flex flex-wrap gap-2">

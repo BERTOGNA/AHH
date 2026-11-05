@@ -61,11 +61,11 @@ export function PrintWeek() {
                 const occ = memberDay(m.id, occurrencesFor(d, f.tasks, []))
                 return (
                   <td key={d} className="border border-[#bbb] p-1">
-                    <ul className="flex flex-col gap-1">
+                    <ul className={`flex flex-col ${m.role === 'child' ? 'gap-2 py-1' : 'gap-1'}`}>
                       {occ.map((o) => (
                         <li key={o.task.id + o.slot} className="flex items-center gap-1">
-                          <span className="inline-block h-3 w-3 shrink-0 rounded-sm border border-ink" aria-hidden="true" />
-                          <TaskArt emoji={o.task.emoji} size={m.role === 'child' ? 26 : 18} />
+                          <span className={`inline-block shrink-0 rounded border-[1.5px] border-ink ${m.role === 'child' ? 'h-7 w-7' : 'h-3.5 w-3.5'}`} aria-hidden="true" />
+                          <TaskArt emoji={o.task.emoji} size={m.role === 'child' ? 46 : 22} />
                           <span className="leading-tight">
                             {m.role === 'child' ? '' : o.task.title}
                             {o.task.time && m.role !== 'child' ? <span className="text-[#555]"> {formatTime(o.task.time)}</span> : null}

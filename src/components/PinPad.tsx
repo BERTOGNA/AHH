@@ -97,7 +97,7 @@ export function PinPad() {
         <Key onClick={() => press('0')}>0</Key>
         <Key onClick={() => setPin((p) => p.slice(0, -1))} label="Apagar">⌫</Key>
       </div>
-      {settings.demo && <p className="mt-4 text-center text-sm text-muted">Família de exemplo: o PIN é 1234.</p>}
+      {settings.demo && !settings.pinChangedAt && <p className="mt-4 text-center text-sm text-muted">Família de exemplo: o PIN é 1234.</p>}
       <div className="mt-4 text-center">
         <button className="min-h-12 px-3 text-sm font-semibold text-gold-deep underline-offset-4 hover:underline" onClick={() => setForgot(true)}>
           Esqueci o PIN
@@ -121,10 +121,12 @@ function Key({ children, onClick, label }: { children: string; onClick: () => vo
 
 /** "Esqueci o PIN": um desafio de adulto (multiplicação) e um PIN novo. Não é segurança, é contra toques curiosos. */
 function ForgotPin({ onDone, onClose, fallbackId }: { onDone: (id: string) => void; onClose: () => void; fallbackId?: string }) {
-  const [[a, b]] = useState(() => [12 + Math.floor(Math.random() * 27), 13 + Math.floor(Math.random() * 26)])
+  // Conta de adulto (três dígitos × dois dígitos). Não é cofre: o Painel avisa quando o PIN foi redefinido.
+  const [[a, b]] = useState(() => [214 + Math.floor(Math.random() * 680), 23 + Math.floor(Math.random() * 69)])
   const [answer, setAnswer] = useState('')
   const [ok, setOk] = useState(false)
   const [pin, setPinValue] = useState('')
+  const [pin2, setPin2] = useState('')
   const [wrong, setWrong] = useState(false)
   return (
     <Modal title="Esqueci o PIN" onClose={onClose}>
@@ -150,8 +152,8 @@ function ForgotPin({ onDone, onClose, fallbackId }: { onDone: (id: string) => vo
           className="flex flex-col gap-3"
           onSubmit={async (e) => {
             e.preventDefault()
-            if (!/^\d{4}$/.test(pin)) return
-            await savePin(pin)
+            if (!/^\d{4}$/.test(pin) || pin !== pin2) return
+            await savePin(pin, true)
             if (fallbackId) onDone(fallbackId)
           }}
         >
@@ -159,7 +161,13 @@ function ForgotPin({ onDone, onClose, fallbackId }: { onDone: (id: string) => vo
             <span className="mb-1 block font-semibold">Novo PIN (4 dígitos)</span>
             <input className="field text-xl tracking-[0.5em]" inputMode="numeric" type="password" maxLength={4} value={pin} onChange={(e) => setPinValue(e.target.value.replace(/\D/g, ''))} autoFocus />
           </label>
-          <button className="btn btn-primary" disabled={!/^\d{4}$/.test(pin)}>Salvar novo PIN</button>
+          <label>
+            <span className="mb-1 block font-semibold">Digite de novo</span>
+            <input className="field text-xl tracking-[0.5em]" inputMode="numeric" type="password" maxLength={4} value={pin2} onChange={(e) => setPin2(e.target.value.replace(/\D/g, ''))} />
+          </label>
+          {pin2.length === 4 && pin !== pin2 && <p className="text-sm font-semibold">Os dois PINs ficaram diferentes.</p>}
+          <p className="text-sm text-muted">O Painel dos Pais vai mostrar que o PIN foi redefinido, para o outro adulto saber.</p>
+          <button className="btn btn-primary" disabled={!/^\d{4}$/.test(pin) || pin !== pin2}>Salvar novo PIN</button>
         </form>
       )}
     </Modal>

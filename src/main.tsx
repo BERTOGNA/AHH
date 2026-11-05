@@ -6,7 +6,7 @@ import { App } from './App'
 import { FamilyProvider, SessionProvider } from './state'
 import { ErrorBoundary, Trouble } from './components/ErrorBoundary'
 import { db } from './db/db'
-import { backfillSteps } from './db/actions'
+import { backfillSchoolDay, backfillSteps } from './db/actions'
 
 registerSW({ immediate: true })
 
@@ -34,6 +34,7 @@ db.open()
   .then(async () => {
     window.clearTimeout(slow)
     await backfillSteps().catch(() => {})
+    await backfillSchoolDay().catch(() => {})
   })
   .then(() =>
     root.render(

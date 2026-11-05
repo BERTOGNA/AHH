@@ -51,6 +51,8 @@ export interface TaskException {
   skip?: boolean
   to?: ISODate
   time?: HHMM
+  /** Criada por "Férias / folga" (o desfazer remove só estas). */
+  timeOff?: boolean
 }
 
 export interface Task {
@@ -59,6 +61,8 @@ export interface Task {
   emoji: string
   speak?: string // como falar para quem não lê
   steps?: string[] // "Como fazer?": passo a passo curto
+  /** Só faz sentido em dia de aula (mochila, lição, levar à escola): sai nas férias escolares. */
+  schoolDay?: boolean
   category: Category
   kind: TaskKind
   assigneeIds: string[] // individual: 1; shared: 2; household: [] (qualquer um)
@@ -159,5 +163,8 @@ export interface Settings {
   tourDone?: boolean
   /** Aparência: claro, noite ou automático (noite das 19h às 6h). */
   theme?: 'claro' | 'noite' | 'auto'
+  pinChangedAt?: number
+  pinResetAt?: number
+  schoolDayBackfilled?: boolean
   createdAt?: number
 }

@@ -199,11 +199,13 @@ export function WeekGrid(p: WeekGridProps) {
                       aria-label={`Ver ${WEEKDAY_SHORT[isoWeekday(d)]} ${formatDayMonth(d)} em detalhe`}
                     >
                       {WEEKDAY_SHORT[isoWeekday(d)]} <span className="font-normal text-muted">{formatDayMonth(d)}</span>
+                      {p.routines.some((r) => r.skipDates?.includes(d)) && <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-wait px-1.5 align-middle text-[11px] font-semibold text-gold-deep"><Icon name="sun" size={11} />folga</span>}
                     </button>
                   ) : (
                     <div className={`text-center text-sm font-bold ${isToday ? 'text-gold-deep' : ''}`}>
                       {WEEKDAY_SHORT[isoWeekday(d)]} <span className="font-normal text-muted">{formatDayMonth(d)}</span>
                       {isToday && <span className="sr-only"> (hoje)</span>}
+                      {p.routines.some((r) => r.skipDates?.includes(d)) && <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-wait px-1.5 align-middle text-[11px] font-semibold text-gold-deep"><Icon name="sun" size={11} />folga</span>}
                     </div>
                   )}
                   {p.focusDay && (

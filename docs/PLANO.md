@@ -103,3 +103,14 @@ Nenhum bloqueador. Corrigido e reconferido:
 - Boa-noite depois da meia-noite mostrava o "amanhã" errado → até as 5h o dia da criança ainda é o que passou.
 - "Prontos para o próximo passo" mostrava contagens dos dois filhos lado a lado → texto qualitativo, cartões empilhados; o cartão some depois de adicionar; nomes aproximados não são sugeridos de novo.
 - Textos de compromisso ("Compromisso salvo/movido/removido"); alvos de 48px no nome do dia e no "Ver como tabela"; "Personalizar" com 64px para a criança; nomes de conquistas neutros em gênero; "heroína" no boa-noite; dica do gráfico não sai da área; tela de abertura imediata com aviso se o armazenamento não responder.
+
+## 9. Quarta rodada de QA independente
+
+Nenhum bloqueador. Corrigido e reconferido:
+- "Férias / folga" falhava ao salvar (consulta fora da transação) → corrigido; as exceções criadas pela folga ficam marcadas e "Desfazer folga" remove só elas (ajustes manuais dos pais continuam). Ao lado do dia, a grade mostra "folga"; datas invertidas ganham aviso.
+- Tarefas ligadas à escola (mochila, lição, levar à escola) agora têm marca própria em vez de depender do nome; "levar à escola" só pausa quando todas as crianças estão de folga.
+- "Esqueci o PIN" ficava fácil demais para o de 12 anos → conta mais difícil, PIN novo digitado duas vezes, dica do PIN de exemplo só enquanto ninguém trocou; o painel avisa "O PIN foi redefinido" até um adulto confirmar.
+- Quadro impresso: desenhos da criança pequena com 46px e quadradinho de 7mm (usa a altura livre da folha).
+- Tema noite: conquistas e lugares ainda bloqueados ficam mais discretos.
+- Crônica com endereço próprio: o "voltar" do navegador/Android fecha a Crônica (verificado no e2e).
+- Passo 5 do assistente com alvos de 48px; dicas de boas-vindas abaixo dos estandartes (os heróis vêm primeiro).

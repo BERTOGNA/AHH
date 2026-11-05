@@ -13,7 +13,7 @@ export function FirstTips() {
   const { settings } = useFamily()
   if (settings.tourDone || settings.demo) return null
   return (
-    <section className="panel-night mb-6 p-5" aria-labelledby="dicas">
+    <section className="panel-night p-5" aria-labelledby="dicas">
       <h2 id="dicas" className="title-display mb-3 text-xl text-gold-light">Bem-vindos ao reino!</h2>
       <ul className="grid gap-3 md:grid-cols-3">
         {TIPS.map((t) => (

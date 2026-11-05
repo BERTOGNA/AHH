@@ -157,7 +157,7 @@ export function CharacterSheet({ id }: { id: string }) {
                 className={`card flex flex-col items-center gap-1.5 p-3 text-center ${ok ? '' : 'bg-bg/70 shadow-none'}`}
                 aria-label={`${a.name}${ok ? ', conquistada' : `. Como conseguir: ${a.hint}`}`}
               >
-                <AchievementBadge id={a.id} size={76} locked={!ok} />
+                <span className={ok ? '' : 'locked-art'}><AchievementBadge id={a.id} size={76} locked={!ok} /></span>
                 <span className="text-sm font-bold">{a.name}</span>
                 <span className="text-xs text-muted">{a.hint}</span>
               </li>

@@ -120,7 +120,7 @@ export function generateWeek(a: WizardAnswers, now = Date.now()) {
       assigneeIds = [c.assignee, adults[adults.length - 1].key]
     }
     tasks.push({
-      id: id(), title: t.title, emoji: t.emoji, speak: t.speak, steps: t.steps, category: t.category, kind, assigneeIds,
+      id: id(), title: t.title, emoji: t.emoji, speak: t.speak, steps: t.steps, schoolDay: t.schoolDay, category: t.category, kind, assigneeIds,
       weekdays: c.weekdays, time: t.time, duration: 30, xp: t.xp, active: true, createdAt: now,
     })
   }

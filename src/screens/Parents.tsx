@@ -4,6 +4,7 @@ import { useFamily, useParentGate, useSession } from '../state'
 import { go } from '../router'
 import { Screen } from '../components/Screen'
 import { BackupReminder } from '../components/BackupReminder'
+import { updateSettings } from '../db/actions'
 import { Pending } from './parents/Pending'
 import { Requests } from './parents/Requests'
 import { TasksTab } from './parents/TasksTab'
@@ -24,7 +25,7 @@ const TABS = [
 export function Parents({ tab }: { tab?: string }) {
   const { adultId } = useSession()
   const gate = useParentGate()
-  const { completions, redemptions } = useFamily()
+  const { completions, redemptions, settings } = useFamily()
   const asked = useRef(false)
 
   // Ao entrar direto na rota, pede o PIN uma vez.
@@ -59,6 +60,15 @@ export function Parents({ tab }: { tab?: string }) {
   return (
     <Screen title="Painel dos Pais" subtitle="Validar, aprovar e cuidar do reino.">
       <BackupReminder />
+      {settings.pinResetAt && (
+        <section className="card-gilded mb-5 flex flex-wrap items-center gap-3 p-4" aria-label="PIN redefinido">
+          <Icon name="lock" size={22} className="text-gold-deep" />
+          <p className="min-w-[200px] flex-1">
+            <b>O PIN foi redefinido</b> em {new Date(settings.pinResetAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })} pelo “Esqueci o PIN”.
+          </p>
+          <button className="btn btn-ghost" onClick={() => updateSettings({ pinResetAt: undefined })}>Ok, fomos nós</button>
+        </section>
+      )}
       <nav aria-label="Seções do painel" className="mb-5 max-w-full overflow-x-auto">
         <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
           {TABS.map((t) => (

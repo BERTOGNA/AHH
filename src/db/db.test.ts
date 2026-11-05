@@ -115,3 +115,27 @@ describe('férias e folgas', () => {
     expect(routineAt('bia', mon, 9 * 60, await routines())?.kind).toBe('school')
   })
 })
+
+describe('férias não apagam ajustes feitos à mão', () => {
+  it('desfazer a folga remove só o que a folga criou', async () => {
+    let mon = today()
+    while (new Date(mon + 'T12:00').getDay() !== 1) mon = add(mon, 1)
+    const t = (await db.tasks.toArray()).find((x) => x.title === 'Lição de casa')!
+    await db.tasks.update(t.id, { exceptions: [{ date: add(mon, 1), time: '16:00' }] }) // ajuste manual na terça
+    await setTimeOff(['leo'], mon, add(mon, 4), ['school'])
+    const during = (await db.tasks.get(t.id))!.exceptions!
+    expect(during.find((e) => e.date === add(mon, 1))).toEqual({ date: add(mon, 1), time: '16:00' }) // intacto
+    expect(during.filter((e) => e.timeOff)).toHaveLength(4)
+    await clearTimeOff(['leo'], mon, add(mon, 4))
+    expect((await db.tasks.get(t.id))!.exceptions).toEqual([{ date: add(mon, 1), time: '16:00' }])
+  })
+  it('levar à escola (adulto) sai só quando todas as crianças estão de folga', async () => {
+    let mon = today()
+    while (new Date(mon + 'T12:00').getDay() !== 1) mon = add(mon, 1)
+    const levar = () => db.tasks.toArray().then((ts) => occurrencesFor(mon, ts, []).some((o) => o.task.title === 'Levar e buscar na escola'))
+    await setTimeOff(['leo'], mon, mon, ['school'])
+    expect(await levar()).toBe(true)
+    await setTimeOff(['leo', 'bia'], mon, mon, ['school'])
+    expect(await levar()).toBe(false)
+  })
+})

@@ -79,7 +79,6 @@ export function Kingdom() {
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <BackupReminder night />
-        <FirstTips />
         <h2 className="sr-only">Quem vai jogar?</h2>
         {/* Estandartes dos heróis — todos do mesmo tamanho, na ordem fixa da família */}
         <ul className="relative z-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
@@ -113,6 +112,8 @@ export function Kingdom() {
             )
           })}
         </ul>
+
+        <div className="mt-6"><FirstTips /></div>
 
         {pending.length > 0 && (
           <button

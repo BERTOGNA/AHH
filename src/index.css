@@ -97,6 +97,7 @@
 :root[data-theme="noite"] .chip[aria-selected="true"] {
   background: var(--color-gold); color: var(--color-night); border-color: var(--color-gold);
 }
+:root[data-theme="noite"] .locked-art { opacity: 0.45; filter: saturate(0.6); }
 :root[data-theme="noite"] .hero-ink { color: var(--color-gold-light) !important; }
 :root[data-theme="noite"] .chip[aria-pressed="true"] .tab-badge { background: var(--color-night); color: var(--color-gold-light); }
 :root[data-theme="noite"] .field { border-color: var(--color-line); box-shadow: none; }
