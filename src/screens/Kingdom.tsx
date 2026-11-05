@@ -113,10 +113,13 @@ export function Kingdom() {
         </ul>
 
         {pending.length > 0 && (
-          <button onClick={() => gate(() => go('/pais'))} className="panel-night mt-6 flex w-full items-center gap-4 p-4 text-left transition hover:border-gold-light/50">
+          <button
+            onClick={() => gate(() => go('/pais'))}
+            className={`panel-night mt-6 flex w-full items-center gap-4 p-4 text-left transition hover:border-gold-light/50 ${now >= 20 * 60 + 30 ? 'glow border-gold-light/60' : ''}`}
+          >
             <span className="grid h-14 w-14 shrink-0 place-items-center"><WaxSeal size={56} /></span>
             <span className="flex-1">
-              <span className="title-display block text-xl text-gold-light">Ritual do Selo</span>
+              <span className="title-display block text-xl text-gold-light">{now >= 20 * 60 + 30 ? 'É hora do Ritual do Selo' : 'Ritual do Selo'}</span>
               <span className="text-moon">
                 {pending.length === 1 ? '1 tarefa espera' : `${pending.length} tarefas esperam`} o selo dos pais. Que tal validar com todos juntos?
               </span>

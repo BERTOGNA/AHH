@@ -6,7 +6,7 @@ import { useFamily, useParentGate, useSession } from '../../state'
 import { householdDay, memberDay, occurrencesFor, type Occurrence } from '../../domain/schedule'
 import { levelOf, titleOf } from '../../domain/levels'
 import { coinBalance, flamesOf, pendingXp, RULES, xpOf } from '../../domain/economy'
-import { addHelper, joinHousehold, markDone, registerDeed, saveTask, unmark } from '../../db/actions'
+import { addHelper, joinHousehold, markDone, markThanksSeen, registerDeed, saveTask, unmark } from '../../db/actions'
 import { CATEGORIES } from '../../data/categories'
 import { INVISIBLE_DEEDS, TEMPLATES } from '../../data/templates'
 import { formatTime, isoWeekday, today, weekDates, WEEKDAY_LONG, WEEKDAY_SHORT } from '../../lib/date'
@@ -71,6 +71,7 @@ export function GrownAdventure({ me }: { me: Member }) {
         )}
       </section>
 
+      <Letters me={me} />
       <Flames me={me} />
 
       {tabs.length > 1 && (
@@ -93,6 +94,36 @@ export function GrownAdventure({ me }: { me: Member }) {
       </div>
       {thanks && <ThanksModal from={me} onClose={() => setThanks(false)} />}
     </Screen>
+  )
+}
+
+/** "Uma carta chegou!": agradecimentos ainda não lidos por este herói. */
+function Letters({ me }: { me: Member }) {
+  const f = useFamily()
+  const unseen = f.thanks.filter((t) => t.toId === me.id && !t.seen).sort((a, b) => a.createdAt - b.createdAt)
+  if (!unseen.length) return null
+  return (
+    <section className="card-gilded animate-rise mb-5 p-4" aria-labelledby="cartas">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-b from-[#FFF7DE] to-gold-light text-gold-deep" aria-hidden="true">
+          <Icon name="heart" size={24} strokeWidth={2} filled />
+        </span>
+        <h2 id="cartas" className="title-display flex-1 text-xl">{unseen.length === 1 ? 'Uma carta chegou!' : `${unseen.length} cartas chegaram!`}</h2>
+        <button className="btn btn-ghost h-12 min-h-12" onClick={() => markThanksSeen(unseen.map((t) => t.id))}>Guardar</button>
+      </div>
+      <ul className="flex flex-col gap-2">
+        {unseen.map((t) => {
+          const from = f.byId.get(t.fromId)
+          return (
+            <li key={t.id} className="flex items-center gap-3 rounded-2xl bg-bg/70 p-3">
+              {from && <Avatar member={from} size={40} />}
+              <p className="story flex-1 text-[17px]"><b className="font-sans text-[15px]">{from?.name}:</b> “{t.message}”</p>
+              <TaskArt emoji={t.emoji} size={30} />
+            </li>
+          )
+        })}
+      </ul>
+    </section>
   )
 }
 
