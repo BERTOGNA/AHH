@@ -54,6 +54,7 @@ Painel dos Pais → **Ajustes** → **Exportar backup (JSON)**. Para restaurar: 
 
 ## Documentação
 
+- [`docs/GUIA-DOS-PAIS.md`](docs/GUIA-DOS-PAIS.md) — **comece por aqui**: como apresentar o reino às crianças e os rituais do dia e da semana.
 - [`docs/PLANO.md`](docs/PLANO.md) — plano consolidado: decisões, conflitos resolvidos e simplificações do MVP (**este manda**).
 - [`docs/design/game-design.md`](docs/design/game-design.md) — design do jogo: universo, classes, economia de XP e moedas, missões, conquistas, itens, mentoria e checklist anti-punição.
 - [`docs/design/design-system.md`](docs/design/design-system.md) — design system v2 (premium híbrido): tokens, tipografia, componentes e auditoria de acessibilidade.
