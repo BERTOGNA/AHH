@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useFamily, useSession } from '../state'
-import { checkPin } from '../db/actions'
+import { checkPin, setPin as savePin } from '../db/actions'
 import { Modal } from './Modal'
 import { Avatar } from './Avatar'
 import { buzz } from '../lib/haptics'
@@ -13,6 +13,7 @@ export function PinPad() {
   const [who, setWho] = useState<string | undefined>(pinRequest?.adultId ?? adults[0]?.id)
   const [pin, setPin] = useState('')
   const [error, setError] = useState(false)
+  const [forgot, setForgot] = useState(false)
   if (!pinRequest) return null
   const adult = members.find((m) => m.id === (pinRequest.adultId ?? who))
 
@@ -35,6 +36,22 @@ export function PinPad() {
         setTimeout(() => setPin(''), 380)
       }
     }
+  }
+
+  if (forgot) {
+    return (
+      <ForgotPin
+        fallbackId={adult?.id ?? adults[0]?.id}
+        onClose={() => setForgot(false)}
+        onDone={(id) => {
+          setForgot(false)
+          unlock(id)
+          setCurrent(id)
+          closePin()
+          pinRequest!.then(id)
+        }}
+      />
+    )
   }
 
   return (
@@ -81,6 +98,11 @@ export function PinPad() {
         <Key onClick={() => setPin((p) => p.slice(0, -1))} label="Apagar">⌫</Key>
       </div>
       {settings.demo && <p className="mt-4 text-center text-sm text-muted">Família de exemplo: o PIN é 1234.</p>}
+      <div className="mt-4 text-center">
+        <button className="min-h-12 px-3 text-sm font-semibold text-gold-deep underline-offset-4 hover:underline" onClick={() => setForgot(true)}>
+          Esqueci o PIN
+        </button>
+      </div>
     </Modal>
   )
 }
@@ -94,5 +116,52 @@ function Key({ children, onClick, label }: { children: string; onClick: () => vo
     >
       {children}
     </button>
+  )
+}
+
+/** "Esqueci o PIN": um desafio de adulto (multiplicação) e um PIN novo. Não é segurança, é contra toques curiosos. */
+function ForgotPin({ onDone, onClose, fallbackId }: { onDone: (id: string) => void; onClose: () => void; fallbackId?: string }) {
+  const [[a, b]] = useState(() => [12 + Math.floor(Math.random() * 27), 13 + Math.floor(Math.random() * 26)])
+  const [answer, setAnswer] = useState('')
+  const [ok, setOk] = useState(false)
+  const [pin, setPinValue] = useState('')
+  const [wrong, setWrong] = useState(false)
+  return (
+    <Modal title="Esqueci o PIN" onClose={onClose}>
+      {!ok ? (
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (Number(answer) === a * b) setOk(true)
+            else setWrong(true)
+          }}
+        >
+          <p className="text-muted">Para confirmar que é um adulto, resolva a conta:</p>
+          <label className="flex items-center gap-3 text-xl font-bold tabular-nums">
+            {a} × {b} =
+            <input className="field w-32 text-xl" inputMode="numeric" value={answer} onChange={(e) => { setAnswer(e.target.value.replace(/\D/g, '')); setWrong(false) }} aria-label="Resultado" autoFocus />
+          </label>
+          {wrong && <p className="text-sm font-semibold">Ainda não. Confira a conta e tente de novo.</p>}
+          <button className="btn btn-primary">Confirmar</button>
+        </form>
+      ) : (
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={async (e) => {
+            e.preventDefault()
+            if (!/^\d{4}$/.test(pin)) return
+            await savePin(pin)
+            if (fallbackId) onDone(fallbackId)
+          }}
+        >
+          <label>
+            <span className="mb-1 block font-semibold">Novo PIN (4 dígitos)</span>
+            <input className="field text-xl tracking-[0.5em]" inputMode="numeric" type="password" maxLength={4} value={pin} onChange={(e) => setPinValue(e.target.value.replace(/\D/g, ''))} autoFocus />
+          </label>
+          <button className="btn btn-primary" disabled={!/^\d{4}$/.test(pin)}>Salvar novo PIN</button>
+        </form>
+      )}
+    </Modal>
   )
 }
