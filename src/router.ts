@@ -6,6 +6,7 @@ export type Route =
   | { name: 'heroi'; id: string }
   | { name: 'ficha'; id: string }
   | { name: 'semana' }
+  | { name: 'quadro' }
   | { name: 'bau' }
   | { name: 'mural'; chronicle?: boolean }
   | { name: 'pais'; tab?: string }
@@ -15,6 +16,7 @@ export function parse(hash: string): Route {
   const [a, b] = hash.replace(/^#\/?/, '').split('/')
   switch (a) {
     case 'semana':
+    case 'quadro':
     case 'bau':
     case 'bem-vindo':
       return { name: a }

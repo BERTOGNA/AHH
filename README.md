@@ -44,6 +44,7 @@ Para instalar no tablet/celular, sirva o `dist/` por **https** (qualquer hospeda
 - **Instalar no aparelho**: botão na abertura e em Ajustes (no iPhone/iPad, instruções do "Adicionar à Tela de Início").
 - **Lembrete de backup** gentil para os pais a cada 14 dias.
 - **Sugestões para o 12 anos** assumir tarefas extras na própria semana.
+- **Quadro da semana para imprimir** (Semana → Imprimir quadro): uma folha A4 para a geladeira; para os pequenos, só desenhos.
 - **Compromissos pontuais** na Semana (consulta, aniversário, reunião): valem só na data marcada.
 - **"Como fazer?"**: passo a passo curto em cada tarefa (lido em voz alta para a criança; lista para o 12 anos; editável pelos pais).
 - **Recompensas por herói**, **cartas de agradecimento** para todos, **modo boa-noite** da criança, **Jornada do Reino** (XP da família por semana) e **visão detalhada de um dia** na Semana.

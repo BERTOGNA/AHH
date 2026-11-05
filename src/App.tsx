@@ -12,6 +12,7 @@ const Week = lazy(() => import('./screens/Week').then((m) => ({ default: m.Week 
 const Chest = lazy(() => import('./screens/Chest').then((m) => ({ default: m.Chest })))
 const Mural = lazy(() => import('./screens/Mural').then((m) => ({ default: m.Mural })))
 const Parents = lazy(() => import('./screens/Parents').then((m) => ({ default: m.Parents })))
+const PrintWeek = lazy(() => import('./screens/PrintWeek').then((m) => ({ default: m.PrintWeek })))
 const Welcome = lazy(() => import('./screens/Welcome').then((m) => ({ default: m.Welcome })))
 
 function Loading() {
@@ -46,11 +47,12 @@ export function App() {
       {route.name === 'heroi' && <Adventure id={route.id} />}
       {route.name === 'ficha' && <CharacterSheet id={route.id} />}
       {route.name === 'semana' && <Week />}
+      {route.name === 'quadro' && <PrintWeek />}
       {route.name === 'bau' && <Chest />}
       {route.name === 'mural' && <Mural chronicle={route.chronicle} />}
       {route.name === 'pais' && <Parents tab={route.tab} />}
       </Suspense>
-      <Nav />
+      {route.name !== 'quadro' && <Nav />}
       {pinRequest && <PinPad />}
       <CelebrationOverlay />
       <Toasts />

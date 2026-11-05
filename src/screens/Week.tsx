@@ -1,4 +1,5 @@
 // Semana do Reino: a rotina de todos numa visão única, para ver onde os horários se cruzam.
+import { go } from '../router'
 import { RoutineIcon } from '../components/RoutineIcon'
 import { TaskArt } from '../components/taskart/TaskArt'
 import { Icon } from '../components/Icon'
@@ -91,6 +92,7 @@ export function Week() {
             <button className="btn btn-primary h-12 min-h-12" onClick={() => setEditTask({})}><Icon name="plus" size={18} strokeWidth={2.25} /> Tarefa</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}><Icon name="plus" size={18} strokeWidth={2.25} /> Rotina</button>
             <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('compromisso')}><Icon name="calendar" size={18} /> Compromisso</button>
+            <button className="btn btn-ghost h-12 min-h-12" onClick={() => go('/quadro')}><Icon name="list" size={18} /> Imprimir quadro</button>
           </span>
         )}
       </div>

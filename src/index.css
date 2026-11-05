@@ -275,6 +275,16 @@ button:disabled { cursor: default; }
   .sleep-stripes { background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgb(30 26 43 / 0.07) 6px 8px); }
 }
 
+/* Impressão do quadro da semana */
+body.printing { background: #fff; }
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+  body { background: #fff !important; }
+  .no-print, nav { display: none !important; }
+  .print-sheet { max-width: none; padding: 0; }
+  * { box-shadow: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 150ms !important;
