@@ -137,7 +137,7 @@ export function Welcome() {
         </div>
         <div className="mt-8">
           <h1 className="insignia bg-gradient-to-b from-[#FFF1C4] via-gold-light to-gold bg-clip-text text-[40px] leading-tight text-transparent sm:text-6xl">Reino da Família</h1>
-          <p className="story mt-3 max-w-md text-xl text-moon">A casa funciona porque cada um faz a sua parte.</p>
+          <p className="story mx-auto mt-3 max-w-md text-xl text-moon">A casa funciona porque cada um faz a sua parte.</p>
         </div>
         <p className="max-w-md text-[#e8dcc0]">
           Uma agenda da semana que também é uma aventura: pais e filhos são heróis do mesmo reino, e todo esforço aparece.

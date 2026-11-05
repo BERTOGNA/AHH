@@ -2,6 +2,8 @@ import { useId } from 'react'
 import type { Member } from '../db/types'
 import { itemById } from '../data/items'
 import { heroColor } from './hero'
+import { HeroPortrait } from './portrait/HeroPortrait'
+import { defaultLook } from './portrait/look'
 
 interface Props {
   member: Member
@@ -11,7 +13,7 @@ interface Props {
 }
 
 /**
- * Medalhão do herói: bezel dourado em SVG, interior em gradiente da joia, rosto no centro.
+ * Medalhão do herói: bezel dourado em SVG, interior em gradiente da joia e o herói ilustrado (HeroPortrait).
  * Itens equipados aparecem como pingentes dourados (chapéu no topo, ferramenta à direita, companheiro à esquerda).
  * O chapéu inicial (gorro de aprendiz) não é desenhado: só chapéus conquistados aparecem.
  */
@@ -55,9 +57,14 @@ export function Avatar({ member, size = 96, className = '', glow }: Props) {
             <circle key={a} cx={50 + 44.75 * Math.cos((a * Math.PI) / 180)} cy={50 + 44.75 * Math.sin((a * Math.PI) / 180)} r="1.6" fill="#FFF6D8" />
           ))}
       </svg>
-      <span className="relative" style={{ fontSize: size * 0.46, lineHeight: 1, transform: `translateY(${size * 0.02}px)` }}>
-        {member.avatar.base}
-      </span>
+      <HeroPortrait
+        look={member.avatar.look ?? defaultLook(member.role, member.treatment, member.slot)}
+        classId={member.classId}
+        color={c.solid}
+        age={member.role}
+        size={size}
+        className="absolute inset-0"
+      />
       {hat && charms && <Charm emoji={hat.emoji} size={size * 0.3} style={{ top: -size * 0.1, left: '50%', transform: 'translateX(-50%)' }} />}
       {tool && charms && <Charm emoji={tool.emoji} size={size * 0.32} style={{ right: -size * 0.05, bottom: -size * 0.02 }} />}
       {pet && charms && <Charm emoji={pet.emoji} size={size * 0.3} style={{ left: -size * 0.05, bottom: -size * 0.02 }} />}

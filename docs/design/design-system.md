@@ -73,8 +73,15 @@ Altura mínima 48px; tela de 6 anos ≥ 64px (padrão 88).
 SVG de traço 1,75px, `stroke: currentColor`, grade 24. Sempre `aria-hidden`; o rótulo fica no botão.
 Conjunto: castle, map, calendar, chest, scroll, lock, unlock, speaker, heart, seal, hourglass, star, check, plus, chevron-left/right, flame, coin, users, home, sparkle, close, undo, gear, shield, gift, clock, pencil, crown, trophy, book.
 
-### Medalhão do herói (`Avatar`)
-Bezel dourado em SVG (anel duplo com gradiente metálico), interior em gradiente radial da joia → tint, rosto (emoji base) a 56%. Itens equipados aparecem como **pingentes** dourados pequenos (ferramenta à direita, companheiro à esquerda). O chapéu inicial não é desenhado; chapéus desbloqueados aparecem como pingente no topo.
+### Medalhão do herói (`Avatar`) e herói ilustrado (`HeroPortrait`)
+Bezel dourado em SVG (anel duplo com gradiente metálico), interior em gradiente radial da joia → tint e, dentro, o **herói ilustrado em SVG** (`src/components/portrait/`), em busto recortado no círculo interno.
+- Peças combináveis (`portrait/look.ts`): 8 tons de pele (6 humanos + menta élfica e lavanda feérica), 9 penteados em 8 cores, 3 olhos, 3 bocas, extras (óculos, barba, bigode, sardas, orelhas élficas).
+- Proporções por idade (criança, 12 anos, adulto); barba e bigode só a partir de 12 anos.
+- A roupa vem da **classe**, na cor de joia do herói, com detalhe dourado (frasco do alquimista, moeda do tesoureiro, folha do curandeiro, martelinho do arquiteto, ombreiras do cavaleiro, estrela do mago, nota do bardo, escudinho do escudeiro).
+- Abaixo de 40px o desenho se simplifica (sem sardas e brilhos finos).
+- Itens equipados aparecem como **pingentes** dourados (chapéu no topo, ferramenta à direita, companheiro à esquerda).
+- Editor (`LookEditor`): cada opção é uma miniatura do próprio herói, sem depender de leitura, mais o botão "Surpresa!". Usado na Ficha, no assistente (passo 2) e no Painel › Heróis.
+- Membros antigos sem `look` recebem um visual padrão estável (`defaultLook`); o emoji `base` continua no banco só por compatibilidade com backups.
 
 ### Estandarte (`HeroBanner`, Salão)
 Tecido na cor sólida da joia, com gradiente vertical sutil, franja dourada embaixo (recorte em V), filete dourado de 2px nas bordas, medalhão no topo, nome em Cinzel ouro-claro, classe em branco.
