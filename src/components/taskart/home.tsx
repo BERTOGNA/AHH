@@ -127,18 +127,19 @@ export const Sponge: Art = ({ s }) => (
 
 export const Shower: Art = ({ s }) => (
   <g>
-    <path d="M24 10 v20 a6 6 0 0 0 6 6 h16" stroke={C.metalS} strokeWidth="5" fill="none" strokeLinecap="round" />
-    <path d="M42 28 h24 a6 6 0 0 1 6 6 v2 h-36 v-2 a6 6 0 0 1 6 -6 z" fill={C.metal} />
-    <rect x="34" y="35" width="40" height="5" rx="2.5" fill={C.metalS} />
-    {/* gotas */}
-    {[38, 46, 54, 62, 70].map((x, i) => (
+    <path d="M20 8 v22 a7 7 0 0 0 7 7 h16" stroke={C.metalS} strokeWidth="6" fill="none" strokeLinecap="round" />
+    <path d="M40 26 h28 a8 8 0 0 1 8 8 v3 h-44 v-3 a8 8 0 0 1 8 -8 z" fill={C.blue} />
+    <rect x="30" y="36" width="48" height="6" rx="3" fill={C.blueS} />
+    {!s && <Shine x={50} y={30} w={10} h={2.4} r={0} />}
+    {[36, 45, 54, 63, 72].map((x, i) => (
       <g key={x} fill={C.blue}>
-        <path d={`M${x} ${48 + (i % 2) * 6} q2.6 4 0 6.5 q-2.6 -2.5 0 -6.5z`} />
-        {!s && <path d={`M${x - 2} ${66 + (i % 2) * 5} q2.4 3.6 0 6 q-2.4 -2.4 0 -6z`} opacity=".7" />}
+        <path d={`M${x} ${50 + (i % 2) * 7} q3.6 5.4 0 9 q-3.6 -3.6 0 -9z`} />
+        {!s && <path d={`M${x - 2} ${70 + (i % 2) * 4} q3 4.4 0 7.4 q-3 -3 0 -7.4z`} fill={C.blueL} />}
       </g>
     ))}
-    <ellipse cx="54" cy="88" rx="26" ry="4" fill={C.blueL} opacity=".6" />
-    {!s && <circle cx="36" cy="84" r="3" fill={C.blueL} opacity=".7" />}
+    <ellipse cx="54" cy="88" rx="28" ry="4.6" fill={C.blueL} opacity=".8" />
+    {!s && <circle cx="32" cy="84" r="3.4" fill="#fff" stroke={C.blueL} strokeWidth="1.4" />}
+    {!s && <circle cx="78" cy="82" r="2.4" fill="#fff" stroke={C.blueL} strokeWidth="1.2" />}
   </g>
 )
 
@@ -171,13 +172,15 @@ export const Wrench: Art = ({ s }) => (
   <g>
     <Ground w={26} />
     <g transform="rotate(-40 50 52)">
-      <rect x="45" y="30" width="10" height="52" rx="5" fill={C.metal} />
-      <path d="M38 18 a14 14 0 1 0 24 0 l-6 9 h-12 z" fill={C.metal} />
-      <path d="M38 18 a14 14 0 0 0 4 22 l2 -8 z" fill={C.metalS} opacity=".6" />
-      <circle cx="50" cy="74" r="3" fill={C.metalS} />
-      {!s && <Shine x={48} y={50} w={14} h={2.4} r={90} />}
+      <rect x="44.5" y="30" width="11" height="54" rx="5.5" fill={C.blue} />
+      <rect x="44.5" y="30" width="4" height="54" rx="2" fill={C.blueL} opacity=".6" />
+      <path d="M37 18 a15 15 0 1 0 26 0 l-6.5 9.5 h-13 z" fill={C.metalS} />
+      <path d="M37 18 a15 15 0 0 0 4.5 23 l2 -8.5 z" fill={C.ink} opacity=".18" />
+      <circle cx="50" cy="76" r="3" fill={C.blueS} />
+      {!s && <Shine x={46} y={24} w={7} h={2.2} r={60} />}
     </g>
     {!s && <Sparkle x={76} y={26} r={5} />}
+    {!s && <Sparkle x={24} y={72} r={3.4} c={C.goldL} />}
   </g>
 )
 

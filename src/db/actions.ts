@@ -1,7 +1,7 @@
 // Todas as escritas no banco passam por aqui.
 import { uid } from '../lib/uid'
 import { db, DEFAULT_SETTINGS } from './db'
-import type { Completion, Member, Mission, Reward, RoutineBlock, Settings, Task } from './types'
+import type { Completion, Member, Mission, Reward, RoutineBlock, Settings, Task, TaskException } from './types'
 import { completionId, plannedWeekXp } from '../domain/schedule'
 import { coinBalance, ledger } from '../domain/economy'
 import { newlyUnlocked } from '../domain/achievements'
@@ -193,6 +193,20 @@ export async function saveTask(t: Partial<Task> & Pick<Task, 'title' | 'emoji' |
   const task: Task = { duration: 30, active: true, createdAt: Date.now(), ...t, id: t.id ?? uid() } as Task
   await db.tasks.put(task)
   return task
+}
+
+/** Exceção pontual (só nesta semana). Substitui a exceção que houver para a mesma data original. */
+export async function setException(taskId: string, ex: TaskException) {
+  const t = await db.tasks.get(taskId)
+  if (!t) return
+  const rest = (t.exceptions ?? []).filter((e) => e.date !== ex.date)
+  await db.tasks.update(taskId, { exceptions: [...rest, ex] })
+}
+
+export async function clearException(taskId: string, date: string) {
+  const t = await db.tasks.get(taskId)
+  if (!t) return
+  await db.tasks.update(taskId, { exceptions: (t.exceptions ?? []).filter((e) => e.date !== date) })
 }
 
 export async function deleteTask(id: string) {

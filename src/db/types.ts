@@ -41,6 +41,14 @@ export interface RoutineBlock {
 export type Category = 'lar' | 'comida' | 'pessoal' | 'estudo' | 'trabalho' | 'cuidado' | 'financas' | 'planejamento'
 export type TaskKind = 'individual' | 'shared' | 'household'
 
+/** Mudança pontual numa data: não precisa (skip), mudou de dia (to) e/ou de horário (time). Nunca é falha. */
+export interface TaskException {
+  date: ISODate // a data original da ocorrência
+  skip?: boolean
+  to?: ISODate
+  time?: HHMM
+}
+
 export interface Task {
   id: string
   title: string
@@ -55,6 +63,7 @@ export interface Task {
   xp: number // 5 | 10 | 20 | 30
   active: boolean
   proposedBy?: string // id do membro de 12 anos que criou
+  exceptions?: TaskException[]
   createdAt: number
 }
 
@@ -138,4 +147,6 @@ export interface Settings {
   vibration: boolean
   demo: boolean
   nextMissionIndex: number
+  lastBackupAt?: number
+  createdAt?: number
 }

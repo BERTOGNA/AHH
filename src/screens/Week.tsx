@@ -9,7 +9,7 @@ import { Modal } from '../components/Modal'
 import { TaskEditor } from '../components/TaskEditor'
 import { Avatar } from '../components/Avatar'
 import { heroColor } from '../components/hero'
-import { deleteRoutine, saveRoutine, saveTask } from '../db/actions'
+import { clearException, deleteRoutine, saveRoutine, saveTask, setException } from '../db/actions'
 import { occurrencesFor, ROUTINE_INFO } from '../domain/schedule'
 import {
   addDays, formatDayMonth, formatTime, hhmm, isoWeekday, minutes, today, weekDates, weekStart, WEEKDAYS, WEEKDAY_LONG, WEEKDAY_SHORT,
@@ -27,6 +27,7 @@ export function Week() {
   const [taskDetail, setTaskDetail] = useState<{ task: Task; date: string } | null>(null)
   const [editTask, setEditTask] = useState<{ task?: Task } | null>(null)
   const [routine, setRoutine] = useState<RoutineBlock | 'new' | null>(null)
+  const [pendingMove, setPendingMove] = useState<{ task: Task; from: string; to: string; startMin: number | null } | null>(null)
 
   const lanes = f.members.filter((m) => !hidden.includes(m.id))
   const dates = weekDates(anchor)
@@ -40,15 +41,16 @@ export function Week() {
     setDay(n === 0 ? today() : addDays(a, isoWeekday(day) - 1))
   }
 
+  /** Tarefas perguntam o alcance (só nesta semana / todas); rotinas mudam sempre para todas as semanas. */
   async function move(item: { task?: Task; routine?: RoutineBlock }, from: string, to: string, startMin: number | null) {
+    if (item.task) {
+      setPendingMove({ task: f.tasks.find((t) => t.id === item.task!.id) ?? item.task, from, to, startMin })
+      return
+    }
     const fromWd = isoWeekday(from)
     const toWd = isoWeekday(to)
     const swapDay = (days: Weekday[]) => (fromWd === toWd || days.includes(toWd) ? days : [...days.filter((d) => d !== fromWd), toWd].sort())
-    if (item.task) {
-      const time = startMin === null ? item.task.time : hhmm(startMin)
-      await saveTask({ ...item.task, weekdays: swapDay(item.task.weekdays), time })
-      toast(`${item.task.title}: ${WEEKDAY_SHORT[toWd]}${time ? ` ${formatTime(time)}` : ''} (todas as semanas)`)
-    } else if (item.routine && startMin !== null) {
+    if (item.routine && startMin !== null) {
       const r = item.routine
       const delta = startMin - minutes(r.start)
       await saveRoutine({ ...r, weekdays: swapDay(r.weekdays), start: hhmm(minutes(r.start) + delta), end: hhmm(minutes(r.end) + delta) })
@@ -136,6 +138,16 @@ export function Week() {
         )}
       </div>
 
+      {pendingMove && (
+        <MoveScope
+          move={pendingMove}
+          onClose={() => setPendingMove(null)}
+          onDone={(msg, undo) => {
+            setPendingMove(null)
+            toast(msg, undo ? { label: 'Desfazer', run: undo } : undefined)
+          }}
+        />
+      )}
       {taskDetail && (
         <TaskDetail
           task={taskDetail.task}
@@ -145,7 +157,10 @@ export function Week() {
             setEditTask({ task: taskDetail.task })
             setTaskDetail(null)
           }}
-          onMove={(toWd, startMin) => move({ task: taskDetail.task }, taskDetail.date, addDays(weekStart(taskDetail.date), toWd - 1), startMin)}
+          onMove={(toWd, startMin) => {
+            void move({ task: taskDetail.task }, taskDetail.date, addDays(weekStart(taskDetail.date), toWd - 1), startMin)
+            setTaskDetail(null)
+          }}
           onClose={() => setTaskDetail(null)}
         />
       )}
@@ -167,7 +182,10 @@ function TaskDetail({ task, date, editable, onEdit, onMove, onClose }: {
   const occ = occurrencesFor(date, [t], f.completions)
   const who = t.kind === 'household' ? 'Qualquer um da casa (do lar)' : t.assigneeIds.map((id) => f.byId.get(id)?.name).filter(Boolean).join(' e ')
   const status = occ[0]?.completion?.status
-  const start = t.time ? minutes(t.time) : null
+  const shown = occ[0]?.task ?? t // pode ter horário só deste dia
+  const start = shown.time ? minutes(shown.time) : null
+  const ex = (t.exceptions ?? []).find((e) => e.date === date || e.to === date)
+  const { toast } = useSession()
   const wd = isoWeekday(date)
   return (
     <Modal title={t.title} onClose={onClose}>
@@ -176,11 +194,12 @@ function TaskDetail({ task, date, editable, onEdit, onMove, onClose }: {
         <div>
           <p className="font-semibold">{who}</p>
           <p className="text-muted">
-            {t.time ? formatTime(t.time) : 'Qualquer hora'} · {t.weekdays.map((d) => WEEKDAY_SHORT[d]).join(', ')} · {t.xp} XP
+            {shown.time ? formatTime(shown.time) : 'Qualquer hora'} · {t.weekdays.map((d) => WEEKDAY_SHORT[d]).join(', ')} · {t.xp} XP
           </p>
           <p className="text-sm text-muted">
-            {WEEKDAY_LONG[wd]}: {status === 'validated' ? '⭐ validada' : status === 'done' ? '⏳ feita, aguardando o selo' : 'ainda não marcada'}
+            {WEEKDAY_LONG[wd]}: {status === 'validated' ? 'validada' : status === 'done' ? 'feita, aguardando o selo' : 'ainda não marcada'}
           </p>
+          {ex && <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-wait px-2 py-0.5 text-xs font-semibold text-gold-deep"><Icon name="pencil" size={12} /> Ajustada só nesta semana</p>}
         </div>
       </div>
       {editable && (
@@ -195,16 +214,79 @@ function TaskDetail({ task, date, editable, onEdit, onMove, onClose }: {
             <p className="mb-1 text-sm font-semibold">Mover {WEEKDAY_LONG[wd].toLowerCase()} para…</p>
             <div className="flex flex-wrap gap-2">
               {WEEKDAYS.filter((d) => d !== wd).map((d) => (
-                <button key={d} className="chip" disabled={t.weekdays.includes(d)} style={{ opacity: t.weekdays.includes(d) ? 0.45 : 1 }} onClick={() => { onMove(d, start); onClose() }}>
+                <button key={d} className="chip" onClick={() => { onMove(d, start); onClose() }}>
                   {WEEKDAY_SHORT[d]}
                 </button>
               ))}
             </div>
-            <p className="mt-1 text-xs text-muted">As mudanças valem para todas as semanas.</p>
+            <p className="mt-1 text-xs text-muted">Você escolhe se vale só nesta semana ou para todas.</p>
           </div>
-          <button className="btn btn-primary" onClick={onEdit}>Editar tarefa</button>
+          <div className="flex flex-wrap gap-2">
+            {!status && !ex && (
+              <button
+                className="btn btn-ghost"
+                onClick={async () => {
+                  await setException(t.id, { date, skip: true })
+                  toast(`${t.title}: ${WEEKDAY_LONG[wd].toLowerCase()} não precisa.`, { label: 'Desfazer', run: () => void clearException(t.id, date) })
+                  onClose()
+                }}
+              >
+                <Icon name="moon" size={18} /> Neste dia não precisa
+              </button>
+            )}
+            {ex && (
+              <button className="btn btn-ghost" onClick={async () => { await clearException(t.id, ex.date); toast('De volta ao combinado de sempre.'); onClose() }}>
+                <Icon name="undo" size={18} /> Voltar ao normal
+              </button>
+            )}
+            <button className="btn btn-primary flex-1" onClick={onEdit}>Editar tarefa</button>
+          </div>
         </div>
       )}
+    </Modal>
+  )
+}
+
+/** Alcance de uma mudança de dia/horário: só nesta semana (exceção) ou todas as semanas (recorrência). */
+function MoveScope({ move, onClose, onDone }: {
+  move: { task: Task; from: string; to: string; startMin: number | null }
+  onClose: () => void
+  onDone: (msg: string, undo?: () => void) => void
+}) {
+  const { task, from, to, startMin } = move
+  const prev = task.exceptions ?? []
+  // Se a ocorrência já tinha sido trazida de outro dia, a exceção é da data original.
+  const origin = prev.find((e) => e.to === from)?.date ?? from
+  const time = startMin === null ? undefined : hhmm(startMin)
+  const label = `${WEEKDAY_SHORT[isoWeekday(to)]}${time ? ` ${formatTime(time)}` : ''}`
+
+  async function once() {
+    await setException(task.id, { date: origin, to: to !== origin ? to : undefined, time })
+    onDone(`${task.title}: ${label}, só nesta semana.`, () => void saveTask({ ...task, exceptions: prev }))
+  }
+  async function always() {
+    const fromWd = isoWeekday(origin)
+    const toWd = isoWeekday(to)
+    const days = fromWd === toWd || task.weekdays.includes(toWd) ? task.weekdays : [...task.weekdays.filter((d) => d !== fromWd), toWd].sort()
+    await saveTask({ ...task, weekdays: days, time: time ?? task.time, exceptions: prev.filter((e) => e.date !== origin) })
+    onDone(`${task.title}: ${label}, todas as semanas.`, () => void saveTask(task))
+  }
+
+  return (
+    <Modal title="Mudar só nesta semana?" onClose={onClose}>
+      <p className="mb-4 text-muted">
+        <b className="text-ink">{task.emoji} {task.title}</b> vai para <b className="text-ink">{label}</b>.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <button className="btn btn-secondary h-16 flex-col gap-0" onClick={once}>
+          <span>Só nesta semana</span>
+          <span className="text-xs font-medium opacity-80">semana que vem volta ao normal</span>
+        </button>
+        <button className="btn btn-primary h-16 flex-col gap-0" onClick={always} autoFocus>
+          <span>Todas as semanas</span>
+          <span className="text-xs font-medium opacity-80">muda o combinado</span>
+        </button>
+      </div>
     </Modal>
   )
 }

@@ -3,20 +3,23 @@ import { C, Face, Ground, Shine, Sparkle, type Art } from './kit'
 
 export const Plate: Art = ({ s }) => (
   <g>
-    <Ground w={36} y={84} />
+    <Ground w={38} y={86} />
+    {/* jogo americano */}
+    <rect x="8" y="24" width="84" height="56" rx="10" fill={C.coral} />
+    {!s && <path d="M14 30 h72 M14 74 h72" stroke={C.coralS} strokeWidth="2" strokeDasharray="3 3" />}
     {/* garfo */}
-    <rect x="12" y="38" width="4" height="44" rx="2" fill={C.metalS} />
-    <path d="M8 18 v18 a6 6 0 0 0 12 0 v-18" stroke={C.metalS} strokeWidth="2.6" fill="none" strokeLinecap="round" />
-    {!s && <path d="M14 18 v14" stroke={C.metalS} strokeWidth="2.6" strokeLinecap="round" />}
+    <rect x="15" y="44" width="4.5" height="30" rx="2.2" fill={C.metalS} />
+    <path d="M11 28 v14 a6 6 0 0 0 12.4 0 v-14" stroke={C.metalS} strokeWidth="3" fill="none" strokeLinecap="round" />
+    {!s && <path d="M17.2 28 v12" stroke={C.metalS} strokeWidth="2.6" strokeLinecap="round" />}
     {/* faca */}
-    <path d="M86 16 c-6 6 -8 18 -6 28 h4 z" fill={C.metal} />
-    <rect x="82" y="42" width="4.5" height="40" rx="2.2" fill={C.metalS} />
+    <path d="M84 26 c-6 5 -8 16 -6 24 h5 z" fill={C.ivory} />
+    <rect x="79" y="48" width="5" height="26" rx="2.5" fill={C.metalS} />
     {/* prato */}
-    <circle cx="49" cy="52" r="29" fill={C.white} />
-    <circle cx="49" cy="52" r="29" fill="none" stroke={C.metal} strokeWidth="2" />
-    <circle cx="49" cy="52" r="20" fill={C.ivory} />
-    <circle cx="49" cy="52" r="20" fill="none" stroke={C.creamS} strokeWidth="1.6" />
-    {!s && <Shine x={34} y={36} w={10} h={3} r={-40} />}
+    <circle cx="49" cy="52" r="25" fill={C.white} />
+    <circle cx="49" cy="52" r="25" fill="none" stroke={C.blueL} strokeWidth="3" />
+    <circle cx="49" cy="52" r="16" fill={C.ivory} />
+    <circle cx="49" cy="52" r="16" fill="none" stroke={C.blueL} strokeWidth="1.6" />
+    {!s && <Shine x={36} y={38} w={9} h={3} r={-40} />}
   </g>
 )
 
@@ -151,7 +154,3 @@ export const Popcorn: Art = ({ s }) => (
   </g>
 )
 
-export const Cutlery = Plate
-export const Soup = Pot
-export const Bread: Art = (p) => <Bowl {...p} />
-export { Sparkle }

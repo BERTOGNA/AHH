@@ -3,6 +3,7 @@ import { Icon } from '../components/Icon'
 import { useFamily, useParentGate, useSession } from '../state'
 import { go } from '../router'
 import { Screen } from '../components/Screen'
+import { BackupReminder } from '../components/BackupReminder'
 import { Pending } from './parents/Pending'
 import { Requests } from './parents/Requests'
 import { TasksTab } from './parents/TasksTab'
@@ -38,7 +39,7 @@ export function Parents({ tab }: { tab?: string }) {
     return (
       <Screen title="Painel dos Pais">
         <div className="card-gilded mx-auto max-w-md p-8 text-center">
-          <div className="text-6xl" aria-hidden="true">🔒</div>
+          <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-wait text-gold-deep"><Icon name="lock" size={40} /></div>
           <h2 className="title-display mt-3 text-xl font-bold">Esta área é dos adultos</h2>
           <p className="mt-2 text-muted">Aqui os pais validam tarefas, aprovam pedidos do Baú e ajustam a semana.</p>
           <button className="btn btn-primary mt-5 h-14 w-full text-lg" onClick={() => gate(() => {})}>
@@ -57,6 +58,7 @@ export function Parents({ tab }: { tab?: string }) {
 
   return (
     <Screen title="Painel dos Pais" subtitle="Validar, aprovar e cuidar do reino.">
+      <BackupReminder />
       <nav aria-label="Seções do painel" className="-mx-4 mb-5 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap">
           {TABS.map((t) => (

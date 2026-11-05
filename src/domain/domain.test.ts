@@ -157,3 +157,39 @@ describe('assistente → semana', () => {
     expect(xp).toBeLessThan(2000)
   })
 })
+
+import { needsBackup } from '../components/BackupReminder'
+
+describe('lembrete de backup', () => {
+  const D = 86400000
+  it('lembra só quando faz sentido', () => {
+    const now = 100 * D
+    expect(needsBackup({ demo: true, createdAt: 0 }, now)).toBe(false)
+    expect(needsBackup({ demo: false, createdAt: now - 3 * D }, now)).toBe(false)
+    expect(needsBackup({ demo: false, createdAt: now - 8 * D }, now)).toBe(true)
+    expect(needsBackup({ demo: false, createdAt: 0, lastBackupAt: now - 10 * D }, now)).toBe(false)
+    expect(needsBackup({ demo: false, createdAt: 0, lastBackupAt: now - 15 * D }, now)).toBe(true)
+  })
+})
+
+describe('exceções só nesta semana', () => {
+  const base = { id: 'mesa', title: 'Mesa', emoji: '🍽️', category: 'comida' as const, kind: 'individual' as const, assigneeIds: ['bia'], weekdays: [1, 2] as (1 | 2)[], time: '19:00', duration: 15, xp: 10, active: true, createdAt: 0 }
+  it('"não precisa" tira só aquele dia, sem registro', () => {
+    const t = { ...base, exceptions: [{ date: '2026-11-02', skip: true }] }
+    expect(occurrencesFor('2026-11-02', [t], [])).toHaveLength(0)
+    expect(occurrencesFor('2026-11-03', [t], [])).toHaveLength(1)
+    expect(occurrencesFor('2026-11-09', [t], [])).toHaveLength(1) // semana seguinte volta ao normal
+  })
+  it('mover só nesta semana leva para outro dia e horário', () => {
+    const t = { ...base, exceptions: [{ date: '2026-11-02', to: '2026-11-04', time: '18:00' }] }
+    expect(occurrencesFor('2026-11-02', [t], [])).toHaveLength(0)
+    const qua = occurrencesFor('2026-11-04', [t], [])
+    expect(qua).toHaveLength(1)
+    expect(qua[0].task.time).toBe('18:00')
+    expect(occurrencesFor('2026-11-09', [t], [])[0].task.time).toBe('19:00')
+  })
+  it('só mudar o horário naquele dia', () => {
+    const t = { ...base, exceptions: [{ date: '2026-11-03', time: '20:00' }] }
+    expect(occurrencesFor('2026-11-03', [t], [])[0].task.time).toBe('20:00')
+  })
+})

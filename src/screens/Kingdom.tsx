@@ -16,6 +16,7 @@ import { missionById, stageOf } from '../data/missions'
 import { formatLong, formatTime, isoWeekday, minutes, nowMinutes, today, weekKey } from '../lib/date'
 import { play } from '../lib/sound'
 import { takeMissionCelebration } from './missionCelebration'
+import { BackupReminder } from '../components/BackupReminder'
 
 export function Kingdom() {
   const f = useFamily()
@@ -74,6 +75,7 @@ export function Kingdom() {
       </header>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <BackupReminder night />
         <h2 className="sr-only">Quem vai jogar?</h2>
         {/* Estandartes dos heróis — todos do mesmo tamanho, na ordem fixa da família */}
         <ul className="relative z-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">

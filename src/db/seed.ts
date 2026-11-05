@@ -15,7 +15,7 @@ export async function createFamily(a: WizardAnswers, pin: string, demo = false) 
   const salt = newSalt()
   const settings: Settings = {
     ...DEFAULT_SETTINGS, kingdomName: a.kingdomName.trim() || DEFAULT_SETTINGS.kingdomName, parentTitle: a.parentTitle,
-    onboardingDone: true, demo, pinSalt: salt, pinHash: await hashPin(pin, salt),
+    onboardingDone: true, demo, pinSalt: salt, pinHash: await hashPin(pin, salt), createdAt: Date.now(),
     nextMissionIndex: Math.max(0, MISSIONS.findIndex((m) => m.id === a.missionId)),
   }
   await db.transaction('rw', db.tables, async () => {

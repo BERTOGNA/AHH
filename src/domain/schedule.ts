@@ -16,8 +16,7 @@ export function occurrencesFor(date: ISODate, tasks: Task[], completions: Comple
   const wd = isoWeekday(date)
   const byId = new Map(completions.filter((c) => c.date === date).map((c) => [c.id, c]))
   const out: Occurrence[] = []
-  for (const task of tasks) {
-    if (!task.active || !task.weekdays.includes(wd)) continue
+  const push = (task: Task) => {
     if (task.kind === 'individual') {
       for (const m of task.assigneeIds) {
         out.push({ task, date, slot: m, forIds: [m], completion: byId.get(completionId(task.id, date, m)) })
@@ -28,6 +27,15 @@ export function occurrencesFor(date: ISODate, tasks: Task[], completions: Comple
         completion: byId.get(completionId(task.id, date, 'all')),
       })
     }
+  }
+  for (const task of tasks) {
+    if (!task.active) continue
+    const ex = task.exceptions ?? []
+    // Ocorrência normal do dia (a menos que tenha sido dispensada ou movida só nesta semana)
+    const own = ex.find((e) => e.date === date)
+    if (task.weekdays.includes(wd) && !own?.skip && !own?.to) push(own?.time ? { ...task, time: own.time } : task)
+    // Ocorrências trazidas de outro dia só nesta semana
+    for (const e of ex) if (e.to === date && !e.skip) push(e.time ? { ...task, time: e.time } : task)
   }
   return out.sort(byTime)
 }

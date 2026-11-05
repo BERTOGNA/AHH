@@ -20,7 +20,9 @@ export async function exportBackup(): Promise<Backup> {
   return { app: 'reino-da-familia', version: SCHEMA_VERSION, exportedAt: new Date().toISOString(), data }
 }
 
+/** Baixa o arquivo e registra a data do último backup (para o lembrete gentil). */
 export function downloadBackup(b: Backup) {
+  void db.settings.update('app', { lastBackupAt: Date.now() })
   const blob = new Blob([JSON.stringify(b, null, 2)], { type: 'application/json' })
   const a = Object.assign(document.createElement('a'), {
     href: URL.createObjectURL(blob), download: `reino-backup-${today()}.json`,
