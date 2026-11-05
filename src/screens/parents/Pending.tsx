@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Icon } from '../../components/Icon'
+import { GoldStar } from '../../components/Seal'
 import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Completion, Member } from '../../db/types'
 import { useFamily, useSession } from '../../state'
@@ -133,8 +134,20 @@ interface RowProps {
 function PendingRow({ c, byId, onValidate, onThank, onNotYet }: RowProps) {
   const helper = c.helperId ? byId.get(c.helperId) : undefined
   const partners = c.memberIds.slice(1).map((id) => byId.get(id)?.name).filter(Boolean)
+  const [sealing, setSealing] = useState(false)
+  // O selo aparece na linha antes de ela sair da fila: a família vê o "carimbo" acontecer.
+  const seal = () => {
+    if (sealing) return
+    setSealing(true)
+    window.setTimeout(onValidate, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 520)
+  }
   return (
-    <li className="flex flex-wrap items-center gap-3 py-3">
+    <li className={`relative flex flex-wrap items-center gap-3 py-3 transition-opacity ${sealing ? 'opacity-90' : ''}`}>
+      {sealing && (
+        <span className="pointer-events-none absolute inset-0 z-10 grid place-items-center" aria-hidden="true">
+          <span className="animate-pop"><GoldStar size={72} /></span>
+        </span>
+      )}
       <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-wait" aria-hidden="true">
         <TaskArt emoji={c.emoji} size={38} />
       </span>
@@ -159,7 +172,7 @@ function PendingRow({ c, byId, onValidate, onThank, onNotYet }: RowProps) {
         >
           <Icon name="heart" size={24} strokeWidth={2} />
         </button>
-        <button className="btn btn-primary h-14 min-w-[120px] text-lg" onClick={onValidate} aria-label={`Validar: ${c.title}`}>
+        <button className="btn btn-primary h-14 min-w-[120px] text-lg" onClick={seal} disabled={sealing} aria-label={`Validar: ${c.title}`}>
           ✓ Validar
         </button>
       </div>

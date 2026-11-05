@@ -54,7 +54,7 @@ async function pin(page) {
   await page.getByRole('button', { name: /^Validar: / }).first().waitFor()
   const before = await page.getByRole('button', { name: /^Validar: / }).count()
   await page.getByRole('button', { name: /^Validar: / }).first().click()
-  await page.waitForTimeout(300)
+  await page.waitForTimeout(900)
   ok((await page.getByRole('button', { name: /^Validar: / }).count()) === before - 1, 'validar com um toque tira a tarefa da fila')
 
   // Feito invisível do adulto aparece no Mural
