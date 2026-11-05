@@ -389,8 +389,8 @@ export function StepChest({ d, set }: StepProps) {
           <span className="font-semibold">Adicionar uma recompensa de vocês</span>
           <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Ícone da recompensa">
             {REWARD_EMOJIS.map((e) => (
-              <button key={e} type="button" role="radio" aria-checked={emoji === e} aria-label={`Ícone ${e}`} onClick={() => setEmoji(e)} className={`h-12 w-12 rounded-xl border-2 text-2xl ${emoji === e ? 'border-gold bg-wait' : 'border-line bg-white'}`}>
-                {e}
+              <button key={e} type="button" role="radio" aria-checked={emoji === e} aria-label={`Ícone ${e}`} onClick={() => setEmoji(e)} className={`h-12 w-12 rounded-xl border-2 grid place-items-center ${emoji === e ? 'border-gold bg-wait' : 'border-line bg-white'}`}>
+                <TaskArt emoji={e} size={32} />
               </button>
             ))}
           </div>

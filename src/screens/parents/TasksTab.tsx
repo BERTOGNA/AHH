@@ -72,8 +72,8 @@ export function TasksTab() {
                   onClick={() => setEditing(t)}
                   aria-label={`Editar ${t.title}`}
                 >
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-bg text-3xl" aria-hidden="true">
-                    {t.emoji}
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-bg" aria-hidden="true">
+                    <TaskArt emoji={t.emoji} size={38} />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-semibold">{t.title}</span>

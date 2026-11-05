@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '../../components/Icon'
 import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Completion, Member } from '../../db/types'
 import { useFamily, useSession } from '../../state'
@@ -134,8 +135,8 @@ function PendingRow({ c, byId, onValidate, onThank, onNotYet }: RowProps) {
   const partners = c.memberIds.slice(1).map((id) => byId.get(id)?.name).filter(Boolean)
   return (
     <li className="flex flex-wrap items-center gap-3 py-3">
-      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-wait text-3xl" aria-hidden="true">
-        {c.emoji}
+      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-wait" aria-hidden="true">
+        <TaskArt emoji={c.emoji} size={38} />
       </span>
       <div className="min-w-0 flex-1 basis-40">
         <p className="font-semibold">{c.title}</p>
@@ -151,12 +152,12 @@ function PendingRow({ c, byId, onValidate, onThank, onNotYet }: RowProps) {
           Ainda não
         </button>
         <button
-          className="btn btn-ghost h-16 w-16 p-0 text-2xl"
+          className="btn btn-ghost h-14 w-14 p-0 text-gold-deep"
           aria-label={`Validar e agradecer: ${c.title}`}
           title="Validar e agradecer"
           onClick={onThank}
         >
-          💛
+          <Icon name="heart" size={24} strokeWidth={2} />
         </button>
         <button className="btn btn-primary h-14 min-w-[120px] text-lg" onClick={onValidate} aria-label={`Validar: ${c.title}`}>
           ✓ Validar
