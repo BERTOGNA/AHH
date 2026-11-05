@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a2766"/>
+      <stop offset="1" stop-color="#1c1233"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7d77a"/>
+      <stop offset="1" stop-color="#c8902b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="0" fill="url(#sky)"/>
+  <circle cx="380" cy="130" r="38" fill="#f6ecd6" opacity=".9"/>
+  <circle cx="365" cy="120" r="34" fill="#2f2056"/>
+  <g fill="#f6ecd6" opacity=".8">
+    <circle cx="110" cy="110" r="5"/><circle cx="170" cy="70" r="3"/><circle cx="250" cy="120" r="4"/><circle cx="440" cy="220" r="3"/>
+  </g>
+  <!-- castle -->
+  <g fill="url(#gold)" stroke="#7a4d12" stroke-width="6" stroke-linejoin="round">
+    <path d="M136 420 V250 h28 v-26 h24 v26 h24 v-26 h24 v26 h28 V420 Z"/>
+    <path d="M232 420 V196 h20 v-28 h24 v28 h24 v-28 h24 v28 h20 V420 Z" transform="translate(-24 0)"/>
+    <path d="M300 420 V250 h28 v-26 h24 v26 h24 v-26 h24 v26 h28 V420 Z" transform="translate(-24 0)"/>
+  </g>
+  <path d="M232 420 v-60 a24 24 0 0 1 48 0 v60 Z" fill="#2b1d4a"/>
+  <!-- heart flag -->
+  <path d="M256 168 V96" stroke="#7a4d12" stroke-width="6"/>
+  <path d="M256 98 c10-14 34-8 30 10 c-3 12-18 18-30 26 Z" fill="#e0505e" stroke="#7a1d2a" stroke-width="4"/>
+  <rect x="0" y="420" width="512" height="92" fill="#3f7d4a"/>
+  <path d="M0 430 Q128 405 256 430 T512 430 V512 H0Z" fill="#4f9a5b"/>
+</svg>
