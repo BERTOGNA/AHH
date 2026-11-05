@@ -22,7 +22,7 @@ export function Chest() {
   const gate = useParentGate()
   const mission = f.missions.find((m) => m.weekKey === weekKey(today()))
   const missionDone = mission ? weekXp(today(), f.events) >= mission.goalXp : false
-  const rewards = f.rewards.filter((r) => r.active).sort((a, b) => a.cost - b.cost)
+  const rewards = f.rewards.filter((r) => r.active && (!r.forIds?.length || (me && r.forIds.includes(me.id)))).sort((a, b) => a.cost - b.cost)
 
   if (!me) {
     return (

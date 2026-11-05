@@ -364,7 +364,7 @@ export function StepChest({ d, set }: StepProps) {
       <Card>
         <h3 className="mb-1 text-lg font-bold">Recompensas do Baú</h3>
         <p className="mb-3 text-sm text-muted">
-          Cada tarefa validada dá moedas (10 XP = 2 🪙). Uma semana de tarefas rende umas 50 moedas para cada criança. Trocar moedas nunca tira nível nem XP.
+          Cada tarefa validada dá moedas (10 XP = 2 moedas). Uma semana de tarefas rende umas 50 moedas para cada criança. Trocar moedas nunca tira nível nem XP.
         </p>
         <ul className="flex flex-col gap-2">
           {d.rewards.map((r, i) => (
@@ -374,7 +374,7 @@ export function StepChest({ d, set }: StepProps) {
                 <TaskArt emoji={r.emoji} size={32} />
                 <span className="font-semibold">{r.title}</span>
               </label>
-              <Stepper label={`custo de ${r.title}`} value={r.cost} min={5} max={300} step={5} suffix=" 🪙" onChange={(cost) => set((x) => ({ ...x, rewards: x.rewards.map((y, j) => (j === i ? { ...y, cost } : y)) }))} />
+              <Stepper label={`custo de ${r.title}`} value={r.cost} min={5} max={300} step={5} suffix=" moedas" onChange={(cost) => set((x) => ({ ...x, rewards: x.rewards.map((y, j) => (j === i ? { ...y, cost } : y)) }))} />
             </li>
           ))}
         </ul>

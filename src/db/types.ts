@@ -91,6 +91,8 @@ export interface Reward {
   emoji: string
   cost: number
   active: boolean
+  /** Para quem aparece no Baú (vazio/ausente = todos). */
+  forIds?: string[]
   createdAt: number
 }
 

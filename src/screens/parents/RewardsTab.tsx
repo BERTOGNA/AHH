@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { Icon } from '../../components/Icon'
+import { CoinIcon } from '../../components/Seal'
+import { Avatar } from '../../components/Avatar'
 import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Reward } from '../../db/types'
 import { useFamily, useSession } from '../../state'
@@ -10,7 +13,7 @@ const REWARD_EMOJIS = ['🍕', '🍨', '🍦', '🎬', '🍿', '📺', '🎮', '
 
 /** Cadastro das recompensas reais do Baú. */
 export function RewardsTab() {
-  const { rewards } = useFamily()
+  const { rewards, byId } = useFamily()
   const [editing, setEditing] = useState<Reward | 'new' | null>(null)
   const sorted = [...rewards].sort((a, b) => Number(b.active) - Number(a.active) || a.cost - b.cost)
 
@@ -19,12 +22,12 @@ export function RewardsTab() {
       title="Recompensas do Baú"
       aside={
         <button className="btn btn-primary" onClick={() => setEditing('new')}>
-          ✚ Nova recompensa
+          <Icon name="plus" size={18} strokeWidth={2.25} /> Nova recompensa
         </button>
       }
     >
       <p className="mb-3 text-sm text-muted">
-        Referência: uma criança junta cerca de 50 🪙 por semana. Pequenas: 10–20 · médias: 30–60 · grandes: 100–200.
+        Referência: uma criança junta cerca de 50 moedas por semana. Pequenas: 10–20 · médias: 30–60 · grandes: 100–200.
       </p>
       {sorted.length === 0 ? (
         <Empty>Nenhuma recompensa cadastrada ainda.</Empty>
@@ -40,9 +43,12 @@ export function RewardsTab() {
                 <TaskArt emoji={r.emoji} size={44} />
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold">{r.title}</span>
-                  <span className="block text-sm text-muted">{r.active ? 'No Baú' : 'Guardada (fora do Baú)'}</span>
+                  <span className="block text-sm text-muted">
+                    {r.active ? 'No Baú' : 'Guardada (fora do Baú)'}
+                    {r.forIds?.length ? ` · só ${r.forIds.map((id) => byId.get(id)?.name).filter(Boolean).join(', ')}` : ''}
+                  </span>
                 </span>
-                <span className="shrink-0 font-bold text-gold-deep tabular-nums">{r.cost} 🪙</span>
+                <span className="flex shrink-0 items-center gap-1 font-bold text-gold-deep tabular-nums">{r.cost} <CoinIcon size={18} /></span>
               </button>
             </li>
           ))}
@@ -59,6 +65,9 @@ function RewardEditor({ reward, onClose }: { reward?: Reward; onClose: () => voi
   const [emoji, setEmoji] = useState(reward?.emoji ?? '🎁')
   const [cost, setCost] = useState(reward?.cost ?? 30)
   const [active, setActive] = useState(reward?.active ?? true)
+  const [forIds, setForIds] = useState<string[]>(reward?.forIds ?? [])
+  const { members, settings } = useFamily()
+  const heroes = members.filter((m) => m.role !== 'adult' || settings.adultChest)
   const step = (d: number) => setCost((c) => Math.min(300, Math.max(5, c + d)))
 
   return (
@@ -82,10 +91,26 @@ function RewardEditor({ reward, onClose }: { reward?: Reward; onClose: () => voi
           <span className="mb-1 block text-sm font-semibold" id="custo-label">Custo em moedas</span>
           <div className="flex items-center gap-2" role="group" aria-labelledby="custo-label">
             <button className="btn btn-ghost h-12 w-12 p-0 text-xl" aria-label="Menos 5 moedas" onClick={() => step(-5)}>−</button>
-            <span className="min-w-20 text-center text-xl font-bold tabular-nums">{cost} 🪙</span>
+            <span className="flex min-w-20 items-center justify-center gap-1 text-xl font-bold tabular-nums">{cost} <CoinIcon size={22} /></span>
             <button className="btn btn-ghost h-12 w-12 p-0 text-xl" aria-label="Mais 5 moedas" onClick={() => step(5)}>+</button>
           </div>
         </div>
+        <fieldset>
+          <legend className="mb-1 text-sm font-semibold">Para quem</legend>
+          <div className="flex flex-wrap gap-2">
+            <button className="chip" aria-pressed={forIds.length === 0} onClick={() => setForIds([])}>Todos</button>
+            {heroes.map((m) => (
+              <button
+                key={m.id}
+                className="chip pl-1"
+                aria-pressed={forIds.includes(m.id)}
+                onClick={() => setForIds((x) => (x.includes(m.id) ? x.filter((y) => y !== m.id) : [...x, m.id]))}
+              >
+                <Avatar member={m} size={32} /> {m.name}
+              </button>
+            ))}
+          </div>
+        </fieldset>
         <label className="flex min-h-12 items-center gap-3">
           <input type="checkbox" className="h-6 w-6 accent-[#8a5b00]" checked={active} onChange={(e) => setActive(e.target.checked)} />
           <span className="font-semibold">Disponível no Baú</span>
@@ -95,7 +120,7 @@ function RewardEditor({ reward, onClose }: { reward?: Reward; onClose: () => voi
           disabled={!title.trim()}
           style={{ opacity: title.trim() ? 1 : 0.5 }}
           onClick={async () => {
-            await saveReward({ ...reward, title: title.trim(), emoji, cost, active })
+            await saveReward({ ...reward, title: title.trim(), emoji, cost, active, forIds: forIds.length ? forIds : undefined })
             toast(reward ? 'Recompensa atualizada.' : 'Recompensa criada.')
             onClose()
           }}

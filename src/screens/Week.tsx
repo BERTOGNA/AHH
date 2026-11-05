@@ -88,8 +88,8 @@ export function Week() {
         ))}
         {adultId && (
           <span className="ml-auto flex gap-2">
-            <button className="btn btn-primary h-12 min-h-12" onClick={() => setEditTask({})}>✚ Tarefa</button>
-            <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}>✚ Rotina</button>
+            <button className="btn btn-primary h-12 min-h-12" onClick={() => setEditTask({})}><Icon name="plus" size={18} strokeWidth={2.25} /> Tarefa</button>
+            <button className="btn btn-ghost h-12 min-h-12" onClick={() => setRoutine('new')}><Icon name="plus" size={18} strokeWidth={2.25} /> Rotina</button>
           </span>
         )}
       </div>

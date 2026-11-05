@@ -66,7 +66,7 @@ export function Requests() {
                     <div className="min-w-0 flex-1 basis-40">
                       <p className="font-semibold">{r.title}</p>
                       <p className="text-sm text-muted">
-                        {m?.name} pediu {ago(r.requestedAt)} · {r.cost} 🪙
+                        {m?.name} pediu {ago(r.requestedAt)} · {r.cost} moedas
                       </p>
                     </div>
                     <div className="flex gap-2">

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '../../components/Icon'
 import { TaskArt } from '../../components/taskart/TaskArt'
 import type { Task } from '../../db/types'
 import { useFamily, useSession } from '../../state'
@@ -35,7 +36,7 @@ export function TasksTab() {
         title="Tarefas da semana"
         aside={
           <button className="btn btn-primary" onClick={() => setEditing('new')}>
-            ✚ Nova tarefa
+            <Icon name="plus" size={18} strokeWidth={2.25} /> Nova tarefa
           </button>
         }
       >
